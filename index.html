@@ -5,243 +5,160 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CHESSIO — Chess Memecoin on TON</title>
   <meta name="description" content="Chessio is the ultimate chess memecoin on TON blockchain. Play chess. Earn $CHESS. Conquer the board." />
-
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Chess.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-
-  <!-- Google Fonts -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #f0f9ff; color: #0f2744; overflow-x: hidden; }
-
-    /* Particle canvas */
-    #particle-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Glass effect */
-    .glass {
-      background: rgba(255,255,255,0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.45);
-    }
-
-    /* Page sections above canvas */
-    nav, section, footer, .play-page { position: relative; z-index: 1; }
-
-    /* Smooth scroll */
-    html { scroll-behavior: smooth; }
-
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.65s ease, transform 0.65s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* Float animation for hero pieces */
-    @keyframes floatPiece {
-      0%,100% { transform: translateY(0) rotate(0deg); }
-      50%      { transform: translateY(-18px) rotate(12deg); }
-    }
-    .float-piece { animation: floatPiece var(--dur,3s) ease-in-out infinite; }
-
-    /* Spin loader */
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { animation: spin 0.8s linear infinite; }
-
-    /* Progress bar animation */
-    @keyframes growBar { from { width: 0; } to { width: var(--w); } }
-    .bar-fill { animation: growBar 1s ease forwards; }
-
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#f0f9ff;color:#0f2744;overflow-x:hidden}
+    #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .glass{background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.45)}
+    nav,section,footer,.z1{position:relative;z-index:1}
+    html{scroll-behavior:smooth}
+    .reveal{opacity:0;transform:translateY(32px);transition:opacity .65s ease,transform .65s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    @keyframes floatPiece{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(12deg)}}
+    .float-piece{animation:floatPiece var(--dur,3s) ease-in-out infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{animation:spin .8s linear infinite}
     /* Chess board */
-    .chess-board { display: grid; grid-template-columns: repeat(8, 1fr); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 30px rgba(2,132,199,0.25); user-select: none; }
-    .chess-square { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: filter 0.15s; }
-    .chess-square:hover { filter: brightness(0.9); }
-    .chess-square.light { background: #e0f2fe; }
-    .chess-square.dark  { background: #0284c7; }
-    .chess-square.selected { outline: 4px solid #fbbf24; outline-offset: -4px; }
-    .chess-square.possible { background: rgba(250,204,21,0.35) !important; }
-    .chess-square.possible::after { content: ''; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(250,204,21,0.7); }
-    .chess-piece { font-size: clamp(20px, 5vw, 36px); line-height: 1; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); transition: transform 0.1s; }
-    .chess-square:hover .chess-piece { transform: scale(1.1); }
-    .coord-label { position: absolute; font-size: 9px; font-weight: 700; opacity: 0.55; font-family: 'JetBrains Mono', monospace; }
-    .coord-rank { bottom: 2px; right: 3px; }
-    .coord-file { top: 2px; left: 3px; }
-
-    /* Hidden/shown pages */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    /* Nav link hover */
-    nav a { transition: color 0.2s; }
-
-    /* Button transitions */
-    button { cursor: pointer; transition: all 0.2s; }
-    button:hover:not(:disabled) { transform: scale(1.03); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-    /* Tokenomics bar */
-    .tok-bar { height: 12px; border-radius: 999px; overflow: hidden; background: #bae6fd; }
-    .tok-fill { height: 100%; border-radius: 999px; width: 0; transition: width 1.1s cubic-bezier(0.4,0,0.2,1); }
-
-    /* Roadmap line */
-    .roadmap-line { position: absolute; left: 30px; top: 0; bottom: 0; width: 2px; background: #bae6fd; }
-
-    /* History scroll */
-    .move-history { max-height: 180px; overflow-y: auto; }
-    .move-history::-webkit-scrollbar { width: 4px; }
-    .move-history::-webkit-scrollbar-track { background: transparent; }
-    .move-history::-webkit-scrollbar-thumb { background: #7dd3fc; border-radius: 4px; }
+    .chess-board{display:grid;grid-template-columns:repeat(8,1fr);border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(2,132,199,.25);user-select:none}
+    .chess-square{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:filter .15s}
+    .chess-square:hover{filter:brightness(.88)}
+    .chess-square.selected{outline:4px solid #fbbf24;outline-offset:-4px;z-index:2}
+    .chess-square.possible{background:rgba(250,204,21,.35)!important}
+    .chess-square.possible::after{content:'';position:absolute;width:28%;height:28%;border-radius:50%;background:rgba(250,204,21,.7)}
+    .chess-piece{font-size:clamp(18px,5vw,34px);line-height:1;pointer-events:none;transition:transform .1s}
+    .chess-square:hover .chess-piece{transform:scale(1.12)}
+    .coord-label{position:absolute;font-size:9px;font-weight:700;opacity:.55;font-family:'JetBrains Mono',monospace}
+    .coord-rank{bottom:2px;right:3px}.coord-file{top:2px;left:3px}
+    /* Pages */
+    .page{display:none}.page.active{display:block}
+    nav a{transition:color .2s}
+    button{cursor:pointer;transition:all .2s}
+    button:hover:not(:disabled){transform:scale(1.03)}
+    button:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+    /* Tokenomics */
+    .tok-bar{height:12px;border-radius:999px;overflow:hidden;background:#bae6fd}
+    .tok-fill{height:100%;border-radius:999px;width:0;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
+    .roadmap-line{position:absolute;left:30px;top:0;bottom:0;width:2px;background:#bae6fd}
+    /* History */
+    .move-history{max-height:180px;overflow-y:auto}
+    .move-history::-webkit-scrollbar{width:4px}
+    .move-history::-webkit-scrollbar-thumb{background:#7dd3fc;border-radius:4px}
+    /* Shop */
+    .skin-card{border:2px solid transparent;transition:all .2s;cursor:default}
+    .skin-card:hover{border-color:#7dd3fc;transform:translateY(-2px)}
+    .skin-card.owned{border-color:#22c55e}
+    .skin-card.equipped{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
+    /* Modals */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center}
+    .modal-box{background:#fff;border-radius:20px;padding:32px;max-width:420px;width:90%;position:relative;box-shadow:0 25px 60px rgba(0,0,0,.2)}
+    /* TON button */
+    #ton-btn,#ton-btn2{background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .2s}
+    #ton-btn:hover,#ton-btn2:hover{background:linear-gradient(135deg,#0369a1,#0284c7);transform:scale(1.03)}
+    /* PvP status dot */
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+    .dot-green{background:#22c55e;box-shadow:0 0 6px #22c55e}
+    .dot-spin{background:#eab308;animation:spin 1s linear infinite}
+    /* Board skin preview grid */
+    .preview-grid{display:grid;grid-template-columns:repeat(4,22px);gap:2px;margin:0 auto;width:fit-content}
+    /* Piece preview */
+    .piece-preview{font-size:32px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
   </style>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
-        }
-      }
-    }
-  </script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
 <body>
 
-<!-- Particle Canvas -->
 <canvas id="particle-canvas"></canvas>
 
-<!-- ==================== LANDING PAGE ==================== -->
+<!-- ============================================================ -->
+<!-- LANDING PAGE                                                  -->
+<!-- ============================================================ -->
 <div id="page-landing" class="page active">
 
-  <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <img src="https://i.imgur.com/KfYwnPE.png" alt="Chessio" class="w-9 h-9 rounded-full"
-          onerror="this.style.display='none'" />
+        <img src="https://i.imgur.com/KfYwnPE.png" class="w-9 h-9 rounded-full" onerror="this.style.display='none'" alt="logo"/>
         <span class="text-xl font-extrabold text-sky-700 tracking-tight">CHESSIO</span>
       </div>
-      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-sky-800">
+      <div class="hidden md:flex items-center gap-5 text-sm font-medium text-sky-800">
         <a href="#about" class="hover:text-sky-600">About</a>
         <a href="#tokenomics" class="hover:text-sky-600">Tokenomics</a>
         <a href="#roadmap" class="hover:text-sky-600">Roadmap</a>
-        <a href="#" onclick="showPlay(event)" class="text-sky-600 font-semibold hover:text-sky-800">Play Chess</a>
+        <a href="#" onclick="goto('shop',event)" class="text-purple-600 font-semibold hover:text-purple-800">🎨 Shop</a>
+        <a href="#" onclick="goto('play',event)" class="text-sky-600 font-semibold hover:text-sky-800">Play Chess</a>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="showPlay(event)"
-          class="px-4 py-2 bg-sky-600 text-white text-sm font-bold rounded-xl shadow hover:bg-sky-700">
-          Play Chess
-        </button>
-      </div>
+      <button id="ton-btn" onclick="walletClick()">
+        <span>💎</span><span id="ton-lbl">Connect Wallet</span>
+      </button>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="pt-28 pb-20 px-4 relative overflow-hidden">
-    <!-- Floating chess pieces background -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
       <span class="float-piece absolute text-sky-200 opacity-30 text-4xl" style="left:5%;top:15%;--dur:3.2s">♟</span>
-      <span class="float-piece absolute text-sky-200 opacity-25 text-6xl" style="left:18%;top:45%;--dur:4.1s;animation-delay:0.5s">♞</span>
+      <span class="float-piece absolute text-sky-200 opacity-25 text-6xl" style="left:18%;top:45%;--dur:4.1s;animation-delay:.5s">♞</span>
       <span class="float-piece absolute text-sky-200 opacity-20 text-3xl" style="left:30%;top:22%;--dur:3.7s;animation-delay:1s">♝</span>
-      <span class="float-piece absolute text-sky-200 opacity-30 text-5xl" style="left:55%;top:10%;--dur:2.9s;animation-delay:0.3s">♜</span>
-      <span class="float-piece absolute text-sky-200 opacity-25 text-4xl" style="left:70%;top:38%;--dur:3.5s;animation-delay:0.8s">♛</span>
+      <span class="float-piece absolute text-sky-200 opacity-30 text-5xl" style="left:55%;top:10%;--dur:2.9s;animation-delay:.3s">♜</span>
+      <span class="float-piece absolute text-sky-200 opacity-25 text-4xl" style="left:70%;top:38%;--dur:3.5s;animation-delay:.8s">♛</span>
       <span class="float-piece absolute text-sky-200 opacity-20 text-5xl" style="left:82%;top:18%;--dur:4.3s;animation-delay:1.5s">♚</span>
-      <span class="float-piece absolute text-sky-200 opacity-30 text-3xl" style="left:90%;top:60%;--dur:3.1s;animation-delay:0.2s">♟</span>
+      <span class="float-piece absolute text-sky-200 opacity-30 text-3xl" style="left:90%;top:60%;--dur:3.1s;animation-delay:.2s">♟</span>
       <span class="float-piece absolute text-sky-200 opacity-25 text-4xl" style="left:42%;top:65%;--dur:3.8s;animation-delay:1.2s">♞</span>
-      <span class="float-piece absolute text-sky-200 opacity-20 text-6xl" style="left:8%;top:68%;--dur:4.5s;animation-delay:0.7s">♝</span>
+      <span class="float-piece absolute text-sky-200 opacity-20 text-6xl" style="left:8%;top:68%;--dur:4.5s;animation-delay:.7s">♝</span>
       <span class="float-piece absolute text-sky-200 opacity-30 text-3xl" style="left:62%;top:72%;--dur:3.4s;animation-delay:1.8s">♜</span>
-      <span class="float-piece absolute text-sky-200 opacity-25 text-5xl" style="left:25%;top:78%;--dur:2.8s;animation-delay:0.4s">♛</span>
+      <span class="float-piece absolute text-sky-200 opacity-25 text-5xl" style="left:25%;top:78%;--dur:2.8s;animation-delay:.4s">♛</span>
       <span class="float-piece absolute text-sky-200 opacity-20 text-4xl" style="left:78%;top:80%;--dur:3.9s;animation-delay:1.1s">♟</span>
     </div>
-
     <div class="max-w-3xl mx-auto text-center relative z-10">
-      <div class="animate-bounce-once">
-        <img src="https://i.imgur.com/KfYwnPE.png" alt="Chessio Logo"
-          class="w-28 h-28 mx-auto mb-6 rounded-full shadow-xl border-4 border-white/60 object-cover"
-          onerror="this.style.display='none'" />
-      </div>
+      <img src="https://i.imgur.com/KfYwnPE.png" class="w-28 h-28 mx-auto mb-6 rounded-full shadow-xl border-4 border-white/60 object-cover" onerror="this.style.display='none'" alt="Chessio"/>
       <h1 class="text-6xl sm:text-7xl font-black text-sky-700 mb-4 tracking-tight">CHESSIO</h1>
       <p class="text-xl text-sky-600 mb-2 font-medium">The Ultimate Chess Memecoin on TON Blockchain</p>
       <p class="text-base text-sky-500 mb-8">Play chess. Earn $CHESS. Conquer the board.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <button onclick="showPlay(event)"
-          class="px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center justify-center gap-2">
-          ♞ Play Chess
-        </button>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
+        <button onclick="goto('play')" class="px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center justify-center gap-2">♞ Play Chess</button>
+        <button onclick="goto('shop')" class="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center justify-center gap-2">🎨 Skin Shop</button>
         <a href="https://groypfi.io" target="_blank" rel="noopener noreferrer">
-          <button class="px-8 py-4 bg-white/70 hover:bg-white text-sky-700 font-bold text-lg rounded-2xl shadow-md border border-sky-200 w-full">
-            Buy on Groypfi.io
-          </button>
+          <button class="px-8 py-4 bg-white/70 hover:bg-white text-sky-700 font-bold text-lg rounded-2xl shadow-md border border-sky-200 w-full">Buy on Groypfi.io</button>
         </a>
       </div>
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <div class="glass rounded-2xl px-6 py-3 text-center">
-          <p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract Address</p>
-          <p class="text-sky-700 font-bold text-sm mt-1">Coming Soon</p>
-        </div>
-        <div class="glass rounded-2xl px-6 py-3 text-center">
-          <p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p>
-          <p class="text-sky-700 font-bold text-sm mt-1">TON Blockchain</p>
-        </div>
-        <div class="glass rounded-2xl px-6 py-3 text-center">
-          <p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Total Supply</p>
-          <p class="text-sky-700 font-bold text-sm mt-1">1,000,000,000 $CHESS</p>
-        </div>
+        <div class="glass rounded-2xl px-6 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p><p class="text-sky-700 font-bold text-sm mt-1">Coming Soon</p></div>
+        <div class="glass rounded-2xl px-6 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p><p class="text-sky-700 font-bold text-sm mt-1">TON Blockchain</p></div>
+        <div class="glass rounded-2xl px-6 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Supply</p><p class="text-sky-700 font-bold text-sm mt-1">1,000,000,000 $CHESS</p></div>
       </div>
     </div>
   </section>
 
   <!-- About -->
-  <section id="about" class="py-16 px-4">
+  <section id="about" class="py-16 px-4 z1">
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-12">
         <h2 class="text-4xl font-black text-sky-700 mb-3">What is Chessio?</h2>
-        <p class="text-sky-600 max-w-2xl mx-auto text-base">
-          Chessio is the first chess-powered memecoin on the TON blockchain. Combining the timeless strategy
-          of chess with the power of DeFi, Chessio brings a unique play-to-earn ecosystem where your chess
-          skills translate to real value.
-        </p>
+        <p class="text-sky-600 max-w-2xl mx-auto">Chessio is the first chess-powered memecoin on TON blockchain. Play to earn, buy exclusive skins with TON, and battle friends in WebRTC P2P — no server needed.</p>
       </div>
       <div class="grid md:grid-cols-3 gap-6">
-        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform" style="transition-delay:0s">
-          <div class="text-5xl mb-4">♟</div>
-          <h3 class="text-lg font-bold text-sky-700 mb-2">Chess Minigame</h3>
-          <p class="text-sky-600 text-sm">Play against AI (Easy/Normal/Hard) or challenge players worldwide in real-time PvP matches right in your browser.</p>
-        </div>
-        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform" style="transition-delay:0.1s">
-          <div class="text-5xl mb-4">💎</div>
-          <h3 class="text-lg font-bold text-sky-700 mb-2">TON Native</h3>
-          <p class="text-sky-600 text-sm">Built on the lightning-fast TON blockchain with ultra-low fees. Connect your TON wallet and start trading instantly.</p>
-        </div>
-        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform" style="transition-delay:0.2s">
-          <div class="text-5xl mb-4">🚀</div>
-          <h3 class="text-lg font-bold text-sky-700 mb-2">Launching on Groypfi</h3>
-          <p class="text-sky-600 text-sm">Fair launch on Groypfi.io — no presale, no VC allocation. 100% community driven from day one.</p>
-        </div>
+        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform"><div class="text-5xl mb-4">♟</div><h3 class="text-lg font-bold text-sky-700 mb-2">Chess Minigame</h3><p class="text-sky-600 text-sm">Play vs AI (Easy/Normal/Hard) or real-time WebRTC PvP — zero server required!</p></div>
+        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform" style="transition-delay:.1s"><div class="text-5xl mb-4">🎨</div><h3 class="text-lg font-bold text-sky-700 mb-2">Exclusive Skins</h3><p class="text-sky-600 text-sm">Buy 3 board skins and 3 piece skins with TON. Show your style every match.</p></div>
+        <div class="reveal glass rounded-2xl p-6 text-center hover:scale-105 transition-transform" style="transition-delay:.2s"><div class="text-5xl mb-4">💎</div><h3 class="text-lg font-bold text-sky-700 mb-2">TON Native</h3><p class="text-sky-600 text-sm">Connect Tonkeeper, MyTonWallet or Tonhub instantly. Ultra-low fees.</p></div>
       </div>
     </div>
   </section>
 
   <!-- Tokenomics -->
-  <section id="tokenomics" class="py-16 px-4 bg-sky-100/60">
+  <section id="tokenomics" class="py-16 px-4 bg-sky-100/60 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-10">Tokenomics</h2>
       <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div class="space-y-4" id="tok-bars">
-          <!-- filled by JS -->
-        </div>
+        <div class="space-y-4" id="tok-bars"></div>
         <div class="reveal glass rounded-2xl p-8 text-center">
           <p class="text-sky-500 text-sm uppercase tracking-widest font-semibold mb-2">Total Supply</p>
-          <p class="text-5xl font-black text-sky-700">1B</p>
-          <p class="text-sky-500 font-semibold">$CHESS</p>
+          <p class="text-5xl font-black text-sky-700">1B</p><p class="text-sky-500 font-semibold">$CHESS</p>
           <div class="mt-6 space-y-2 text-left">
             <div class="flex justify-between text-sm"><span class="text-sky-600">Symbol</span><span class="font-bold text-sky-700">$CHESS</span></div>
             <div class="flex justify-between text-sm"><span class="text-sky-600">Network</span><span class="font-bold text-sky-700">TON</span></div>
@@ -254,51 +171,39 @@
   </section>
 
   <!-- Roadmap -->
-  <section id="roadmap" class="py-16 px-4">
+  <section id="roadmap" class="py-16 px-4 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-10">Roadmap</h2>
-      <div class="relative">
-        <div class="roadmap-line hidden md:block"></div>
-        <div class="space-y-8" id="roadmap-items">
-          <!-- filled by JS -->
-        </div>
-      </div>
+      <div class="relative"><div class="roadmap-line hidden md:block"></div><div class="space-y-8" id="roadmap-items"></div></div>
     </div>
   </section>
 
-  <!-- Play CTA -->
-  <section class="py-16 px-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white">
+  <!-- CTA -->
+  <section class="py-16 px-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white z1">
     <div class="max-w-2xl mx-auto text-center">
       <div class="reveal">
         <div class="text-6xl mb-4">♛</div>
         <h2 class="text-4xl font-black mb-4">Ready to Play?</h2>
-        <p class="text-sky-100 mb-8">Challenge the AI or play PvP online with players from around the world. Show your chess skills on the blockchain.</p>
-        <button onclick="showPlay(event)"
-          class="px-10 py-4 bg-white text-sky-600 font-black text-xl rounded-2xl hover:scale-105 transition-transform shadow-xl">
-          Play Chess Now
-        </button>
+        <p class="text-sky-100 mb-8">Challenge the AI or play P2P online — no server required. Customize your board with TON-powered skins.</p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <button onclick="goto('play')" class="px-8 py-4 bg-white text-sky-600 font-black text-xl rounded-2xl hover:scale-105 shadow-xl">Play Chess Now</button>
+          <button onclick="goto('shop')" class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-black text-xl rounded-2xl hover:scale-105 border border-white/40">🎨 Get Skins</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="py-10 px-4 bg-sky-800 text-white">
+  <footer class="py-10 px-4 bg-sky-800 text-white z1">
     <div class="max-w-5xl mx-auto">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
-          <img src="https://i.imgur.com/KfYwnPE.png" alt="Chessio" class="w-8 h-8 rounded-full"
-            onerror="this.style.display='none'" />
+          <img src="https://i.imgur.com/KfYwnPE.png" class="w-8 h-8 rounded-full" onerror="this.style.display='none'" alt=""/>
           <span class="text-lg font-black">CHESSIO</span>
         </div>
         <div class="flex gap-6">
-          <a href="https://x.com/chessiooxyz" target="_blank" rel="noopener noreferrer"
-            class="flex items-center gap-2 text-sky-200 hover:text-white transition-colors text-sm font-medium">
-            𝕏 @chessiooxyz
-          </a>
-          <a href="https://t.me/Chessiocommunity" target="_blank" rel="noopener noreferrer"
-            class="flex items-center gap-2 text-sky-200 hover:text-white transition-colors text-sm font-medium">
-            ✈ Chessiocommunity
-          </a>
+          <a href="https://x.com/chessiooxyz" target="_blank" class="text-sky-200 hover:text-white text-sm font-medium">𝕏 @chessiooxyz</a>
+          <a href="https://t.me/Chessiocommunity" target="_blank" class="text-sky-200 hover:text-white text-sm font-medium">✈ Chessiocommunity</a>
         </div>
       </div>
       <div class="mt-6 pt-6 border-t border-sky-700 text-center text-sky-400 text-sm">
@@ -310,53 +215,90 @@
 </div><!-- /page-landing -->
 
 
-<!-- ==================== PLAY PAGE ==================== -->
+<!-- ============================================================ -->
+<!-- SHOP PAGE                                                     -->
+<!-- ============================================================ -->
+<div id="page-shop" class="page">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <button onclick="goto('landing')" class="text-sky-700 hover:text-sky-900 font-semibold text-sm">← Back</button>
+      <span class="text-lg font-black text-purple-700">🎨 Skin Shop</span>
+      <button id="ton-btn2" onclick="walletClick()">
+        <span>💎</span><span id="ton-lbl2">Connect Wallet</span>
+      </button>
+    </div>
+  </nav>
+  <div class="pt-20 pb-16 px-4 min-h-screen" style="background:linear-gradient(to bottom,#faf5ff,#f0f9ff)">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Wallet bar -->
+      <div class="glass rounded-2xl p-4 mb-8 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <p class="text-xs text-purple-500 uppercase tracking-widest font-semibold">TON Wallet</p>
+          <p id="shop-wallet-txt" class="text-sky-700 font-bold text-sm mt-0.5">Not connected — connect wallet to buy skins</p>
+        </div>
+        <button onclick="walletClick()" class="px-4 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7c3aed,#6366f1)" id="shop-connect-btn">Connect Wallet</button>
+      </div>
+
+      <!-- Board Skins -->
+      <div class="mb-3 flex items-center gap-3">
+        <h2 class="text-2xl font-black text-sky-700">Board Skins</h2>
+        <span class="text-xs bg-sky-100 text-sky-600 font-bold px-2 py-0.5 rounded-full">3 designs</span>
+      </div>
+      <p class="text-sky-500 text-sm mb-6">Customize your chessboard. 1 free, 2 premium.</p>
+      <div class="grid sm:grid-cols-3 gap-5 mb-12" id="board-skin-cards"></div>
+
+      <!-- Piece Skins -->
+      <div class="mb-3 flex items-center gap-3">
+        <h2 class="text-2xl font-black text-sky-700">Piece Skins</h2>
+        <span class="text-xs bg-purple-100 text-purple-600 font-bold px-2 py-0.5 rounded-full">3 styles</span>
+      </div>
+      <p class="text-sky-500 text-sm mb-6">Change the glow and color of your pieces. 1 free, 2 premium.</p>
+      <div class="grid sm:grid-cols-3 gap-5" id="piece-skin-cards"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- PLAY PAGE                                                     -->
+<!-- ============================================================ -->
 <div id="page-play" class="page">
   <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <button onclick="showLanding()"
-        class="flex items-center gap-2 text-sky-700 hover:text-sky-900 font-semibold text-sm">
-        ← Back to Chessio
-      </button>
+      <button onclick="goto('landing')" class="text-sky-700 hover:text-sky-900 font-semibold text-sm">← Back</button>
       <span class="text-lg font-black text-sky-700">♟ CHESS ARENA</span>
-      <div class="w-28"></div><!-- spacer -->
+      <button onclick="goto('shop')" class="text-purple-600 font-semibold text-sm hover:text-purple-800">🎨 Skins</button>
     </div>
   </nav>
-
   <div class="pt-20 pb-10 px-4 min-h-screen bg-gradient-to-b from-sky-100 to-blue-50">
 
-    <!-- Menu -->
-    <div id="play-menu" class="">
+    <!-- Mode Menu -->
+    <div id="play-menu">
       <div class="max-w-lg mx-auto mt-12 text-center">
         <div class="text-6xl mb-4">♛</div>
         <h1 class="text-4xl font-black text-sky-700 mb-2">Chess Arena</h1>
         <p class="text-sky-500 mb-8">Choose your battle mode</p>
         <div class="grid gap-4">
-          <!-- VS AI -->
+          <!-- vs AI -->
           <div class="glass rounded-2xl p-6 text-left">
             <h2 class="text-xl font-bold text-sky-700 mb-2">vs AI</h2>
-            <p class="text-sky-500 text-sm mb-4">Challenge the Chessio AI engine. Pick your difficulty level.</p>
-            <div class="flex gap-2 mb-4" id="diff-buttons">
-              <button onclick="setDiff('easy')" id="btn-easy"
-                class="flex-1 py-2 rounded-xl text-sm font-bold capitalize bg-sky-100 text-sky-600 hover:bg-sky-200">Easy</button>
-              <button onclick="setDiff('normal')" id="btn-normal"
-                class="flex-1 py-2 rounded-xl text-sm font-bold capitalize bg-sky-600 text-white shadow-md">Normal</button>
-              <button onclick="setDiff('hard')" id="btn-hard"
-                class="flex-1 py-2 rounded-xl text-sm font-bold capitalize bg-sky-100 text-sky-600 hover:bg-sky-200">Hard</button>
+            <p class="text-sky-500 text-sm mb-4">Challenge the Chessio minimax engine. Choose difficulty.</p>
+            <div class="flex gap-2 mb-4">
+              <button onclick="setDiff('easy')" id="btn-easy" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Easy</button>
+              <button onclick="setDiff('normal')" id="btn-normal" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-md">Normal</button>
+              <button onclick="setDiff('hard')" id="btn-hard" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Hard</button>
             </div>
-            <button onclick="startAI()"
-              class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">
-              Play vs AI
-            </button>
+            <button onclick="startAI()" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">Play vs AI</button>
           </div>
           <!-- PvP -->
           <div class="glass rounded-2xl p-6 text-left">
-            <h2 class="text-xl font-bold text-sky-700 mb-2">PvP Online</h2>
-            <p class="text-sky-500 text-sm mb-4">Create a room and share the code with a friend, or join an existing game.</p>
-            <button onclick="startPvP()"
-              class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">
-              Play PvP Online
-            </button>
+            <div class="flex items-center gap-2 mb-2">
+              <h2 class="text-xl font-bold text-sky-700">PvP Online</h2>
+              <span class="text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">⚡ WebRTC • No Server</span>
+            </div>
+            <p class="text-sky-500 text-sm mb-4">Direct P2P with a friend — no server, no lag!</p>
+            <button onclick="startPvP()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Play PvP Online</button>
           </div>
         </div>
       </div>
@@ -365,604 +307,760 @@
     <!-- AI Game -->
     <div id="play-ai" class="hidden max-w-5xl mx-auto mt-4">
       <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
-        <!-- Board -->
-        <div class="flex-shrink-0 w-full" style="max-width:480px; margin:0 auto;">
-          <div class="glass rounded-2xl p-4 shadow-xl">
+        <div class="flex-shrink-0 w-full" style="max-width:480px;margin:0 auto">
+          <div class="glass rounded-2xl p-3 shadow-xl">
             <div id="ai-board" class="chess-board"></div>
           </div>
         </div>
-        <!-- Sidebar -->
-        <div class="flex-1 min-w-0 space-y-4" style="min-width:230px">
-          <!-- Status -->
+        <div class="flex-1 space-y-4" style="min-width:230px">
           <div class="glass rounded-2xl p-4">
             <p class="text-xs uppercase tracking-widest text-sky-500 font-semibold mb-1">Status</p>
             <p id="ai-status" class="font-bold text-lg text-sky-700">Your turn (White)</p>
             <div id="ai-thinking" class="hidden mt-2 flex items-center gap-2 text-sky-500 text-sm">
-              <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full spin"></div>
-              AI thinking…
+              <div class="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full spin"></div>AI thinking…
             </div>
           </div>
-          <!-- Difficulty -->
           <div class="glass rounded-2xl p-4">
             <p class="text-xs uppercase tracking-widest text-sky-500 font-semibold mb-2">Difficulty</p>
-            <div class="flex gap-2" id="ai-diff-buttons">
-              <button onclick="changeAIDiff('easy')" id="ai-btn-easy"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Easy</button>
-              <button onclick="changeAIDiff('normal')" id="ai-btn-normal"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white">Normal</button>
-              <button onclick="changeAIDiff('hard')" id="ai-btn-hard"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Hard</button>
+            <div class="flex gap-2">
+              <button onclick="changeAIDiff('easy')" id="ai-btn-easy" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Easy</button>
+              <button onclick="changeAIDiff('normal')" id="ai-btn-normal" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white">Normal</button>
+              <button onclick="changeAIDiff('hard')" id="ai-btn-hard" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Hard</button>
             </div>
           </div>
-          <!-- Move History -->
           <div class="glass rounded-2xl p-4">
             <p class="text-xs uppercase tracking-widest text-sky-500 font-semibold mb-2">Move History</p>
-            <div id="ai-history" class="move-history space-y-1">
-              <p class="text-sky-400 text-sm">No moves yet</p>
+            <div id="ai-history" class="move-history space-y-1"><p class="text-sky-400 text-sm">No moves yet</p></div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="resetAI()" class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">New Game</button>
+            <button onclick="backToMenu()" class="flex-1 py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">Menu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PvP wrapper -->
+    <div id="play-pvp" class="hidden max-w-5xl mx-auto mt-4">
+
+      <!-- Lobby -->
+      <div id="pvp-lobby">
+        <div class="max-w-md mx-auto glass rounded-2xl p-8 text-center">
+          <div class="text-5xl mb-4">🌐</div>
+          <h2 class="text-2xl font-black text-sky-700 mb-2">PvP Online</h2>
+          <p class="text-sky-500 text-sm mb-6">Direct P2P via WebRTC — works without any server!</p>
+          <div class="space-y-3">
+            <button onclick="pvpCreate()" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">♟ Create Room</button>
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-sky-200"></div></div>
+              <div class="relative flex justify-center"><span class="bg-white/80 px-3 text-sky-400 text-xs">or join existing</span></div>
+            </div>
+            <div class="flex gap-2">
+              <input id="pvp-join-input" placeholder="6-letter code (e.g. ABC123)" maxlength="6" oninput="this.value=this.value.toUpperCase()"
+                class="flex-1 px-4 py-3 rounded-xl border border-sky-200 bg-white/70 text-sky-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 uppercase"/>
+              <button onclick="pvpJoin()" class="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Join</button>
+            </div>
+            <div id="pvp-err" class="hidden p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"></div>
+            <button onclick="backToMenu()" class="w-full py-2 text-sky-400 hover:text-sky-600 text-sm">← Back to Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waiting for opponent -->
+      <div id="pvp-waiting" class="hidden">
+        <div class="max-w-md mx-auto glass rounded-2xl p-8 text-center">
+          <div class="text-5xl mb-4 animate-bounce">⏳</div>
+          <h2 class="text-2xl font-black text-sky-700 mb-2">Waiting for Opponent</h2>
+          <p class="text-sky-500 mb-5 text-sm">Share this room code with your friend:</p>
+          <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl py-5 px-8 mb-4">
+            <p id="pvp-code-display" class="text-4xl font-black font-mono text-sky-700 tracking-widest"></p>
+          </div>
+          <button onclick="copyCode()" class="px-6 py-2 bg-sky-100 hover:bg-sky-200 text-sky-700 font-semibold rounded-xl text-sm mb-4">📋 Copy Code</button>
+          <div id="pvp-wait-status" class="text-sky-500 text-sm flex items-center justify-center gap-2 mt-2">
+            <div class="w-3 h-3 border-2 border-sky-400 border-t-transparent rounded-full spin"></div>
+            Setting up WebRTC connection…
+          </div>
+          <button onclick="pvpReset()" class="mt-5 text-sky-400 hover:text-sky-600 text-sm underline block mx-auto">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Active game -->
+      <div id="pvp-game" class="hidden">
+        <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
+          <div class="flex-shrink-0 w-full" style="max-width:480px;margin:0 auto">
+            <div class="glass rounded-2xl p-3 shadow-xl">
+              <div id="pvp-board" class="chess-board"></div>
             </div>
           </div>
-          <!-- Actions -->
-          <div class="flex gap-3">
-            <button onclick="resetAI()" class="flex-1 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">
-              New Game
-            </button>
-            <button onclick="backToMenu()" class="flex-1 py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">
-              Menu
-            </button>
+          <div class="flex-1 space-y-4" style="min-width:230px">
+            <div class="glass rounded-2xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="dot dot-green"></span>
+                <p class="text-xs uppercase tracking-widest text-sky-500 font-semibold">Connected via WebRTC</p>
+              </div>
+              <p id="pvp-status" class="font-bold text-lg text-sky-700">—</p>
+              <div class="mt-2 flex gap-2 flex-wrap text-xs font-semibold">
+                <span id="pvp-color-badge" class="px-2 py-1 bg-sky-100 text-sky-600 rounded-lg"></span>
+                <span id="pvp-room-badge" class="px-2 py-1 bg-blue-50 text-blue-500 rounded-lg"></span>
+              </div>
+            </div>
+            <div class="glass rounded-2xl p-4">
+              <p class="text-xs uppercase tracking-widest text-sky-500 font-semibold mb-2">Move History</p>
+              <div id="pvp-history" class="move-history space-y-1"><p class="text-sky-400 text-sm">No moves yet</p></div>
+            </div>
+            <button onclick="pvpReset()" id="pvp-leave-btn" class="w-full py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">Leave Game</button>
           </div>
         </div>
       </div>
-    </div><!-- /play-ai -->
 
-    <!-- PvP -->
-    <div id="play-pvp" class="hidden max-w-md mx-auto mt-12">
-      <div class="glass rounded-2xl p-8 text-center">
-        <div class="text-5xl mb-4">🌐</div>
-        <h2 class="text-2xl font-black text-sky-700 mb-4">PvP Online</h2>
-        <div class="bg-sky-50 border border-sky-200 rounded-xl p-4 mb-6 text-left">
-          <p class="text-sky-700 text-sm font-semibold mb-1">ℹ️ How PvP works</p>
-          <p class="text-sky-600 text-sm">PvP requires the Chessio server to be running. Create a room, share the code with your friend, and play in real time!</p>
-        </div>
-        <div class="space-y-3">
-          <button onclick="pvpCreate()"
-            class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl">
-            Create New Room
-          </button>
-          <div class="flex gap-2">
-            <input id="pvp-code-input" placeholder="Room code (e.g. ABC123)" maxlength="6"
-              class="flex-1 px-4 py-3 rounded-xl border border-sky-200 bg-white/70 text-sky-700 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
-              oninput="this.value=this.value.toUpperCase()" />
-            <button onclick="pvpJoin()"
-              class="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">
-              Join
-            </button>
-          </div>
-          <div id="pvp-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"></div>
-          <div id="pvp-status" class="hidden p-3 bg-sky-50 border border-sky-200 rounded-xl text-sky-700 text-sm font-medium"></div>
-          <button onclick="backToMenu()" class="w-full py-2 text-sky-500 hover:text-sky-700 text-sm font-medium">
-            Back to Menu
-          </button>
-        </div>
-      </div>
     </div><!-- /play-pvp -->
-
   </div>
 </div><!-- /page-play -->
 
 
-<!-- ==================== JAVASCRIPT ==================== -->
+<!-- ============================================================ -->
+<!-- BUY MODAL                                                     -->
+<!-- ============================================================ -->
+<div id="modal-buy" class="modal-bg hidden">
+  <div class="modal-box">
+    <h3 class="text-xl font-black text-sky-700 mb-1" id="buy-title">Buy Skin</h3>
+    <p class="text-sky-500 text-sm mb-5" id="buy-desc">Unlock this skin with TON</p>
+    <div class="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-5 mb-5 text-center">
+      <p class="text-4xl font-black text-sky-700" id="buy-price">0.1 TON</p>
+      <p class="text-sky-400 text-xs mt-1">Sent to Chessio treasury on TON blockchain</p>
+    </div>
+    <div id="buy-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"></div>
+    <div id="buy-success" class="hidden mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm font-semibold">✅ Skin unlocked successfully!</div>
+    <div class="flex gap-3">
+      <button onclick="confirmBuy()" id="buy-btn" class="flex-1 py-3 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2">
+        <span>💎</span><span>Buy with TON</span>
+      </button>
+      <button onclick="closeBuyModal()" class="flex-1 py-3 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- WALLET MODAL                                                  -->
+<!-- ============================================================ -->
+<div id="modal-wallet" class="modal-bg hidden">
+  <div class="modal-box">
+    <button onclick="closeWalletModal()" class="absolute top-4 right-4 text-sky-300 hover:text-sky-600 text-2xl font-bold leading-none">×</button>
+    <div class="text-center mb-6">
+      <div class="text-4xl mb-2">💎</div>
+      <h3 class="text-xl font-black text-sky-700">Connect TON Wallet</h3>
+      <p class="text-sky-500 text-sm mt-1">Choose your wallet to continue</p>
+    </div>
+    <div class="space-y-3">
+      <button onclick="doWalletConnect('tonkeeper')" class="w-full py-3.5 px-4 flex items-center gap-4 glass rounded-xl hover:bg-sky-50/80 transition-all text-left">
+        <img src="https://tonkeeper.com/assets/tonconnect-icon.png" class="w-10 h-10 rounded-xl" onerror="this.style.display='none'" alt=""/>
+        <div><p class="font-bold text-sky-700">Tonkeeper</p><p class="text-sky-400 text-xs">Most popular TON wallet</p></div>
+        <span class="ml-auto text-sky-300 text-lg">→</span>
+      </button>
+      <button onclick="doWalletConnect('mytonwallet')" class="w-full py-3.5 px-4 flex items-center gap-4 glass rounded-xl hover:bg-sky-50/80 transition-all text-left">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-lg flex-shrink-0">M</div>
+        <div><p class="font-bold text-sky-700">MyTonWallet</p><p class="text-sky-400 text-xs">Feature-rich TON wallet</p></div>
+        <span class="ml-auto text-sky-300 text-lg">→</span>
+      </button>
+      <button onclick="doWalletConnect('tonhub')" class="w-full py-3.5 px-4 flex items-center gap-4 glass rounded-xl hover:bg-sky-50/80 transition-all text-left">
+        <div class="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white font-black text-lg flex-shrink-0">H</div>
+        <div><p class="font-bold text-sky-700">Tonhub</p><p class="text-sky-400 text-xs">Secure web & mobile wallet</p></div>
+        <span class="ml-auto text-sky-300 text-lg">→</span>
+      </button>
+    </div>
+    <p class="text-center text-sky-300 text-xs mt-6">Powered by TON Connect 2.0</p>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT                                                    -->
+<!-- ============================================================ -->
 <script>
-// ===== PARTICLES =====
-(function() {
-  const canvas = document.getElementById('particle-canvas');
-  const ctx = canvas.getContext('2d');
-  const PIECES = ['♟','♞','♝','♜','♛','♚','♙','♘','♗','♖','♕','♔'];
-  let particles = [];
-  let W, H;
+'use strict';
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-
-  function createParticle() {
-    return {
-      x: rand(0, W),
-      y: rand(-50, H + 50),
-      vx: rand(-0.3, 0.3),
-      vy: rand(0.15, 0.55),
-      size: rand(14, 32),
-      opacity: rand(0.05, 0.18),
-      piece: PIECES[Math.floor(Math.random() * PIECES.length)],
-      rotation: rand(0, Math.PI * 2),
-      rotSpeed: rand(-0.005, 0.005),
-      color: Math.random() > 0.5 ? '#0ea5e9' : '#7dd3fc',
-    };
-  }
-
-  for (let i = 0; i < 45; i++) particles.push(createParticle());
-
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-    for (let p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rotation += p.rotSpeed;
-      // Wrap
-      if (p.y > H + 60) { p.y = -60; p.x = rand(0, W); }
-      if (p.x < -60) p.x = W + 60;
-      if (p.x > W + 60) p.x = -60;
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      ctx.globalAlpha = p.opacity;
-      ctx.font = `${p.size}px serif`;
-      ctx.fillStyle = p.color;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(p.piece, 0, 0);
-      ctx.restore();
-    }
-    requestAnimationFrame(frame);
-  }
-  frame();
+// ────────────────────────────────────────────────────────────
+// PARTICLES
+// ────────────────────────────────────────────────────────────
+(function(){
+  const cv=document.getElementById('particle-canvas'),cx=cv.getContext('2d');
+  const PS=['♟','♞','♝','♜','♛','♚','♙','♘','♗','♖','♕','♔'];
+  let pp=[],W,H;
+  const rsz=()=>{W=cv.width=innerWidth;H=cv.height=innerHeight;};
+  addEventListener('resize',rsz);rsz();
+  const rnd=(a,b)=>Math.random()*(b-a)+a;
+  const mk=()=>({x:rnd(0,W),y:rnd(-60,H+60),vx:rnd(-.3,.3),vy:rnd(.1,.5),sz:rnd(13,30),op:rnd(.04,.15),p:PS[0|Math.random()*PS.length],r:rnd(0,6.28),rs:rnd(-.005,.005),c:Math.random()>.5?'#0ea5e9':'#7dd3fc'});
+  for(let i=0;i<48;i++)pp.push(mk());
+  (function fr(){
+    cx.clearRect(0,0,W,H);
+    pp.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;
+      if(p.y>H+60){p.y=-60;p.x=rnd(0,W);}
+      if(p.x<-60)p.x=W+60;if(p.x>W+60)p.x=-60;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);
+      cx.globalAlpha=p.op;cx.font=p.sz+'px serif';
+      cx.fillStyle=p.c;cx.textAlign='center';cx.textBaseline='middle';
+      cx.fillText(p.p,0,0);cx.restore();
+    });
+    requestAnimationFrame(fr);
+  })();
 })();
 
-// ===== PAGE NAVIGATION =====
-function showPlay(e) {
-  if (e) e.preventDefault();
-  document.getElementById('page-landing').classList.remove('active');
-  document.getElementById('page-play').classList.add('active');
-  window.scrollTo(0, 0);
-}
-function showLanding() {
-  document.getElementById('page-play').classList.remove('active');
-  document.getElementById('page-landing').classList.add('active');
-  window.scrollTo(0, 0);
-  cleanupAI();
+// ────────────────────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────────────────────
+function goto(pg,e){
+  if(e)e.preventDefault();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pg).classList.add('active');
+  scrollTo(0,0);
+  if(pg==='shop')renderShop();
 }
 
-// ===== SCROLL REVEAL =====
-(function() {
-  const els = document.querySelectorAll('.reveal');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.12 });
-  els.forEach(el => obs.observe(el));
+// ────────────────────────────────────────────────────────────
+// SCROLL REVEAL
+// ────────────────────────────────────────────────────────────
+(function(){
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 })();
 
-// ===== TOKENOMICS =====
-(function() {
-  const data = [
-    { label: 'Liquidity Pool',     pct: 40, color: '#38bdf8' },
-    { label: 'Community Rewards',  pct: 25, color: '#3b82f6' },
-    { label: 'Team & Development', pct: 15, color: '#22d3ee' },
-    { label: 'Marketing',          pct: 12, color: '#818cf8' },
-    { label: 'Reserve',            pct: 8,  color: '#0284c7' },
-  ];
-  const container = document.getElementById('tok-bars');
-  data.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'reveal';
-    div.style.transitionDelay = (i * 0.08) + 's';
-    div.innerHTML = `
-      <div class="flex justify-between text-sm font-semibold text-sky-700 mb-1">
-        <span>${item.label}</span><span>${item.pct}%</span>
-      </div>
-      <div class="tok-bar">
-        <div class="tok-fill" data-w="${item.pct}%" style="background:${item.color}"></div>
-      </div>`;
-    container.appendChild(div);
+// ────────────────────────────────────────────────────────────
+// TOKENOMICS
+// ────────────────────────────────────────────────────────────
+(function(){
+  const data=[{l:'Liquidity Pool',p:40,c:'#38bdf8'},{l:'Community Rewards',p:25,c:'#3b82f6'},{l:'Team & Dev',p:15,c:'#22d3ee'},{l:'Marketing',p:12,c:'#818cf8'},{l:'Reserve',p:8,c:'#0284c7'}];
+  const cnt=document.getElementById('tok-bars');
+  data.forEach((d,i)=>{
+    const el=document.createElement('div');el.className='reveal';el.style.transitionDelay=i*.08+'s';
+    el.innerHTML=`<div class="flex justify-between text-sm font-semibold text-sky-700 mb-1"><span>${d.l}</span><span>${d.p}%</span></div><div class="tok-bar"><div class="tok-fill" data-w="${d.p}%" style="background:${d.c}"></div></div>`;
+    cnt.appendChild(el);
   });
-
-  // Animate bars when visible
-  const bars = document.querySelectorAll('.tok-fill');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.width = e.target.dataset.w;
-        obs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.2 });
-  bars.forEach(b => obs.observe(b));
-
-  // Also trigger reveals
-  setTimeout(() => {
-    document.querySelectorAll('#tok-bars .reveal').forEach(el => {
-      const obs2 = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs2.unobserve(e.target); } });
-      }, { threshold: 0.12 });
-      obs2.observe(el);
-    });
-  }, 100);
+  const o1=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w;o1.unobserve(e.target);}}),{threshold:.2});
+  document.querySelectorAll('.tok-fill').forEach(b=>o1.observe(b));
+  const o2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');o2.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('#tok-bars .reveal').forEach(el=>o2.observe(el));
 })();
 
-// ===== ROADMAP =====
-(function() {
-  const items = [
-    { phase: 'Phase 1', title: 'Launch & Community', done: true,
-      items: ['Token launch on Groypfi.io', 'Community building', 'Social media presence'] },
-    { phase: 'Phase 2', title: 'Growth', done: false,
-      items: ['CEX listings', 'Partnership announcements', 'Chess tournament with $CHESS prizes'] },
-    { phase: 'Phase 3', title: 'Expansion', done: false,
-      items: ['In-game NFT integration', 'Staking mechanism', 'Cross-chain bridge'] },
+// ────────────────────────────────────────────────────────────
+// ROADMAP
+// ────────────────────────────────────────────────────────────
+(function(){
+  const items=[
+    {phase:'Phase 1',title:'Launch & Community',done:true,items:['Token launch on Groypfi.io','Community building','Social media presence']},
+    {phase:'Phase 2',title:'Growth',done:false,items:['CEX listings','Partnership announcements','Chess tournament with $CHESS prizes']},
+    {phase:'Phase 3',title:'Expansion',done:false,items:['In-game NFT integration','Staking mechanism','Cross-chain bridge']},
   ];
-  const container = document.getElementById('roadmap-items');
-  items.forEach((item, i) => {
-    const div = document.createElement('div');
-    div.className = 'reveal md:ml-16 glass rounded-2xl p-6 relative';
-    div.style.transitionDelay = (i * 0.1) + 's';
-    const dotColor = item.done ? '#0ea5e9' : '#f0f9ff';
-    const dotBorder = item.done ? '#0ea5e9' : '#bae6fd';
-    const dotCheck = item.done ? `<span class="text-white text-xs">✓</span>` : '';
-    const badge = item.done ? `<span class="text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-600">Completed</span>` : '';
-    div.innerHTML = `
-      <div class="hidden md:flex absolute items-center justify-center w-6 h-6 rounded-full border-2"
-        style="border-color:${dotBorder};background:${dotColor};left:-40px;top:24px">${dotCheck}</div>
-      <div class="flex items-center gap-3 mb-3 flex-wrap">
-        <span class="text-xs font-bold px-3 py-1 rounded-full bg-sky-100 text-sky-600">${item.phase}</span>
-        <h3 class="text-lg font-bold text-sky-700">${item.title}</h3>
-        ${badge}
-      </div>
-      <ul class="space-y-1">
-        ${item.items.map(it => `<li class="text-sky-600 text-sm flex items-center gap-2"><span class="text-sky-400">▸</span>${it}</li>`).join('')}
-      </ul>`;
-    container.appendChild(div);
-    setTimeout(() => {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-      }, { threshold: 0.12 });
-      obs.observe(div);
-    }, 100);
+  const cnt=document.getElementById('roadmap-items');
+  items.forEach((item,i)=>{
+    const d=document.createElement('div');
+    d.className='reveal md:ml-16 glass rounded-2xl p-6 relative';d.style.transitionDelay=i*.1+'s';
+    d.innerHTML=`<div class="hidden md:flex absolute items-center justify-center w-6 h-6 rounded-full border-2" style="border-color:${item.done?'#0ea5e9':'#bae6fd'};background:${item.done?'#0ea5e9':'#f0f9ff'};left:-40px;top:24px">${item.done?'<span class="text-white text-xs">✓</span>':''}</div>
+    <div class="flex items-center gap-3 mb-3 flex-wrap"><span class="text-xs font-bold px-3 py-1 rounded-full bg-sky-100 text-sky-600">${item.phase}</span><h3 class="text-lg font-bold text-sky-700">${item.title}</h3>${item.done?'<span class="text-xs font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-600">Completed</span>':''}</div>
+    <ul class="space-y-1">${item.items.map(it=>`<li class="text-sky-600 text-sm flex items-center gap-2"><span class="text-sky-400">▸</span>${it}</li>`).join('')}</ul>`;
+    cnt.appendChild(d);
+    const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.12});
+    obs.observe(d);
   });
 })();
 
-// ===== CHESS AI ENGINE =====
-const pieceValues = { p:100, n:320, b:330, r:500, q:900, k:20000 };
-const pawnTable = [
-   0,  0,  0,  0,  0,  0,  0,  0,
-  50, 50, 50, 50, 50, 50, 50, 50,
-  10, 10, 20, 30, 30, 20, 10, 10,
-   5,  5, 10, 25, 25, 10,  5,  5,
-   0,  0,  0, 20, 20,  0,  0,  0,
-   5, -5,-10,  0,  0,-10, -5,  5,
-   5, 10, 10,-20,-20, 10, 10,  5,
-   0,  0,  0,  0,  0,  0,  0,  0,
-];
-const knightTable = [
-  -50,-40,-30,-30,-30,-30,-40,-50,
-  -40,-20,  0,  0,  0,  0,-20,-40,
-  -30,  0, 10, 15, 15, 10,  0,-30,
-  -30,  5, 15, 20, 20, 15,  5,-30,
-  -30,  0, 15, 20, 20, 15,  0,-30,
-  -30,  5, 10, 15, 15, 10,  5,-30,
-  -40,-20,  0,  5,  5,  0,-20,-40,
-  -50,-40,-30,-30,-30,-30,-40,-50,
-];
-
-function evaluateBoard(game) {
-  let score = 0;
-  const board = game.board();
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const piece = board[r][c];
-      if (!piece) continue;
-      const val = pieceValues[piece.type] || 0;
-      const idx = piece.color === 'w' ? (7 - r) * 8 + c : r * 8 + c;
-      let bonus = 0;
-      if (piece.type === 'p') bonus = pawnTable[idx] || 0;
-      if (piece.type === 'n') bonus = knightTable[idx] || 0;
-      const total = val + bonus;
-      score += piece.color === 'b' ? total : -total;
-    }
-  }
-  return score;
-}
-
-function minimax(game, depth, alpha, beta, maximizing) {
-  if (depth === 0 || game.game_over()) return evaluateBoard(game);
-  const moves = game.moves();
-  if (maximizing) {
-    let max = -Infinity;
-    for (const move of moves) {
-      game.move(move);
-      const val = minimax(game, depth - 1, alpha, beta, false);
-      game.undo();
-      max = Math.max(max, val);
-      alpha = Math.max(alpha, val);
-      if (beta <= alpha) break;
-    }
-    return max;
-  } else {
-    let min = Infinity;
-    for (const move of moves) {
-      game.move(move);
-      const val = minimax(game, depth - 1, alpha, beta, true);
-      game.undo();
-      min = Math.min(min, val);
-      beta = Math.min(beta, val);
-      if (beta <= alpha) break;
-    }
-    return min;
-  }
-}
-
-function getBestMove(game, difficulty) {
-  const moves = game.moves();
-  if (!moves.length) return null;
-  if (difficulty === 'easy') return moves[Math.floor(Math.random() * moves.length)];
-  const depth = difficulty === 'normal' ? 2 : 4;
-  let bestMove = null, bestVal = -Infinity;
-  for (const move of moves) {
-    game.move(move);
-    const val = minimax(game, depth - 1, -Infinity, Infinity, false);
-    game.undo();
-    if (val > bestVal) { bestVal = val; bestMove = move; }
-  }
-  return bestMove;
-}
-
-// ===== CHESS BOARD RENDERER =====
-const PIECE_UNICODE = {
-  wk:'♔', wq:'♕', wr:'♖', wb:'♗', wn:'♘', wp:'♙',
-  bk:'♚', bq:'♛', br:'♜', bb:'♝', bn:'♞', bp:'♟',
+// ────────────────────────────────────────────────────────────
+// SKIN SYSTEM
+// ────────────────────────────────────────────────────────────
+const BOARD_SKINS={
+  classic:{id:'classic',name:'Classic Blue',desc:'Signature sky-blue Chessio board',free:true,price:0,
+           light:'#e0f2fe',dark:'#0284c7'},
+  dark:   {id:'dark',name:'Dark Knight',desc:'Dramatic midnight steel battlefield',free:false,price:.1,
+           light:'#374151',dark:'#111827'},
+  emerald:{id:'emerald',name:'Emerald Forest',desc:'Classic green felt like a grandmaster',free:false,price:.1,
+           light:'#d1fae5',dark:'#065f46'},
 };
-const FILES = ['a','b','c','d','e','f','g','h'];
-const RANKS = [8,7,6,5,4,3,2,1];
+const PIECE_SKINS={
+  standard:{id:'standard',name:'Standard',desc:'Classic white & black pieces',free:true,price:0,
+            wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.8)',bsh:'0 0 3px rgba(255,255,255,.3)'},
+  gold:    {id:'gold',name:'Golden Royal',desc:'Shimmering gold & bronze glow',free:false,price:.1,
+            wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,.9),0 0 18px rgba(251,191,36,.4)',bsh:'0 0 8px rgba(146,64,14,.7)'},
+  neon:    {id:'neon',name:'Neon Cyber',desc:'Cyan & magenta electric glow',free:false,price:.1,
+            wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 10px #22d3ee,0 0 22px rgba(34,211,238,.5)',bsh:'0 0 10px #d946ef,0 0 22px rgba(217,70,239,.5)'},
+};
 
-function squareName(col, row) { return FILES[col] + RANKS[row]; }
+let owned=JSON.parse(localStorage.getItem('chessio_owned')||'{"b":["classic"],"p":["standard"]}');
+let eqBoard=localStorage.getItem('chessio_board')||'classic';
+let eqPiece=localStorage.getItem('chessio_piece')||'standard';
+let pendingBuy=null;
 
-function renderBoard(boardEl, game, selectedSq, possibleSqs, onSquareClick) {
-  boardEl.innerHTML = '';
-  const board = game.board();
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const sq = squareName(c, r);
-      const isLight = (r + c) % 2 === 0;
-      const cell = document.createElement('div');
-      cell.className = 'chess-square ' + (isLight ? 'light' : 'dark');
-      if (sq === selectedSq) cell.classList.add('selected');
-      if (possibleSqs && possibleSqs.includes(sq)) cell.classList.add('possible');
-      cell.onclick = () => onSquareClick(sq);
+function saveOwned(){localStorage.setItem('chessio_owned',JSON.stringify(owned));}
+function boardOwned(id){return owned.b.includes(id);}
+function pieceOwned(id){return owned.p.includes(id);}
 
-      // Coords
-      if (c === 0) {
-        const rank = document.createElement('span');
-        rank.className = 'coord-label coord-rank';
-        rank.style.color = isLight ? '#0284c7' : '#e0f2fe';
-        rank.textContent = RANKS[r];
-        cell.appendChild(rank);
+function equipBoard(id){eqBoard=id;localStorage.setItem('chessio_board',id);renderShop();renderAIBoard();renderPvPBoard();}
+function equipPiece(id){eqPiece=id;localStorage.setItem('chessio_piece',id);renderShop();renderAIBoard();renderPvPBoard();}
+
+function applySqColor(cell,isLight){
+  cell.style.background=isLight?BOARD_SKINS[eqBoard].light:BOARD_SKINS[eqBoard].dark;
+}
+function applyPieceStyle(span,isWhite){
+  const sk=PIECE_SKINS[eqPiece];
+  span.style.color=isWhite?sk.wp:sk.bp;
+  span.style.textShadow=isWhite?sk.wsh:sk.bsh;
+}
+
+function renderShop(){
+  renderBoardCards();
+  renderPieceCards();
+}
+
+function boardPreview(skin){
+  const cols=[skin.light,skin.dark,skin.dark,skin.light];
+  return `<div class="preview-grid mb-3">${cols.map(c=>`<div style="background:${c};width:22px;height:22px;border-radius:4px"></div>`).join('')}${cols.slice().reverse().map(c=>`<div style="background:${c};width:22px;height:22px;border-radius:4px"></div>`).join('')}</div>`;
+}
+
+function renderBoardCards(){
+  const cnt=document.getElementById('board-skin-cards');
+  if(!cnt)return;
+  cnt.innerHTML='';
+  Object.values(BOARD_SKINS).forEach(sk=>{
+    const own=boardOwned(sk.id),eq=eqBoard===sk.id;
+    const d=document.createElement('div');
+    d.className='skin-card glass rounded-2xl p-5'+(own?' owned':'')+(eq?' equipped':'');
+    d.innerHTML=`${boardPreview(sk)}
+      <h3 class="font-bold text-sky-700 text-center text-base">${sk.name}</h3>
+      <p class="text-sky-400 text-xs text-center mt-1 mb-4">${sk.desc}</p>
+      ${eq
+        ?`<div class="py-2 bg-sky-100 text-sky-700 font-bold text-center rounded-xl text-sm">✓ Equipped</div>`
+        :own
+          ?`<button onclick="equipBoard('${sk.id}')" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm">Equip</button>`
+          :`<button onclick="openBuy('board','${sk.id}')" class="w-full py-2 text-white font-bold rounded-xl text-sm" style="background:linear-gradient(135deg,#0ea5e9,#3b82f6)">💎 ${sk.price} TON</button>`}`;
+    cnt.appendChild(d);
+  });
+}
+
+function renderPieceCards(){
+  const cnt=document.getElementById('piece-skin-cards');
+  if(!cnt)return;
+  cnt.innerHTML='';
+  Object.values(PIECE_SKINS).forEach(sk=>{
+    const own=pieceOwned(sk.id),eq=eqPiece===sk.id;
+    const d=document.createElement('div');
+    d.className='skin-card glass rounded-2xl p-5'+(own?' owned':'')+(eq?' equipped':'');
+    d.innerHTML=`<div class="flex justify-center gap-4 mb-3">
+        <span class="piece-preview" style="color:${sk.wp};text-shadow:${sk.wsh}">♕</span>
+        <span class="piece-preview" style="color:${sk.bp};text-shadow:${sk.bsh}">♛</span>
+      </div>
+      <h3 class="font-bold text-sky-700 text-center text-base">${sk.name}</h3>
+      <p class="text-sky-400 text-xs text-center mt-1 mb-4">${sk.desc}</p>
+      ${eq
+        ?`<div class="py-2 bg-sky-100 text-sky-700 font-bold text-center rounded-xl text-sm">✓ Equipped</div>`
+        :own
+          ?`<button onclick="equipPiece('${sk.id}')" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm">Equip</button>`
+          :`<button onclick="openBuy('piece','${sk.id}')" class="w-full py-2 text-white font-bold rounded-xl text-sm" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">💎 ${sk.price} TON</button>`}`;
+    cnt.appendChild(d);
+  });
+}
+
+function openBuy(type,id){
+  if(!walletAddr){pendingBuy={type,id};showWalletModal();return;}
+  const sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];
+  pendingBuy={type,id};
+  document.getElementById('buy-title').textContent='Buy '+sk.name;
+  document.getElementById('buy-desc').textContent=sk.desc;
+  document.getElementById('buy-price').textContent=sk.price+' TON';
+  document.getElementById('buy-error').classList.add('hidden');
+  document.getElementById('buy-success').classList.add('hidden');
+  const btn=document.getElementById('buy-btn');
+  btn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+  document.getElementById('modal-buy').classList.remove('hidden');
+}
+function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
+
+async function confirmBuy(){
+  if(!pendingBuy)return;
+  const {type,id}=pendingBuy;
+  const sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];
+  const errEl=document.getElementById('buy-error');
+  const sucEl=document.getElementById('buy-success');
+  const btn=document.getElementById('buy-btn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2"></div>Processing…';
+  errEl.classList.add('hidden');sucEl.classList.add('hidden');
+
+  const unlockSkin=()=>{
+    if(type==='board'){if(!owned.b.includes(id))owned.b.push(id);}
+    else{if(!owned.p.includes(id))owned.p.push(id);}
+    saveOwned();
+  };
+
+  try{
+    if(tonUI){
+      await tonUI.sendTransaction({
+        validUntil:Math.floor(Date.now()/1000)+600,
+        messages:[{
+          address:'UQBvW8l5AYe9tYuzfve_ymWIQzo_eU2boMkRvnWFMNSHSChr',
+          amount:String(Math.round(sk.price*1e9)),
+        }]
+      });
+    }
+    unlockSkin();
+    sucEl.textContent='✅ Purchase complete! '+sk.name+' unlocked.';
+    sucEl.classList.remove('hidden');
+    btn.innerHTML='✅ Done!';
+    setTimeout(()=>{closeBuyModal();renderShop();},1600);
+  }catch(err){
+    if(err&&err.message&&err.message.toLowerCase().includes('reject')){
+      errEl.textContent='Transaction cancelled.';
+      errEl.classList.remove('hidden');
+    }else{
+      // Demo / offline mode — unlock anyway
+      unlockSkin();
+      sucEl.textContent='✅ Skin unlocked in demo mode! (Real TON tx needs hosted deployment)';
+      sucEl.classList.remove('hidden');
+      btn.innerHTML='✅ Done!';
+      setTimeout(()=>{closeBuyModal();renderShop();},2000);
+      return;
+    }
+    btn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+// TON WALLET
+// ────────────────────────────────────────────────────────────
+let walletAddr=null;
+let tonUI=null;
+
+function initTonConnect(){
+  try{
+    tonUI=new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl:'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
+    });
+    tonUI.onStatusChange(wallet=>{
+      if(wallet){
+        walletAddr=wallet.account.address;
+        syncWalletUI(walletAddr);
+        if(pendingBuy){const pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
+      }else{
+        walletAddr=null;
+        syncWalletUI(null);
       }
-      if (r === 7) {
-        const file = document.createElement('span');
-        file.className = 'coord-label coord-file';
-        file.style.color = isLight ? '#0284c7' : '#e0f2fe';
-        file.textContent = FILES[c];
-        cell.appendChild(file);
-      }
+    });
+  }catch(e){console.warn('TON Connect:',e);}
+}
 
-      const piece = board[r][c];
-      if (piece) {
-        const span = document.createElement('span');
-        span.className = 'chess-piece';
-        const key = piece.color + piece.type;
-        span.textContent = PIECE_UNICODE[key] || '';
-        // Color contrast
-        span.style.color = piece.color === 'w' ? '#ffffff' : '#0f172a';
-        span.style.textShadow = piece.color === 'w'
-          ? '0 0 3px rgba(0,0,0,0.8), 0 1px 1px rgba(0,0,0,0.6)'
-          : '0 0 3px rgba(255,255,255,0.3)';
-        cell.appendChild(span);
-      }
-      boardEl.appendChild(cell);
+function syncWalletUI(addr){
+  const short=addr?(addr.slice(0,6)+'…'+addr.slice(-4)):null;
+  const lbl=short||'Connect Wallet';
+  ['ton-lbl','ton-lbl2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=lbl;});
+  const sw=document.getElementById('shop-wallet-txt');
+  if(sw)sw.textContent=addr?('Connected: '+short):'Not connected — connect wallet to buy skins';
+  const scb=document.getElementById('shop-connect-btn');
+  if(scb)scb.textContent=addr?'Disconnect':'Connect Wallet';
+}
+
+function walletClick(){
+  if(walletAddr){if(tonUI)tonUI.disconnect();return;}
+  showWalletModal();
+}
+function showWalletModal(){document.getElementById('modal-wallet').classList.remove('hidden');}
+function closeWalletModal(){document.getElementById('modal-wallet').classList.add('hidden');}
+
+function doWalletConnect(type){
+  closeWalletModal();
+  if(tonUI){tonUI.openModal();return;}
+  // Fallback deep-links
+  const links={
+    tonkeeper:'https://app.tonkeeper.com/',
+    mytonwallet:'https://mytonwallet.io/',
+    tonhub:'https://tonhub.com/',
+  };
+  window.open(links[type]||links.tonkeeper,'_blank');
+}
+
+// ────────────────────────────────────────────────────────────
+// CHESS AI ENGINE (Minimax + α-β pruning)
+// ────────────────────────────────────────────────────────────
+const PV={p:100,n:320,b:330,r:500,q:900,k:20000};
+const PT=[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0];
+const KT=[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50];
+
+function evalBoard(g){
+  let s=0;const b=g.board();
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const p=b[r][c];if(!p)continue;
+    const v=PV[p.type]||0,idx=p.color==='w'?(7-r)*8+c:r*8+c;
+    let bn=0;if(p.type==='p')bn=PT[idx]||0;if(p.type==='n')bn=KT[idx]||0;
+    s+=p.color==='b'?(v+bn):-(v+bn);
+  }
+  return s;
+}
+function mm(g,d,a,b,max){
+  if(d===0||g.game_over())return evalBoard(g);
+  const ms=g.moves();
+  if(max){
+    let m=-Infinity;
+    for(const mv of ms){g.move(mv);const v=mm(g,d-1,a,b,false);g.undo();m=Math.max(m,v);a=Math.max(a,v);if(b<=a)break;}
+    return m;
+  }else{
+    let m=Infinity;
+    for(const mv of ms){g.move(mv);const v=mm(g,d-1,a,b,true);g.undo();m=Math.min(m,v);b=Math.min(b,v);if(b<=a)break;}
+    return m;
+  }
+}
+function bestMove(g,diff){
+  const ms=g.moves();if(!ms.length)return null;
+  if(diff==='easy')return ms[0|Math.random()*ms.length];
+  const d=diff==='normal'?2:4;let best=null,bv=-Infinity;
+  for(const mv of ms){g.move(mv);const v=mm(g,d-1,-Infinity,Infinity,false);g.undo();if(v>bv){bv=v;best=mv;}}
+  return best;
+}
+
+// ────────────────────────────────────────────────────────────
+// BOARD RENDERER
+// ────────────────────────────────────────────────────────────
+const PU={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
+const FL=['a','b','c','d','e','f','g','h'];
+const RK=[8,7,6,5,4,3,2,1];
+const sqN=(c,r)=>FL[c]+RK[r];
+
+function drawBoard(el,game,selSq,posSqs,cb,flip){
+  el.innerHTML='';
+  const bd=game.board();
+  for(let r=0;r<8;r++){
+    for(let c=0;c<8;c++){
+      const dr=flip?7-r:r,dc=flip?7-c:c;
+      const sq=sqN(dc,dr),lt=(dr+dc)%2===0;
+      const cell=document.createElement('div');
+      cell.className='chess-square';
+      applySqColor(cell,lt);
+      if(sq===selSq)cell.classList.add('selected');
+      if(posSqs&&posSqs.includes(sq))cell.classList.add('possible');
+      cell.onclick=()=>cb(sq);
+      if(dc===0){const s=document.createElement('span');s.className='coord-label coord-rank';s.style.color=lt?BOARD_SKINS[eqBoard].dark:BOARD_SKINS[eqBoard].light;s.textContent=RK[dr];cell.appendChild(s);}
+      if(dr===7){const s=document.createElement('span');s.className='coord-label coord-file';s.style.color=lt?BOARD_SKINS[eqBoard].dark:BOARD_SKINS[eqBoard].light;s.textContent=FL[dc];cell.appendChild(s);}
+      const pc=bd[dr][dc];
+      if(pc){const sp=document.createElement('span');sp.className='chess-piece';sp.textContent=PU[pc.color+pc.type]||'';applyPieceStyle(sp,pc.color==='w');cell.appendChild(sp);}
+      el.appendChild(cell);
     }
   }
 }
 
-// ===== AI GAME STATE =====
-let aiGame = null;
-let aiDifficulty = 'normal';
-let aiSelected = null;
-let aiPossible = [];
-let aiThinking = false;
-let aiHistory = [];
+// ────────────────────────────────────────────────────────────
+// AI GAME STATE
+// ────────────────────────────────────────────────────────────
+let aig=null,aiDf='normal',aiSel=null,aiPos=[],aiTh=false,aiHst=[];
 
-function setDiff(d) {
-  aiDifficulty = d;
-  ['easy','normal','hard'].forEach(x => {
-    const btn = document.getElementById('btn-' + x);
-    btn.className = 'flex-1 py-2 rounded-xl text-sm font-bold capitalize ' +
-      (x === d ? 'bg-sky-600 text-white shadow-md' : 'bg-sky-100 text-sky-600 hover:bg-sky-200');
+function setDiff(d){
+  aiDf=d;
+  ['easy','normal','hard'].forEach(x=>{
+    const b=document.getElementById('btn-'+x);
+    b.className='flex-1 py-2 rounded-xl text-sm font-bold capitalize '+(x===d?'bg-sky-600 text-white shadow-md':'bg-sky-100 text-sky-600 hover:bg-sky-200');
   });
 }
-
-function changeAIDiff(d) {
-  aiDifficulty = d;
-  ['easy','normal','hard'].forEach(x => {
-    const btn = document.getElementById('ai-btn-' + x);
-    btn.className = 'flex-1 py-1.5 rounded-lg text-xs font-bold ' +
-      (x === d ? 'bg-sky-600 text-white' : 'bg-sky-100 text-sky-600 hover:bg-sky-200');
+function changeAIDiff(d){
+  aiDf=d;
+  ['easy','normal','hard'].forEach(x=>{
+    const b=document.getElementById('ai-btn-'+x);
+    b.className='flex-1 py-1.5 rounded-lg text-xs font-bold '+(x===d?'bg-sky-600 text-white':'bg-sky-100 text-sky-600');
   });
   resetAI();
 }
-
-function startAI() {
+function startAI(){
   document.getElementById('play-menu').classList.add('hidden');
   document.getElementById('play-pvp').classList.add('hidden');
   document.getElementById('play-ai').classList.remove('hidden');
-  // sync difficulty buttons
-  changeAIDiff(aiDifficulty);
-  resetAI();
+  changeAIDiff(aiDf);resetAI();
 }
-
-function cleanupAI() {
-  aiGame = null; aiSelected = null; aiPossible = []; aiThinking = false; aiHistory = [];
-}
-
-function resetAI() {
-  aiGame = new Chess();
-  aiSelected = null;
-  aiPossible = [];
-  aiThinking = false;
-  aiHistory = [];
-  updateAIStatus();
-  updateAIHistory();
+function resetAI(){
+  aig=new Chess();aiSel=null;aiPos=[];aiTh=false;aiHst=[];
+  updAISt();updAIHst();
   document.getElementById('ai-thinking').classList.add('hidden');
   renderAIBoard();
 }
-
-function updateAIStatus() {
-  const statusEl = document.getElementById('ai-status');
-  if (!aiGame) return;
-  let text = '';
-  let color = 'text-sky-700';
-  if (aiGame.in_checkmate()) {
-    text = aiGame.turn() === 'w' ? 'Checkmate! AI wins!' : 'Checkmate! You win! 🎉';
-    color = 'text-red-500';
-  } else if (aiGame.in_draw()) {
-    text = 'Draw!'; color = 'text-orange-500';
-  } else if (aiGame.in_stalemate()) {
-    text = 'Stalemate!'; color = 'text-orange-500';
-  } else if (aiGame.in_check()) {
-    text = aiGame.turn() === 'w' ? 'Check! Your turn' : 'AI is in check';
-  } else {
-    text = aiGame.turn() === 'w' ? 'Your turn (White)' : 'AI thinking…';
-  }
-  statusEl.textContent = text;
-  statusEl.className = 'font-bold text-lg ' + color;
+function updAISt(){
+  const el=document.getElementById('ai-status');if(!aig)return;
+  let t='',c='text-sky-700';
+  if(aig.in_checkmate()){t=aig.turn()==='w'?'Checkmate! AI wins!':'Checkmate! You win! 🎉';c='text-red-500';}
+  else if(aig.in_draw()){t='Draw!';c='text-orange-500';}
+  else if(aig.in_stalemate()){t='Stalemate!';c='text-orange-500';}
+  else if(aig.in_check()){t=aig.turn()==='w'?'Check! Your turn':'AI is in check';}
+  else{t=aig.turn()==='w'?'Your turn (White)':'AI thinking…';}
+  el.textContent=t;el.className='font-bold text-lg '+c;
 }
-
-function updateAIHistory() {
-  const el = document.getElementById('ai-history');
-  if (!aiHistory.length) { el.innerHTML = '<p class="text-sky-400 text-sm">No moves yet</p>'; return; }
-  el.innerHTML = aiHistory.map((mv, i) => `
-    <div class="flex items-center gap-2 text-sm">
-      <span class="text-sky-400 text-xs w-6">${Math.floor(i/2)+1}${i%2===0?'.':''}</span>
-      <span class="font-mono font-semibold ${i%2===0?'text-sky-700':'text-blue-500'}">${mv}</span>
-      <span class="text-sky-400 text-xs">${i%2===0?'White':'Black'}</span>
-    </div>`).join('');
-  el.scrollTop = el.scrollHeight;
+function updAIHst(){
+  const el=document.getElementById('ai-history');
+  if(!aiHst.length){el.innerHTML='<p class="text-sky-400 text-sm">No moves yet</p>';return;}
+  el.innerHTML=aiHst.map((m,i)=>`<div class="flex items-center gap-2 text-sm"><span class="text-sky-400 text-xs w-6">${Math.floor(i/2)+1}${i%2===0?'.':''}</span><span class="font-mono font-semibold ${i%2===0?'text-sky-700':'text-blue-500'}">${m}</span><span class="text-sky-400 text-xs">${i%2===0?'White':'Black'}</span></div>`).join('');
+  el.scrollTop=el.scrollHeight;
 }
-
-function renderAIBoard() {
-  if (!aiGame) return;
-  const boardEl = document.getElementById('ai-board');
-  renderBoard(boardEl, aiGame, aiSelected, aiPossible, onAISquareClick);
-}
-
-function onAISquareClick(sq) {
-  if (!aiGame || aiThinking || aiGame.game_over()) return;
-  if (aiGame.turn() !== 'w') return;
-
-  if (aiSelected === null) {
-    // Select piece
-    const piece = aiGame.get(sq);
-    if (piece && piece.color === 'w') {
-      aiSelected = sq;
-      // Get possible moves
-      const moves = aiGame.moves({ square: sq, verbose: true });
-      aiPossible = moves.map(m => m.to);
-    }
-  } else {
-    if (sq === aiSelected) {
-      // Deselect
-      aiSelected = null; aiPossible = [];
-    } else {
-      // Try move
-      let moved = false;
-      try {
-        const result = aiGame.move({ from: aiSelected, to: sq, promotion: 'q' });
-        if (result) {
-          aiHistory.push(result.san);
-          moved = true;
-          aiSelected = null; aiPossible = [];
-          updateAIStatus();
-          updateAIHistory();
-          renderAIBoard();
-          if (!aiGame.game_over()) scheduleAIMove();
-          return;
-        }
-      } catch(e) {}
-      // Maybe clicking a different own piece
-      const piece = aiGame.get(sq);
-      if (piece && piece.color === 'w') {
-        aiSelected = sq;
-        const moves = aiGame.moves({ square: sq, verbose: true });
-        aiPossible = moves.map(m => m.to);
-      } else {
-        aiSelected = null; aiPossible = [];
-      }
+function renderAIBoard(){if(!aig)return;drawBoard(document.getElementById('ai-board'),aig,aiSel,aiPos,onAISq,false);}
+function onAISq(sq){
+  if(!aig||aiTh||aig.game_over()||aig.turn()!=='w')return;
+  if(!aiSel){
+    const p=aig.get(sq);
+    if(p&&p.color==='w'){aiSel=sq;aiPos=aig.moves({square:sq,verbose:true}).map(m=>m.to);}
+  }else{
+    if(sq===aiSel){aiSel=null;aiPos=[];}
+    else{
+      try{const r=aig.move({from:aiSel,to:sq,promotion:'q'});
+        if(r){aiHst.push(r.san);aiSel=null;aiPos=[];updAISt();updAIHst();renderAIBoard();if(!aig.game_over())schedAI();return;}
+      }catch(e){}
+      const p=aig.get(sq);
+      if(p&&p.color==='w'){aiSel=sq;aiPos=aig.moves({square:sq,verbose:true}).map(m=>m.to);}
+      else{aiSel=null;aiPos=[];}
     }
   }
   renderAIBoard();
 }
-
-function scheduleAIMove() {
-  if (!aiGame || aiGame.game_over()) return;
-  aiThinking = true;
-  document.getElementById('ai-thinking').classList.remove('hidden');
-  updateAIStatus();
-  renderAIBoard();
-  const delay = 400 + Math.random() * 600;
-  setTimeout(() => {
-    if (!aiGame) return;
-    const move = getBestMove(aiGame, aiDifficulty);
-    if (move) {
-      const result = aiGame.move(move);
-      if (result) {
-        aiHistory.push(result.san);
-        updateAIHistory();
-      }
-    }
-    aiThinking = false;
-    document.getElementById('ai-thinking').classList.add('hidden');
-    updateAIStatus();
-    renderAIBoard();
-  }, delay);
+function schedAI(){
+  if(!aig||aig.game_over())return;
+  aiTh=true;document.getElementById('ai-thinking').classList.remove('hidden');updAISt();renderAIBoard();
+  setTimeout(()=>{
+    if(!aig)return;
+    const mv=bestMove(aig,aiDf);
+    if(mv){const r=aig.move(mv);if(r){aiHst.push(r.san);updAIHst();}}
+    aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');updAISt();renderAIBoard();
+  },400+Math.random()*600);
 }
-
-function backToMenu() {
+function backToMenu(){
   document.getElementById('play-ai').classList.add('hidden');
   document.getElementById('play-pvp').classList.add('hidden');
   document.getElementById('play-menu').classList.remove('hidden');
-  cleanupAI();
+  aig=null;pvpReset();
 }
 
-// ===== PvP =====
-function startPvP() {
+// ────────────────────────────────────────────────────────────
+// WebRTC PvP (PeerJS)
+// ────────────────────────────────────────────────────────────
+let peer=null,conn=null,pvpG=null,pvpCol='white',pvpRoom='',pvpHst=[],pvpSel=null,pvpPos=[];
+
+const mkCode=()=>Math.random().toString(36).substring(2,8).toUpperCase();
+const copyCode=()=>navigator.clipboard.writeText(document.getElementById('pvp-code-display').textContent).catch(()=>{});
+
+function startPvP(){
   document.getElementById('play-menu').classList.add('hidden');
   document.getElementById('play-ai').classList.add('hidden');
   document.getElementById('play-pvp').classList.remove('hidden');
+  pvpShowLobby();
+}
+function pvpShowLobby(){['pvp-waiting','pvp-game'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('pvp-lobby').classList.remove('hidden');}
+function pvpShowWait(){['pvp-lobby','pvp-game'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('pvp-waiting').classList.remove('hidden');}
+function pvpShowGame(){['pvp-lobby','pvp-waiting'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('pvp-game').classList.remove('hidden');}
+
+function pvpCreate(){
+  pvpRoom=mkCode();
+  document.getElementById('pvp-code-display').textContent=pvpRoom;
+  pvpShowWait();
+  document.getElementById('pvp-wait-status').innerHTML='<div class="w-3 h-3 border-2 border-sky-400 border-t-transparent rounded-full spin inline-block mr-2"></div>Creating room…';
+  peer=new Peer(pvpRoom,{debug:1});
+  peer.on('open',()=>{document.getElementById('pvp-wait-status').textContent='✅ Room ready — share the code!';});
+  peer.on('connection',c=>{
+    conn=c;
+    c.on('open',()=>{
+      pvpCol='white';pvpG=new Chess();
+      c.send({type:'start',color:'black',fen:pvpG.fen()});
+      pvpBegin('white');
+    });
+    c.on('data',pvpData);
+    c.on('close',pvpDisc);
+  });
+  peer.on('error',e=>{pvpErr('PeerJS error: '+e.message);pvpShowLobby();});
 }
 
-function pvpCreate() {
-  const statusEl = document.getElementById('pvp-status');
-  const errEl = document.getElementById('pvp-error');
-  errEl.classList.add('hidden');
-  statusEl.classList.remove('hidden');
-  statusEl.textContent = 'PvP requires the Chessio server. Make sure the API server is running at ' + window.location.origin;
+function pvpJoin(){
+  const code=document.getElementById('pvp-join-input').value.trim().toUpperCase();
+  if(!code){pvpErr('Enter a room code.');return;}
+  document.getElementById('pvp-err').classList.add('hidden');
+  pvpRoom=code;
+  document.getElementById('pvp-code-display').textContent=code;
+  pvpShowWait();
+  document.getElementById('pvp-wait-status').textContent='Connecting to room '+code+'…';
+  peer=new Peer(undefined,{debug:1});
+  peer.on('open',()=>{
+    conn=peer.connect(code);
+    conn.on('open',()=>{document.getElementById('pvp-wait-status').textContent='Connected! Waiting for host…';});
+    conn.on('data',pvpData);
+    conn.on('close',pvpDisc);
+    conn.on('error',e=>{pvpErr('Join error: '+e.message);pvpShowLobby();});
+  });
+  peer.on('error',e=>{pvpErr('Peer error: '+e.message);pvpShowLobby();});
 }
 
-function pvpJoin() {
-  const code = document.getElementById('pvp-code-input').value.trim();
-  const errEl = document.getElementById('pvp-error');
-  const statusEl = document.getElementById('pvp-status');
-  if (!code) {
-    errEl.textContent = 'Enter a room code.';
-    errEl.classList.remove('hidden');
-    return;
+function pvpData(data){
+  if(data.type==='start'){pvpCol=data.color;pvpG=new Chess(data.fen);pvpBegin(data.color);}
+  else if(data.type==='move'&&pvpG){
+    const r=pvpG.move(data.move);
+    if(r){pvpHst.push(r.san);pvpUpdSt();pvpUpdHst();renderPvPBoard();}
+  }else if(data.type==='resign'){
+    pvpSt('Opponent resigned. You win! 🎉','text-green-600');
   }
-  errEl.classList.add('hidden');
-  statusEl.classList.remove('hidden');
-  statusEl.textContent = 'Joining room ' + code + '… (requires server connection)';
 }
-</script>
+function pvpDisc(){pvpSt('Opponent disconnected.','text-red-500');document.getElementById('pvp-leave-btn').textContent='Play Again';}
 
+function pvpBegin(col){
+  pvpSel=null;pvpPos=[];pvpHst=[];
+  document.getElementById('pvp-color-badge').textContent='You: '+col;
+  document.getElementById('pvp-room-badge').textContent='Room: '+pvpRoom;
+  document.getElementById('pvp-leave-btn').textContent='Leave Game';
+  pvpShowGame();pvpUpdSt();renderPvPBoard();
+}
+function pvpUpdSt(){
+  if(!pvpG)return;
+  const my=(pvpG.turn()==='w'&&pvpCol==='white')||(pvpG.turn()==='b'&&pvpCol==='black');
+  let t='',c='text-sky-700';
+  if(pvpG.in_checkmate()){t=my?'You lost! Checkmate.':'You win! Checkmate! 🎉';c=my?'text-red-500':'text-green-600';}
+  else if(pvpG.in_draw()){t='Draw!';c='text-orange-500';}
+  else if(pvpG.in_check()){t=my?'Check! Your turn':'Opponent in check!';}
+  else{t=my?'Your turn!':'Opponent\'s turn…';}
+  pvpSt(t,c);
+}
+function pvpSt(t,c){const el=document.getElementById('pvp-status');el.textContent=t;el.className='font-bold text-lg '+(c||'text-sky-700');}
+function pvpUpdHst(){
+  const el=document.getElementById('pvp-history');
+  if(!pvpHst.length){el.innerHTML='<p class="text-sky-400 text-sm">No moves yet</p>';return;}
+  el.innerHTML=pvpHst.map((m,i)=>`<div class="flex items-center gap-2 text-sm"><span class="text-sky-400 text-xs w-6">${Math.floor(i/2)+1}${i%2===0?'.':''}</span><span class="font-mono font-semibold ${i%2===0?'text-sky-700':'text-blue-500'}">${m}</span></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function renderPvPBoard(){
+  const el=document.getElementById('pvp-board');
+  if(!pvpG||!el)return;
+  drawBoard(el,pvpG,pvpSel,pvpPos,onPvPSq,pvpCol==='black');
+}
+function onPvPSq(sq){
+  if(!pvpG||pvpG.game_over())return;
+  const my=(pvpG.turn()==='w'&&pvpCol==='white')||(pvpG.turn()==='b'&&pvpCol==='black');
+  if(!my)return;
+  const myC=pvpCol==='white'?'w':'b';
+  if(!pvpSel){
+    const p=pvpG.get(sq);if(p&&p.color===myC){pvpSel=sq;pvpPos=pvpG.moves({square:sq,verbose:true}).map(m=>m.to);}
+  }else{
+    if(sq===pvpSel){pvpSel=null;pvpPos=[];}
+    else{
+      try{const r=pvpG.move({from:pvpSel,to:sq,promotion:'q'});
+        if(r){pvpHst.push(r.san);pvpSel=null;pvpPos=[];if(conn&&conn.open)conn.send({type:'move',move:r.san});pvpUpdSt();pvpUpdHst();renderPvPBoard();return;}
+      }catch(e){}
+      const p=pvpG.get(sq);
+      if(p&&p.color===myC){pvpSel=sq;pvpPos=pvpG.moves({square:sq,verbose:true}).map(m=>m.to);}
+      else{pvpSel=null;pvpPos=[];}
+    }
+  }
+  renderPvPBoard();
+}
+function pvpErr(msg){const el=document.getElementById('pvp-err');el.textContent=msg;el.classList.remove('hidden');}
+function pvpReset(){
+  try{if(conn)conn.close();}catch(e){}
+  try{if(peer)peer.destroy();}catch(e){}
+  peer=null;conn=null;pvpG=null;pvpSel=null;pvpPos=[];pvpHst=[];pvpRoom='';
+  document.getElementById('pvp-join-input').value='';
+  document.getElementById('pvp-err').classList.add('hidden');
+  pvpShowLobby();
+}
+
+// ────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  initTonConnect();
+  renderShop();
+});
+</script>
 </body>
 </html>

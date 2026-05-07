@@ -61,27 +61,8 @@
     .shop-scroll::-webkit-scrollbar{width:5px}
     .shop-scroll::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:4px}
     .contract-badge{font-family:'JetBrains Mono',monospace;font-size:10px;word-break:break-all;color:#0369a1}
-    /* Verification progress bar */
     .verify-bar{height:6px;border-radius:999px;overflow:hidden;background:#bae6fd;margin-top:8px}
-    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,0ea5e9,#3b82f6);width:0%;transition:width .4s ease}
-    /* Source viewer */
-    #src-viewer{display:none;position:fixed;inset:0;background:rgba(2,20,50,.92);backdrop-filter:blur(8px);z-index:9999;flex-direction:column}
-    #src-viewer.open{display:flex}
-    #src-header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
-    #src-title{color:#7dd3fc;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600}
-    #src-actions{display:flex;gap:8px}
-    .src-btn{padding:7px 16px;border-radius:10px;border:none;font-weight:700;font-size:12px;cursor:pointer;transition:all .15s}
-    .src-btn-copy{background:#0ea5e9;color:#fff}.src-btn-copy:hover{background:#0284c7}
-    .src-btn-dl{background:rgba(255,255,255,.12);color:#7dd3fc;border:1px solid rgba(125,211,252,.3)}.src-btn-dl:hover{background:rgba(255,255,255,.2)}
-    .src-btn-close{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}.src-btn-close:hover{background:rgba(239,68,68,.35)}
-    #src-status{padding:6px 20px;color:#94a3b8;font-size:11px;font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.3);flex-shrink:0}
-    #src-code{flex:1;overflow:auto;display:flex;min-height:0}
-    #src-lines{padding:12px 0;background:#0f172a;text-align:right;user-select:none;min-width:52px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.06)}
-    .src-ln{display:block;padding:0 12px;color:#334155;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:20px}
-    #src-text{flex:1;background:#0f172a;color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:20px;padding:12px 16px;white-space:pre;resize:none;border:none;outline:none;overflow:visible}
-    #src-fab{position:fixed;bottom:28px;right:28px;z-index:9000;background:linear-gradient(135deg,#0284c7,#3b82f6);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:20px;cursor:pointer;box-shadow:0 4px 20px rgba(2,132,199,.5);transition:all .2s}
-    #src-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(2,132,199,.7)}
-    #src-copied{position:fixed;bottom:90px;right:28px;z-index:9001;background:#22c55e;color:#fff;padding:8px 16px;border-radius:12px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none}
+    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0ea5e9,#3b82f6);width:0%;transition:width .4s ease}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
@@ -398,10 +379,9 @@
     <p class="text-sky-400 text-sm mb-5" id="buy-desc">Unlock this skin with TON</p>
     <div class="rounded-2xl p-5 mb-5 text-center" style="background:linear-gradient(135deg,#f0f9ff,#eff6ff)">
       <p class="text-4xl font-black text-sky-700" id="buy-price">0.3 TON</p>
-      <p class="text-sky-400 text-xs mt-1">Sent directly to Chessio treasury</p>
+      <p class="text-sky-400 text-xs mt-1">Sent directly to Chessio treasury on TON Mainnet</p>
       <p class="font-mono text-xs text-sky-500 mt-1 break-all">UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY</p>
     </div>
-    <!-- Verification progress -->
     <div id="verify-status" class="hidden mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
       <p class="text-blue-700 text-sm font-semibold" id="verify-msg">⏳ Verifying on TON mainnet…</p>
       <div class="verify-bar mt-2"><div class="verify-fill" id="verify-fill"></div></div>
@@ -418,27 +398,6 @@
   </div>
 </div>
 
-<!-- TonConnect UI renders its own native modal — no custom wallet modal needed -->
-
-<!-- SOURCE VIEWER -->
-<div id="src-viewer">
-  <div id="src-header">
-    <span id="src-title">📄 index.html — source code</span>
-    <div id="src-actions">
-      <button class="src-btn src-btn-copy" onclick="srcCopy()">📋 Copy All</button>
-      <button class="src-btn src-btn-dl" onclick="srcDownload()">⬇ Download</button>
-      <button class="src-btn src-btn-close" onclick="srcClose()">✕ Close</button>
-    </div>
-  </div>
-  <div id="src-status">Loading source…</div>
-  <div id="src-code">
-    <div id="src-lines"></div>
-    <textarea id="src-text" readonly spellcheck="false"></textarea>
-  </div>
-</div>
-<button id="src-fab" title="View / Copy HTML Source" onclick="srcOpen()">📄</button>
-<div id="src-copied">✅ Copied!</div>
-
 <script>
 'use strict';
 
@@ -446,6 +405,9 @@
 const TREASURY = 'UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY';
 const SKIN_PRICE_TON = 0.3;
 const SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9)); // "300000000"
+
+// TON Mainnet chain ID = -239
+const TON_MAINNET = '-239';
 
 // ── PARTICLES ─────────────────────────────────────────────────
 (function(){
@@ -587,11 +549,8 @@ const PIECE_SKINS={
 };
 
 // ── SKIN STORAGE — PER WALLET ADDRESS ─────────────────────────
-// FIX: Skins are stored per wallet address so each buyer owns only THEIR skins.
-// Key format: chessio_owned_<walletAddress>
 function getOwnedKey(addr) {
   if (!addr) return 'chessio_owned_guest';
-  // Normalize address to avoid case/format mismatches
   return 'chessio_owned_' + addr.toLowerCase().replace(/[^a-z0-9]/g,'_');
 }
 
@@ -601,7 +560,6 @@ let eqPiece = localStorage.getItem('chessio_piece') || 'standard';
 let pendingBuy = null;
 
 function loadOwnedForWallet(addr) {
-  // Load from localStorage first (instant, works offline)
   const key = getOwnedKey(addr);
   const raw = localStorage.getItem(key);
   if (raw) {
@@ -609,20 +567,17 @@ function loadOwnedForWallet(addr) {
   } else {
     owned = {b:['classic'],p:['standard']};
   }
-
-  // Also fetch from backend (authoritative source, survives localStorage clear)
   fetch('/api/purchases/' + encodeURIComponent(addr))
     .then(r => r.ok ? r.json() : null)
     .then(data => {
       if (!data || !Array.isArray(data.board) || !Array.isArray(data.piece)) return;
-      // Merge: combine localStorage + server records, deduplicate
       const mergedBoard = [...new Set([...owned.b, ...data.board])];
       const mergedPiece = [...new Set([...owned.p, ...data.piece])];
       owned = { b: mergedBoard, p: mergedPiece };
-      saveOwned(); // Keep localStorage in sync with server
-      renderShop(); // Re-render with merged ownership
+      saveOwned();
+      renderShop();
     })
-    .catch(() => { /* Offline — localStorage is enough */ });
+    .catch(() => {});
 }
 
 function saveOwned() {
@@ -710,24 +665,17 @@ function openBuy(type,id){
 function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
 
 // ── ON-CHAIN VERIFICATION via TON CENTER API (Mainnet) ────────
-// FIX: Polls TON mainnet API to confirm the transaction is ACTUALLY on-chain
-// before unlocking the skin. Prevents any bypass or cancellation exploit.
 async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
   const TONCENTER = 'https://toncenter.com/api/v2/getTransactions';
   const minAmount = BigInt(amountNanoStr);
-  const maxAttempts = 20; // Poll up to 20 times, 3s apart = 60 seconds max
+  const maxAttempts = 20;
 
-  // Normalize the sender address for comparison
-  // TonConnect returns raw address like "0:abcdef..."
-  // TonCenter also returns raw addresses in tx.in_msg.source
   const normalizeAddr = (a) => (a || '').toLowerCase().trim();
   const senderNorm = normalizeAddr(senderAddr);
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    // Wait 3 seconds between each poll (first poll after 3s)
     await new Promise(r => setTimeout(r, 3000));
 
-    // Update progress bar
     const pct = Math.min(((attempt + 1) / maxAttempts) * 100, 95);
     const fill = document.getElementById('verify-fill');
     if (fill) fill.style.width = pct + '%';
@@ -741,16 +689,12 @@ async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
       if (!data.ok || !Array.isArray(data.result)) continue;
 
       for (const tx of data.result) {
-        // Skip transactions older than the purchase start time (with 60s buffer for clock skew)
         if (tx.utime < startTimeSec - 60) break;
 
         const inMsg = tx.in_msg;
         if (!inMsg || !inMsg.source) continue;
 
-        // Check sender address matches
         const srcNorm = normalizeAddr(inMsg.source);
-
-        // Match: either exact raw address match, or last 8 chars match (handles 0:xxx vs hex differences)
         const addrMatch =
           srcNorm === senderNorm ||
           (srcNorm.length > 8 && senderNorm.length > 8 &&
@@ -758,11 +702,9 @@ async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
 
         if (!addrMatch) continue;
 
-        // Check amount: in_msg.value is in nanoTON as string
         const txAmount = BigInt(inMsg.value || '0');
         if (txAmount < minAmount) continue;
 
-        // Found a matching confirmed transaction!
         return {
           verified: true,
           txHash: tx.transaction_id ? tx.transaction_id.hash : 'unknown',
@@ -771,7 +713,6 @@ async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
         };
       }
     } catch (err) {
-      // Network error — continue polling
       console.warn('TON API poll error:', err);
     }
   }
@@ -779,7 +720,7 @@ async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
   return { verified: false };
 }
 
-// ── BUY FLOW WITH ON-CHAIN VERIFICATION ──────────────────────
+// ── BUY FLOW — TON MAINNET ────────────────────────────────────
 async function confirmBuy() {
   if (!pendingBuy) return;
   const {type, id} = pendingBuy;
@@ -805,21 +746,19 @@ async function confirmBuy() {
   sucEl.classList.add('hidden');
   verifyEl.classList.add('hidden');
 
-  // Record start time BEFORE sending (unix seconds)
   const startTimeSec = Math.floor(Date.now() / 1000);
 
   try {
-    // Step 1: Send transaction via TonConnect (user signs in wallet app)
+    // FIX: Explicitly set network to TON Mainnet (-239)
     await tonUI.sendTransaction({
       validUntil: startTimeSec + 600,
+      network: TON_MAINNET,
       messages: [{
         address: TREASURY,
         amount: SKIN_PRICE_NANO,
       }]
     });
 
-    // Step 2: Transaction was SIGNED and BROADCAST by the wallet.
-    // Now we must verify it is CONFIRMED on-chain before unlocking.
     btn.innerHTML = '⏳ Confirming on-chain…';
     verifyMsg.textContent = '⏳ Verifying on TON mainnet… please wait';
     document.getElementById('verify-fill').style.width = '0%';
@@ -828,15 +767,13 @@ async function confirmBuy() {
     const result = await verifyTonTransaction(walletAddr, SKIN_PRICE_NANO, startTimeSec);
 
     if (result.verified) {
-      // Step 3: CONFIRMED on-chain — now unlock the skin for this wallet
       if (type === 'board') { if (!owned.b.includes(id)) owned.b.push(id); }
       else { if (!owned.p.includes(id)) owned.p.push(id); }
-      saveOwned(); // Saves under this wallet's address key
+      saveOwned();
 
       document.getElementById('verify-fill').style.width = '100%';
       verifyMsg.textContent = '✅ Transaction confirmed on TON mainnet!';
 
-      // Step 4: Record purchase server-side (async, fire-and-forget; don't block UX)
       fetch('/api/purchases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -848,7 +785,7 @@ async function confirmBuy() {
           amountNano: SKIN_PRICE_NANO,
           confirmedAt: new Date(result.timestamp ? result.timestamp * 1000 : Date.now()).toISOString(),
         }),
-      }).catch(() => { /* Server record is best-effort; localStorage is source of truth if offline */ });
+      }).catch(() => {});
 
       sucEl.textContent = `✅ ${SKIN_PRICE_TON} TON confirmed on-chain! ${sk.name} is now yours.`;
       sucEl.classList.remove('hidden');
@@ -856,9 +793,8 @@ async function confirmBuy() {
       setTimeout(() => { closeBuyModal(); renderShop(); }, 2500);
 
     } else {
-      // Transaction was broadcast but NOT confirmed within 60 seconds
       verifyEl.classList.add('hidden');
-      errEl.textContent = '⚠️ Could not confirm your transaction on-chain within 60 seconds. If TON was sent, it may still confirm — check your wallet. Your skin will appear when you reconnect your wallet after confirmation.';
+      errEl.textContent = '⚠️ Could not confirm transaction on-chain within 60 seconds. If TON was sent, it may still confirm — check your wallet. Your skin will appear when you reconnect your wallet after confirmation.';
       errEl.classList.remove('hidden');
       btn.disabled = false;
       cancelBtn.disabled = false;
@@ -890,20 +826,22 @@ let walletAddr = null, tonUI = null;
 
 function initTonConnect() {
   try {
+    // FIX: manifestUrl must be a real hosted JSON file that wallet extensions
+    // can fetch independently. Served from /tonconnect-manifest.json (public/).
+    const manifestUrl = window.location.origin + '/tonconnect-manifest.json';
+
     tonUI = new TON_CONNECT_UI.TonConnectUI({
-      // Dynamic manifest via API — URL field auto-matches actual domain, no phishing warning
-      manifestUrl: window.location.origin + '/api/tonconnect-manifest.json',
+      manifestUrl: manifestUrl,
     });
+
     tonUI.onStatusChange(w => {
       const prevAddr = walletAddr;
       walletAddr = w ? w.account.address : null;
 
-      // FIX: Load wallet-specific owned skins when wallet connects/changes
       if (walletAddr && walletAddr !== prevAddr) {
         loadOwnedForWallet(walletAddr);
         renderShop();
       } else if (!walletAddr) {
-        // Wallet disconnected — reset to guest state
         owned = {b:['classic'],p:['standard']};
         renderShop();
       }
@@ -911,7 +849,7 @@ function initTonConnect() {
       syncWalletUI(walletAddr);
       if (w && pendingBuy) { const pb = pendingBuy; pendingBuy = null; openBuy(pb.type, pb.id); }
     });
-  } catch(e) { console.warn('TON Connect:', e); }
+  } catch(e) { console.warn('TON Connect init error:', e); }
 }
 
 function syncWalletUI(addr) {
@@ -924,7 +862,6 @@ function syncWalletUI(addr) {
   if (cb) cb.textContent = addr ? 'Disconnect' : 'Connect Wallet';
 }
 
-// FIX: Use TonConnect native modal — auto-detects browser extensions (Tonkeeper, MyTonWallet, etc.)
 function walletClick() {
   if (walletAddr) { if (tonUI) tonUI.disconnect(); return; }
   if (tonUI) { tonUI.openModal(); return; }
@@ -1209,70 +1146,6 @@ function pvpReset(){
   const pe=document.getElementById('pvp-err');if(pe)pe.classList.add('hidden');
   pvpShowLobby();
 }
-
-// ── SOURCE VIEWER ─────────────────────────────────────────────
-let _srcHtml = null;
-
-async function srcLoad() {
-  if (_srcHtml) return _srcHtml;
-  const res = await fetch(window.location.href);
-  _srcHtml = await res.text();
-  return _srcHtml;
-}
-
-async function srcOpen() {
-  const viewer = document.getElementById('src-viewer');
-  viewer.classList.add('open');
-  const status = document.getElementById('src-status');
-  const ta = document.getElementById('src-text');
-  const linesEl = document.getElementById('src-lines');
-  status.textContent = 'Loading source…';
-  ta.value = '';
-  linesEl.innerHTML = '';
-  try {
-    const html = await srcLoad();
-    ta.value = html;
-    const lines = html.split('\n');
-    status.textContent = `index.html  ·  ${lines.length} lines  ·  ${(new Blob([html]).size / 1024).toFixed(1)} KB`;
-    linesEl.innerHTML = lines.map((_,i) => `<span class="src-ln">${i+1}</span>`).join('');
-    // Sync scroll
-    const codeWrap = document.getElementById('src-code');
-    ta.addEventListener('scroll', () => { linesEl.scrollTop = ta.scrollTop; }, {passive:true});
-    codeWrap.addEventListener('scroll', () => { linesEl.scrollTop = ta.scrollTop; }, {passive:true});
-  } catch(e) {
-    status.textContent = 'Failed to load source: ' + e.message;
-  }
-}
-
-function srcClose() {
-  document.getElementById('src-viewer').classList.remove('open');
-}
-
-async function srcCopy() {
-  try {
-    const html = await srcLoad();
-    await navigator.clipboard.writeText(html);
-    const toast = document.getElementById('src-copied');
-    toast.style.opacity = '1';
-    setTimeout(() => { toast.style.opacity = '0'; }, 2200);
-  } catch(e) {
-    alert('Copy failed: ' + e.message);
-  }
-}
-
-async function srcDownload() {
-  const html = await srcLoad();
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([html], {type:'text/html'}));
-  a.download = 'chessio.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-// Close viewer on Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') srcClose();
-});
 
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{

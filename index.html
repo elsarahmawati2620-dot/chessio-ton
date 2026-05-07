@@ -514,23 +514,6 @@
 <script>
 'use strict';
 
-// ── SAFE STORAGE (fixes sandboxed localStorage error) ─────────
-const safeStorage = {
-  _mem: {},
-  getItem(key) {
-    try { return localStorage.getItem(key); } 
-    catch(e) { return this._mem[key] || null; }
-  },
-  setItem(key, val) {
-    try { localStorage.setItem(key, val); } 
-    catch(e) { this._mem[key] = val; }
-  },
-  removeItem(key) {
-    try { localStorage.removeItem(key); } 
-    catch(e) { delete this._mem[key]; }
-  }
-};
-
 // ── TREASURY & PRICE ──────────────────────────────────────────
 const TREASURY = 'UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY';
 const SKIN_PRICE_TON = 0.3;
@@ -559,8 +542,8 @@ function savePts() {
   if (!walletAddr) return;
   const pk = getPointsKey(walletAddr);
   const sk = getStreakKey(walletAddr);
-  if (pk) safeStorage.setItem(pk, String(totalPoints));
-  if (sk) safeStorage.setItem(sk, String(hardStreak));
+  if (pk) localStorage.setItem(pk, String(totalPoints));
+  if (sk) localStorage.setItem(sk, String(hardStreak));
   updateLeaderboard(walletAddr, totalPoints, hardStreak);
 }
 
@@ -568,8 +551,8 @@ function loadPointsForWallet(addr) {
   if (!addr) { totalPoints = 0; hardStreak = 0; renderPoints(); return; }
   const pk = getPointsKey(addr);
   const sk = getStreakKey(addr);
-  totalPoints = pk ? (parseInt(safeStorage.getItem(pk) || '0', 10) || 0) : 0;
-  hardStreak  = sk ? (parseInt(safeStorage.getItem(sk)  || '0', 10) || 0) : 0;
+  totalPoints = pk ? (parseInt(localStorage.getItem(pk) || '0', 10) || 0) : 0;
+  hardStreak  = sk ? (parseInt(localStorage.getItem(sk)  || '0', 10) || 0) : 0;
   renderPoints();
 }
 
@@ -669,10 +652,10 @@ const RANK_MEDALS = ['🥇','🥈','🥉'];
 
 const LB_CACHE_KEY = 'chessio_lb_cache';
 function getLbCache() {
-  try { return JSON.parse(safeStorage.getItem(LB_CACHE_KEY) || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(localStorage.getItem(LB_CACHE_KEY) || '[]'); } catch(e) { return []; }
 }
 function setLbCache(lb) {
-  try { safeStorage.setItem(LB_CACHE_KEY, JSON.stringify(lb)); } catch(e) {}
+  try { localStorage.setItem(LB_CACHE_KEY, JSON.stringify(lb)); } catch(e) {}
 }
 
 function updateLeaderboard(addr, points, streak) {
@@ -825,15 +808,15 @@ function getOwnedKey(addr) {
 var owned = { b: ['classic'], p: ['standard'] };
 
 // FIX: validate skin IDs from localStorage to prevent crash if stored value is invalid
-var _storedBoard = safeStorage.getItem('chessio_board');
-var _storedPiece = safeStorage.getItem('chessio_piece');
+var _storedBoard = localStorage.getItem('chessio_board');
+var _storedPiece = localStorage.getItem('chessio_piece');
 var eqBoard = (_storedBoard && BOARD_SKINS[_storedBoard]) ? _storedBoard : 'classic';
 var eqPiece = (_storedPiece && PIECE_SKINS[_storedPiece]) ? _storedPiece : 'standard';
 
 var pendingBuy = null;
 
 function loadOwnedForWallet(addr) {
-  var key = getOwnedKey(addr), raw = key ? safeStorage.getItem(key) : null;
+  var key = getOwnedKey(addr), raw = key ? localStorage.getItem(key) : null;
   if (raw) { try { owned = JSON.parse(raw); } catch(e) { owned = {b:['classic'],p:['standard']}; } }
   else { owned = {b:['classic'],p:['standard']}; }
   fetch('/api/purchases/' + encodeURIComponent(addr))
@@ -847,12 +830,12 @@ function loadOwnedForWallet(addr) {
 }
 function saveOwned() {
   var key = getOwnedKey(walletAddr);
-  if (key) safeStorage.setItem(key, JSON.stringify(owned));
+  if (key) localStorage.setItem(key, JSON.stringify(owned));
 }
 function boardOwned(id) { return owned.b.indexOf(id) >= 0; }
 function pieceOwned(id) { return owned.p.indexOf(id) >= 0; }
-function equipBoard(id) { eqBoard=id; safeStorage.setItem('chessio_board',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
-function equipPiece(id) { eqPiece=id; safeStorage.setItem('chessio_piece',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
+function equipBoard(id) { eqBoard=id; localStorage.setItem('chessio_board',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
+function equipPiece(id) { eqPiece=id; localStorage.setItem('chessio_piece',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
 
 // FIX: safe fallback to classic/standard if skin lookup fails
 function applySq(cell, isLight) {

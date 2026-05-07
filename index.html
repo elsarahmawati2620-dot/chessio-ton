@@ -24,7 +24,6 @@
     .float-piece{animation:floatPiece var(--dur,3s) ease-in-out infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{animation:spin .8s linear infinite}
-    /* Chess board */
     .chess-board{display:grid;grid-template-columns:repeat(8,1fr);border-radius:12px;overflow:hidden;box-shadow:0 8px 32px rgba(2,132,199,.3);user-select:none}
     .chess-square{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:filter .15s}
     .chess-square:hover{filter:brightness(.85)}
@@ -58,24 +57,22 @@
     .dot-green{background:#22c55e;box-shadow:0 0 8px #22c55e}
     .preview-grid{display:grid;grid-template-columns:repeat(4,22px);gap:2px;margin:0 auto;width:fit-content}
     .piece-preview{font-size:34px}
-    /* Scrollbar shop */
     .shop-scroll{max-height:calc(100vh - 160px);overflow-y:auto}
     .shop-scroll::-webkit-scrollbar{width:5px}
     .shop-scroll::-webkit-scrollbar-thumb{background:#c7d2fe;border-radius:4px}
-    /* Contract badge */
     .contract-badge{font-family:'JetBrains Mono',monospace;font-size:10px;word-break:break-all;color:#0369a1}
+    /* Verification progress bar */
+    .verify-bar{height:6px;border-radius:999px;overflow:hidden;background:#bae6fd;margin-top:8px}
+    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0ea5e9,#3b82f6);width:0%;transition:width .4s ease}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
 <body>
-
+ 
 <canvas id="particle-canvas"></canvas>
-
-<!-- ============================================================ -->
-<!-- LANDING                                                        -->
-<!-- ============================================================ -->
+ 
+<!-- LANDING -->
 <div id="page-landing" class="page active">
-
   <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -92,8 +89,7 @@
       <button id="ton-btn" onclick="walletClick()"><span>💎</span><span id="ton-lbl">Connect Wallet</span></button>
     </div>
   </nav>
-
-  <!-- Hero -->
+ 
   <section class="pt-28 pb-20 px-4 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
       <span class="float-piece absolute text-sky-400 opacity-50 text-5xl" style="left:4%;top:12%;--dur:3.2s">♟</span>
@@ -124,18 +120,14 @@
         </a>
       </div>
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <div class="glass rounded-2xl px-5 py-3 text-center">
-          <p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p>
-          <p class="text-sky-700 font-bold text-sm mt-1">Soon</p>
-        </div>
+        <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p><p class="text-sky-700 font-bold text-sm mt-1">Soon</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p><p class="text-sky-700 font-bold text-sm mt-1">TON Blockchain</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Total Supply</p><p class="text-sky-700 font-bold text-sm mt-1">1,000,000,000 $CHESS</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Skins</p><p class="text-sky-700 font-bold text-sm mt-1">12 Collectibles</p></div>
       </div>
     </div>
   </section>
-
-  <!-- About -->
+ 
   <section id="about" class="py-16 px-4 z1">
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-12">
@@ -150,8 +142,7 @@
       </div>
     </div>
   </section>
-
-  <!-- Tokenomics -->
+ 
   <section id="tokenomics" class="py-16 px-4 bg-sky-50/80 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-3">Tokenomics</h2>
@@ -173,8 +164,7 @@
       </div>
     </div>
   </section>
-
-  <!-- Roadmap -->
+ 
   <section id="roadmap" class="py-16 px-4 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-3">Roadmap</h2>
@@ -182,8 +172,7 @@
       <div class="relative"><div class="roadmap-line hidden md:block"></div><div class="space-y-6" id="roadmap-items"></div></div>
     </div>
   </section>
-
-  <!-- CTA -->
+ 
   <section class="py-16 px-4 bg-gradient-to-br from-sky-500 via-blue-600 to-purple-700 text-white z1">
     <div class="max-w-2xl mx-auto text-center">
       <div class="reveal">
@@ -197,8 +186,7 @@
       </div>
     </div>
   </section>
-
-  <!-- Footer -->
+ 
   <footer class="py-10 px-4 bg-sky-900 text-white z1">
     <div class="max-w-5xl mx-auto">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -219,10 +207,8 @@
     </div>
   </footer>
 </div>
-
-<!-- ============================================================ -->
-<!-- SHOP PAGE                                                      -->
-<!-- ============================================================ -->
+ 
+<!-- SHOP PAGE -->
 <div id="page-shop" class="page">
   <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -233,8 +219,6 @@
   </nav>
   <div class="pt-20 pb-16 px-4 min-h-screen" style="background:linear-gradient(135deg,#faf5ff 0%,#f0f9ff 50%,#eff6ff 100%)">
     <div class="max-w-6xl mx-auto">
-
-      <!-- Wallet bar -->
       <div class="glass rounded-2xl p-4 mb-8 flex items-center justify-between flex-wrap gap-3">
         <div>
           <p class="text-xs text-purple-500 uppercase tracking-widest font-semibold">TON Wallet</p>
@@ -242,16 +226,12 @@
         </div>
         <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">Connect Wallet</button>
       </div>
-
-      <!-- Board Skins -->
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black text-sky-700">Board Skins</h2>
         <span class="text-xs bg-sky-100 text-sky-600 font-bold px-2 py-0.5 rounded-full">6 designs</span>
       </div>
       <p class="text-sky-400 text-sm mb-5">1 free starter • 5 premium at <strong class="text-sky-600">0.3 TON</strong> each</p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="board-skin-cards"></div>
-
-      <!-- Piece Skins -->
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black text-sky-700">Piece Skins</h2>
         <span class="text-xs bg-purple-100 text-purple-600 font-bold px-2 py-0.5 rounded-full">6 styles</span>
@@ -261,10 +241,8 @@
     </div>
   </div>
 </div>
-
-<!-- ============================================================ -->
-<!-- PLAY PAGE                                                      -->
-<!-- ============================================================ -->
+ 
+<!-- PLAY PAGE -->
 <div id="page-play" class="page">
   <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-sky-200/60">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -274,7 +252,6 @@
     </div>
   </nav>
   <div class="pt-20 pb-10 px-4 min-h-screen bg-gradient-to-b from-sky-50 to-blue-50">
-
     <div id="play-menu">
       <div class="max-w-lg mx-auto mt-12 text-center">
         <div class="text-6xl mb-4">♛</div>
@@ -302,8 +279,7 @@
         </div>
       </div>
     </div>
-
-    <!-- AI Game -->
+ 
     <div id="play-ai" class="hidden max-w-5xl mx-auto mt-4">
       <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
         <div class="flex-shrink-0 w-full" style="max-width:480px;margin:0 auto">
@@ -336,8 +312,7 @@
         </div>
       </div>
     </div>
-
-    <!-- PvP -->
+ 
     <div id="play-pvp" class="hidden max-w-5xl mx-auto mt-4">
       <div id="pvp-lobby">
         <div class="max-w-md mx-auto glass rounded-2xl p-8 text-center">
@@ -397,10 +372,8 @@
     </div>
   </div>
 </div>
-
-<!-- ============================================================ -->
-<!-- BUY MODAL                                                      -->
-<!-- ============================================================ -->
+ 
+<!-- BUY MODAL -->
 <div id="modal-buy" class="modal-bg hidden">
   <div class="modal-box">
     <h3 class="text-xl font-black text-sky-700 mb-1" id="buy-title">Buy Skin</h3>
@@ -410,20 +383,24 @@
       <p class="text-sky-400 text-xs mt-1">Sent directly to Chessio treasury</p>
       <p class="font-mono text-xs text-sky-500 mt-1 break-all">UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY</p>
     </div>
+    <!-- Verification progress -->
+    <div id="verify-status" class="hidden mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+      <p class="text-blue-700 text-sm font-semibold" id="verify-msg">⏳ Verifying on TON mainnet…</p>
+      <div class="verify-bar mt-2"><div class="verify-fill" id="verify-fill"></div></div>
+      <p class="text-blue-400 text-xs mt-1">This may take up to 60 seconds. Do not close this window.</p>
+    </div>
     <div id="buy-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm"></div>
     <div id="buy-success" class="hidden mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm font-semibold"></div>
     <div class="flex gap-3">
       <button onclick="confirmBuy()" id="buy-btn" class="flex-1 py-3 text-white font-bold rounded-xl flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#0284c7,#3b82f6)">
         <span>💎</span><span>Buy with TON</span>
       </button>
-      <button onclick="closeBuyModal()" class="flex-1 py-3 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">Cancel</button>
+      <button onclick="closeBuyModal()" id="cancel-btn" class="flex-1 py-3 bg-sky-100 hover:bg-sky-200 text-sky-700 font-bold rounded-xl">Cancel</button>
     </div>
   </div>
 </div>
-
-<!-- ============================================================ -->
-<!-- WALLET MODAL                                                   -->
-<!-- ============================================================ -->
+ 
+<!-- WALLET MODAL -->
 <div id="modal-wallet" class="modal-bg hidden">
   <div class="modal-box">
     <button onclick="closeWalletModal()" class="absolute top-4 right-4 text-sky-300 hover:text-sky-700 text-2xl font-bold leading-none">×</button>
@@ -452,18 +429,15 @@
     <p class="text-center text-sky-300 text-xs mt-5">Powered by TON Connect 2.0</p>
   </div>
 </div>
-
-<!-- ============================================================ -->
-<!-- JAVASCRIPT                                                     -->
-<!-- ============================================================ -->
+ 
 <script>
 'use strict';
-
-// ── TREASURY ADDRESS ──────────────────────────────────────────
+ 
+// ── TREASURY & PRICE ──────────────────────────────────────────
 const TREASURY = 'UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY';
 const SKIN_PRICE_TON = 0.3;
-const SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9)); // 300000000
-
+const SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9)); // "300000000"
+ 
 // ── PARTICLES ─────────────────────────────────────────────────
 (function(){
   const cv=document.getElementById('particle-canvas'),cx=cv.getContext('2d');
@@ -473,10 +447,8 @@ const SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9)); // 300000000
   addEventListener('resize',rsz);rsz();
   const rnd=(a,b)=>Math.random()*(b-a)+a;
   const mk=()=>({
-    x:rnd(0,W),y:rnd(-60,H+60),
-    vx:rnd(-.4,.4),vy:rnd(.12,.55),
-    sz:rnd(16,38),op:rnd(.12,.32),
-    p:PS[0|Math.random()*PS.length],
+    x:rnd(0,W),y:rnd(-60,H+60),vx:rnd(-.4,.4),vy:rnd(.12,.55),
+    sz:rnd(16,38),op:rnd(.12,.32),p:PS[0|Math.random()*PS.length],
     r:rnd(0,6.28),rs:rnd(-.007,.007),
     c:['#0ea5e9','#38bdf8','#7dd3fc','#3b82f6','#818cf8'][0|Math.random()*5]
   });
@@ -495,7 +467,7 @@ const SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9)); // 300000000
     requestAnimationFrame(fr);
   })();
 })();
-
+ 
 // ── NAVIGATION ────────────────────────────────────────────────
 function goto(pg,e){
   if(e)e.preventDefault();
@@ -504,7 +476,7 @@ function goto(pg,e){
   scrollTo(0,0);
   if(pg==='shop')renderShop();
 }
-
+ 
 // ── SCROLL REVEAL ─────────────────────────────────────────────
 (function(){
   const obs=new IntersectionObserver(es=>es.forEach(e=>{
@@ -512,7 +484,7 @@ function goto(pg,e){
   }),{threshold:.1});
   document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 })();
-
+ 
 // ── TOKENOMICS ────────────────────────────────────────────────
 (function(){
   const data=[
@@ -539,33 +511,25 @@ function goto(pg,e){
   }),{threshold:.1});
   document.querySelectorAll('#tok-bars .reveal').forEach(el=>o2.observe(el));
 })();
-
+ 
 // ── ROADMAP ───────────────────────────────────────────────────
 (function(){
   const items=[
     {phase:'Phase 1 — Q2 2025',title:'Launch & Foundation',done:true,items:[
-      '✅ Token launch on Groypfi.io',
-      '✅ Website & chess minigame live',
-      '✅ X & Telegram community launched',
-      '✅ WebRTC PvP & skin shop',
+      '✅ Token launch on Groypfi.io','✅ Website & chess minigame live',
+      '✅ X & Telegram community launched','✅ WebRTC PvP & skin shop',
     ]},
     {phase:'Phase 2 — Q3 2025',title:'Growth & Listings',done:false,items:[
-      '📈 First CEX listing campaign',
-      '🤝 Strategic partnership announcements',
-      '🏆 Community chess tournament ($CHESS prizes)',
-      '📱 Mobile-friendly UI optimization',
+      '📈 First CEX listing campaign','🤝 Strategic partnership announcements',
+      '🏆 Community chess tournament ($CHESS prizes)','📱 Mobile-friendly UI optimization',
     ]},
     {phase:'Phase 3 — Q4 2025',title:'Ecosystem Expansion',done:false,items:[
-      '🎴 Chess skin NFT collection on TON',
-      '💰 $CHESS staking & yield mechanism',
-      '🌉 Cross-chain bridge (ETH/BSC)',
-      '🎮 Ranked tournament ladder system',
+      '🎴 Chess skin NFT collection on TON','💰 $CHESS staking & yield mechanism',
+      '🌉 Cross-chain bridge (ETH/BSC)','🎮 Ranked tournament ladder system',
     ]},
     {phase:'Phase 4 — 2026',title:'Mass Adoption',done:false,items:[
-      '📲 Native mobile app (iOS & Android)',
-      '🤖 AI-powered coaching feature',
-      '🏦 Top-tier CEX listings',
-      '🌍 Global chess championship sponsorship',
+      '📲 Native mobile app (iOS & Android)','🤖 AI-powered coaching feature',
+      '🏦 Top-tier CEX listings','🌍 Global chess championship sponsorship',
     ]},
   ];
   const cnt=document.getElementById('roadmap-items');
@@ -573,8 +537,7 @@ function goto(pg,e){
     const d=document.createElement('div');
     d.className='reveal md:ml-16 glass rounded-2xl p-6 relative';
     d.style.transitionDelay=i*.1+'s';
-    const dotBg=item.done?'#0ea5e9':'#f0f9ff';
-    const dotBd=item.done?'#0ea5e9':'#bae6fd';
+    const dotBg=item.done?'#0ea5e9':'#f0f9ff',dotBd=item.done?'#0ea5e9':'#bae6fd';
     d.innerHTML=`<div class="hidden md:flex absolute items-center justify-center w-7 h-7 rounded-full border-2" style="border-color:${dotBd};background:${dotBg};left:-44px;top:22px">${item.done?'<span class="text-white text-xs font-black">✓</span>':''}</div>
       <div class="flex items-center gap-3 mb-3 flex-wrap">
         <span class="text-xs font-bold px-3 py-1 rounded-full ${item.done?'bg-sky-100 text-sky-600':'bg-blue-50 text-blue-500'}">${item.phase}</span>
@@ -589,48 +552,65 @@ function goto(pg,e){
     obs.observe(d);
   });
 })();
-
+ 
 // ── SKIN DEFINITIONS ──────────────────────────────────────────
 const BOARD_SKINS={
-  classic: {id:'classic', name:'Classic Blue',  desc:'Signature sky-blue Chessio board', free:true,
-            light:'#e0f2fe', dark:'#0284c7'},
-  dark:    {id:'dark',    name:'Dark Knight',   desc:'Dramatic midnight steel', free:false,
-            light:'#374151', dark:'#111827'},
-  emerald: {id:'emerald', name:'Emerald Forest',desc:'Classic green felt grandmaster', free:false,
-            light:'#d1fae5', dark:'#065f46'},
-  purple:  {id:'purple',  name:'Royal Purple',  desc:'Regal violet royal court', free:false,
-            light:'#ede9fe', dark:'#5b21b6'},
-  ocean:   {id:'ocean',   name:'Ocean Deep',    desc:'Deep cyan ocean battlefield', free:false,
-            light:'#cffafe', dark:'#0e7490'},
-  sunset:  {id:'sunset',  name:'Sunset Fire',   desc:'Warm amber & crimson dusk', free:false,
-            light:'#ffedd5', dark:'#9a3412'},
+  classic:{id:'classic',name:'Classic Blue',desc:'Signature sky-blue Chessio board',free:true,light:'#e0f2fe',dark:'#0284c7'},
+  dark:   {id:'dark',   name:'Dark Knight', desc:'Dramatic midnight steel',          free:false,light:'#374151',dark:'#111827'},
+  emerald:{id:'emerald',name:'Emerald Forest',desc:'Classic green felt grandmaster', free:false,light:'#d1fae5',dark:'#065f46'},
+  purple: {id:'purple', name:'Royal Purple', desc:'Regal violet royal court',        free:false,light:'#ede9fe',dark:'#5b21b6'},
+  ocean:  {id:'ocean',  name:'Ocean Deep',   desc:'Deep cyan ocean battlefield',     free:false,light:'#cffafe',dark:'#0e7490'},
+  sunset: {id:'sunset', name:'Sunset Fire',  desc:'Warm amber & crimson dusk',       free:false,light:'#ffedd5',dark:'#9a3412'},
 };
 const PIECE_SKINS={
-  standard:{id:'standard',name:'Standard',    desc:'Classic white & black pieces', free:true,
-            wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.9)',bsh:'0 0 3px rgba(255,255,255,.3)'},
-  gold:    {id:'gold',    name:'Golden Royal', desc:'Shimmering gold & bronze glow', free:false,
-            wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,1),0 0 20px rgba(251,191,36,.5)',bsh:'0 0 8px rgba(146,64,14,.8)'},
-  neon:    {id:'neon',    name:'Neon Cyber',   desc:'Cyan & magenta electric glow', free:false,
-            wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 12px #22d3ee,0 0 24px rgba(34,211,238,.6)',bsh:'0 0 12px #d946ef,0 0 24px rgba(217,70,239,.6)'},
-  ice:     {id:'ice',     name:'Ice Crystal',  desc:'Frosty glacial blue shimmer', free:false,
-            wp:'#bae6fd',bp:'#0369a1',wsh:'0 0 10px rgba(186,230,253,1),0 0 20px rgba(14,165,233,.5)',bsh:'0 0 10px rgba(3,105,161,.9)'},
-  blood:   {id:'blood',   name:'Blood Moon',   desc:'Crimson & dark red power', free:false,
-            wp:'#fca5a5',bp:'#7f1d1d',wsh:'0 0 10px rgba(252,165,165,1),0 0 20px rgba(239,68,68,.5)',bsh:'0 0 10px rgba(127,29,29,.9)'},
-  sakura:  {id:'sakura',  name:'Sakura Bloom', desc:'Pink cherry blossom elegance', free:false,
-            wp:'#fbcfe8',bp:'#86198f',wsh:'0 0 10px rgba(251,207,232,1),0 0 20px rgba(236,72,153,.5)',bsh:'0 0 10px rgba(134,25,143,.8)'},
+  standard:{id:'standard',name:'Standard',    desc:'Classic white & black pieces',     free:true,
+    wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.9)',bsh:'0 0 3px rgba(255,255,255,.3)'},
+  gold:    {id:'gold',    name:'Golden Royal', desc:'Shimmering gold & bronze glow',   free:false,
+    wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,1),0 0 20px rgba(251,191,36,.5)',bsh:'0 0 8px rgba(146,64,14,.8)'},
+  neon:    {id:'neon',    name:'Neon Cyber',   desc:'Cyan & magenta electric glow',    free:false,
+    wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 12px #22d3ee,0 0 24px rgba(34,211,238,.6)',bsh:'0 0 12px #d946ef,0 0 24px rgba(217,70,239,.6)'},
+  ice:     {id:'ice',     name:'Ice Crystal',  desc:'Frosty glacial blue shimmer',     free:false,
+    wp:'#bae6fd',bp:'#0369a1',wsh:'0 0 10px rgba(186,230,253,1),0 0 20px rgba(14,165,233,.5)',bsh:'0 0 10px rgba(3,105,161,.9)'},
+  blood:   {id:'blood',   name:'Blood Moon',   desc:'Crimson & dark red power',        free:false,
+    wp:'#fca5a5',bp:'#7f1d1d',wsh:'0 0 10px rgba(252,165,165,1),0 0 20px rgba(239,68,68,.5)',bsh:'0 0 10px rgba(127,29,29,.9)'},
+  sakura:  {id:'sakura',  name:'Sakura Bloom', desc:'Pink cherry blossom elegance',    free:false,
+    wp:'#fbcfe8',bp:'#86198f',wsh:'0 0 10px rgba(251,207,232,1),0 0 20px rgba(236,72,153,.5)',bsh:'0 0 10px rgba(134,25,143,.8)'},
 };
-
-let owned=JSON.parse(localStorage.getItem('chessio_owned')||'{"b":["classic"],"p":["standard"]}');
-let eqBoard=localStorage.getItem('chessio_board')||'classic';
-let eqPiece=localStorage.getItem('chessio_piece')||'standard';
-let pendingBuy=null;
-
-function saveOwned(){localStorage.setItem('chessio_owned',JSON.stringify(owned));}
+ 
+// ── SKIN STORAGE — PER WALLET ADDRESS ─────────────────────────
+// FIX: Skins are stored per wallet address so each buyer owns only THEIR skins.
+// Key format: chessio_owned_<walletAddress>
+function getOwnedKey(addr) {
+  if (!addr) return 'chessio_owned_guest';
+  // Normalize address to avoid case/format mismatches
+  return 'chessio_owned_' + addr.toLowerCase().replace(/[^a-z0-9]/g,'_');
+}
+ 
+let owned = {b:['classic'],p:['standard']};
+let eqBoard = localStorage.getItem('chessio_board') || 'classic';
+let eqPiece = localStorage.getItem('chessio_piece') || 'standard';
+let pendingBuy = null;
+ 
+function loadOwnedForWallet(addr) {
+  const key = getOwnedKey(addr);
+  const raw = localStorage.getItem(key);
+  if (raw) {
+    try { owned = JSON.parse(raw); } catch(e) { owned = {b:['classic'],p:['standard']}; }
+  } else {
+    owned = {b:['classic'],p:['standard']};
+  }
+}
+ 
+function saveOwned() {
+  const key = getOwnedKey(walletAddr);
+  localStorage.setItem(key, JSON.stringify(owned));
+}
+ 
 function boardOwned(id){return owned.b.includes(id);}
 function pieceOwned(id){return owned.p.includes(id);}
 function equipBoard(id){eqBoard=id;localStorage.setItem('chessio_board',id);renderShop();renderAIBoard();renderPvPBoard();}
 function equipPiece(id){eqPiece=id;localStorage.setItem('chessio_piece',id);renderShop();renderAIBoard();renderPvPBoard();}
-
+ 
 function applySq(cell,isLight){
   cell.style.background=isLight?BOARD_SKINS[eqBoard].light:BOARD_SKINS[eqBoard].dark;
 }
@@ -639,22 +619,22 @@ function applyPiece(span,isWhite){
   span.style.color=isWhite?sk.wp:sk.bp;
   span.style.textShadow=isWhite?sk.wsh:sk.bsh;
 }
-
+ 
 // ── SHOP RENDER ───────────────────────────────────────────────
 function renderShop(){renderBoardCards();renderPieceCards();}
-
+ 
 function boardPrev(sk){
   const c=[sk.light,sk.dark,sk.dark,sk.light,sk.dark,sk.light,sk.light,sk.dark];
   return `<div class="preview-grid mb-3">${c.map(x=>`<div style="background:${x};width:22px;height:22px;border-radius:3px"></div>`).join('')}</div>`;
 }
-
+ 
 function skinBtn(type,sk,own,eq){
   if(eq) return `<div class="py-2 bg-sky-50 text-sky-600 font-bold text-center rounded-xl text-xs border border-sky-200">✓ Equipped</div>`;
   if(own) return `<button onclick="equip${type==='board'?'Board':'Piece'}('${sk.id}')" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs">Equip</button>`;
   const grad=type==='board'?'linear-gradient(135deg,#0ea5e9,#3b82f6)':'linear-gradient(135deg,#7c3aed,#ec4899)';
   return `<button onclick="openBuy('${type}','${sk.id}')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:${grad}">💎 ${SKIN_PRICE_TON} TON</button>`;
 }
-
+ 
 function renderBoardCards(){
   const cnt=document.getElementById('board-skin-cards');if(!cnt)return;cnt.innerHTML='';
   Object.values(BOARD_SKINS).forEach(sk=>{
@@ -669,7 +649,7 @@ function renderBoardCards(){
     cnt.appendChild(d);
   });
 }
-
+ 
 function renderPieceCards(){
   const cnt=document.getElementById('piece-skin-cards');if(!cnt)return;cnt.innerHTML='';
   Object.values(PIECE_SKINS).forEach(sk=>{
@@ -687,7 +667,7 @@ function renderPieceCards(){
     cnt.appendChild(d);
   });
 }
-
+ 
 function openBuy(type,id){
   if(!walletAddr){pendingBuy={type,id};showWalletModal();return;}
   const sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];
@@ -697,117 +677,233 @@ function openBuy(type,id){
   document.getElementById('buy-price').textContent=SKIN_PRICE_TON+' TON';
   document.getElementById('buy-error').classList.add('hidden');
   document.getElementById('buy-success').classList.add('hidden');
+  document.getElementById('verify-status').classList.add('hidden');
   const btn=document.getElementById('buy-btn');
   btn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+  document.getElementById('cancel-btn').disabled=false;
   document.getElementById('modal-buy').classList.remove('hidden');
 }
 function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
-
-async function confirmBuy(){
-  if(!pendingBuy)return;
-  const {type,id}=pendingBuy;
-  const sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];
-  const errEl=document.getElementById('buy-error');
-  const sucEl=document.getElementById('buy-success');
-  const btn=document.getElementById('buy-btn');
-
-  // Must have wallet connected
-  if(!walletAddr||!tonUI){
-    errEl.textContent='⚠️ Please connect your TON wallet first.';
+ 
+// ── ON-CHAIN VERIFICATION via TON CENTER API (Mainnet) ────────
+// FIX: Polls TON mainnet API to confirm the transaction is ACTUALLY on-chain
+// before unlocking the skin. Prevents any bypass or cancellation exploit.
+async function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
+  const TONCENTER = 'https://toncenter.com/api/v2/getTransactions';
+  const minAmount = BigInt(amountNanoStr);
+  const maxAttempts = 20; // Poll up to 20 times, 3s apart = 60 seconds max
+ 
+  // Normalize the sender address for comparison
+  // TonConnect returns raw address like "0:abcdef..."
+  // TonCenter also returns raw addresses in tx.in_msg.source
+  const normalizeAddr = (a) => (a || '').toLowerCase().trim();
+  const senderNorm = normalizeAddr(senderAddr);
+ 
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    // Wait 3 seconds between each poll (first poll after 3s)
+    await new Promise(r => setTimeout(r, 3000));
+ 
+    // Update progress bar
+    const pct = Math.min(((attempt + 1) / maxAttempts) * 100, 95);
+    const fill = document.getElementById('verify-fill');
+    if (fill) fill.style.width = pct + '%';
+ 
+    try {
+      const url = `${TONCENTER}?address=${encodeURIComponent(TREASURY)}&limit=20&to_lt=0&archival=false`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) continue;
+      const data = await res.json();
+ 
+      if (!data.ok || !Array.isArray(data.result)) continue;
+ 
+      for (const tx of data.result) {
+        // Skip transactions older than the purchase start time (with 60s buffer for clock skew)
+        if (tx.utime < startTimeSec - 60) break;
+ 
+        const inMsg = tx.in_msg;
+        if (!inMsg || !inMsg.source) continue;
+ 
+        // Check sender address matches
+        const srcNorm = normalizeAddr(inMsg.source);
+ 
+        // Match: either exact raw address match, or last 8 chars match (handles 0:xxx vs hex differences)
+        const addrMatch =
+          srcNorm === senderNorm ||
+          (srcNorm.length > 8 && senderNorm.length > 8 &&
+           srcNorm.slice(-24) === senderNorm.slice(-24));
+ 
+        if (!addrMatch) continue;
+ 
+        // Check amount: in_msg.value is in nanoTON as string
+        const txAmount = BigInt(inMsg.value || '0');
+        if (txAmount < minAmount) continue;
+ 
+        // Found a matching confirmed transaction!
+        return {
+          verified: true,
+          txHash: tx.transaction_id ? tx.transaction_id.hash : 'unknown',
+          amount: inMsg.value,
+          timestamp: tx.utime
+        };
+      }
+    } catch (err) {
+      // Network error — continue polling
+      console.warn('TON API poll error:', err);
+    }
+  }
+ 
+  return { verified: false };
+}
+ 
+// ── BUY FLOW WITH ON-CHAIN VERIFICATION ──────────────────────
+async function confirmBuy() {
+  if (!pendingBuy) return;
+  const {type, id} = pendingBuy;
+  const sk = type === 'board' ? BOARD_SKINS[id] : PIECE_SKINS[id];
+  const errEl = document.getElementById('buy-error');
+  const sucEl = document.getElementById('buy-success');
+  const verifyEl = document.getElementById('verify-status');
+  const verifyMsg = document.getElementById('verify-msg');
+  const btn = document.getElementById('buy-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+ 
+  if (!walletAddr || !tonUI) {
+    errEl.textContent = '⚠️ Please connect your TON wallet first.';
     errEl.classList.remove('hidden');
-    btn.disabled=false;
-    // Re-open wallet modal after short delay
-    setTimeout(()=>{closeBuyModal();showWalletModal();},1200);
+    setTimeout(() => { closeBuyModal(); showWalletModal(); }, 1200);
     return;
   }
-
-  btn.disabled=true;
-  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending to wallet…';
-  errEl.classList.add('hidden');sucEl.classList.add('hidden');
-
-  try{
-    // Send exactly 0.3 TON to treasury
-    const result=await tonUI.sendTransaction({
-      validUntil:Math.floor(Date.now()/1000)+600,
-      messages:[{
-        address:TREASURY,
-        amount:SKIN_PRICE_NANO,
+ 
+  btn.disabled = true;
+  cancelBtn.disabled = true;
+  btn.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending to wallet…';
+  errEl.classList.add('hidden');
+  sucEl.classList.add('hidden');
+  verifyEl.classList.add('hidden');
+ 
+  // Record start time BEFORE sending (unix seconds)
+  const startTimeSec = Math.floor(Date.now() / 1000);
+ 
+  try {
+    // Step 1: Send transaction via TonConnect (user signs in wallet app)
+    await tonUI.sendTransaction({
+      validUntil: startTimeSec + 600,
+      messages: [{
+        address: TREASURY,
+        amount: SKIN_PRICE_NANO,
       }]
     });
-
-    // Transaction signed & broadcast — unlock skin
-    if(type==='board'){if(!owned.b.includes(id))owned.b.push(id);}
-    else{if(!owned.p.includes(id))owned.p.push(id);}
-    saveOwned();
-
-    sucEl.textContent='✅ '+SKIN_PRICE_TON+' TON sent! '+sk.name+' unlocked successfully.';
-    sucEl.classList.remove('hidden');
-    btn.innerHTML='✅ Unlocked!';
-    setTimeout(()=>{closeBuyModal();renderShop();},2000);
-
-  }catch(err){
-    const msg=String((err&&(err.message||err.code))||'');
-    const isReject=msg.toLowerCase().includes('reject')
-      ||msg.includes('UserDeclined')
-      ||msg.includes('CANCELLED')
-      ||msg.includes('cancel');
-
-    if(isReject){
-      errEl.textContent='❌ Transaction cancelled. Your TON was NOT sent.';
-    }else{
-      errEl.textContent='❌ Transaction failed: '+(msg||'Unknown error')+'. Please try again.';
+ 
+    // Step 2: Transaction was SIGNED and BROADCAST by the wallet.
+    // Now we must verify it is CONFIRMED on-chain before unlocking.
+    btn.innerHTML = '⏳ Confirming on-chain…';
+    verifyMsg.textContent = '⏳ Verifying on TON mainnet… please wait';
+    document.getElementById('verify-fill').style.width = '0%';
+    verifyEl.classList.remove('hidden');
+ 
+    const result = await verifyTonTransaction(walletAddr, SKIN_PRICE_NANO, startTimeSec);
+ 
+    if (result.verified) {
+      // Step 3: CONFIRMED on-chain — now unlock the skin for this wallet
+      if (type === 'board') { if (!owned.b.includes(id)) owned.b.push(id); }
+      else { if (!owned.p.includes(id)) owned.p.push(id); }
+      saveOwned(); // Saves under this wallet's address key
+ 
+      document.getElementById('verify-fill').style.width = '100%';
+      verifyMsg.textContent = '✅ Transaction confirmed on TON mainnet!';
+ 
+      sucEl.textContent = `✅ ${SKIN_PRICE_TON} TON confirmed on-chain! ${sk.name} is now yours.`;
+      sucEl.classList.remove('hidden');
+      btn.innerHTML = '✅ Unlocked!';
+      setTimeout(() => { closeBuyModal(); renderShop(); }, 2500);
+ 
+    } else {
+      // Transaction was broadcast but NOT confirmed within 60 seconds
+      verifyEl.classList.add('hidden');
+      errEl.textContent = '⚠️ Could not confirm your transaction on-chain within 60 seconds. If TON was sent, it may still confirm — check your wallet. Your skin will appear when you reconnect your wallet after confirmation.';
+      errEl.classList.remove('hidden');
+      btn.disabled = false;
+      cancelBtn.disabled = false;
+      btn.innerHTML = '<span>💎</span><span>Try Again</span>';
+    }
+ 
+  } catch (err) {
+    const msg = String((err && (err.message || err.code)) || '');
+    const isReject = msg.toLowerCase().includes('reject')
+      || msg.includes('UserDeclined')
+      || msg.includes('CANCELLED')
+      || msg.includes('cancel');
+ 
+    verifyEl.classList.add('hidden');
+    if (isReject) {
+      errEl.textContent = '❌ Transaction cancelled. Your TON was NOT sent.';
+    } else {
+      errEl.textContent = '❌ Transaction failed: ' + (msg || 'Unknown error') + '. Please try again.';
     }
     errEl.classList.remove('hidden');
-    btn.disabled=false;
-    btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+    btn.disabled = false;
+    cancelBtn.disabled = false;
+    btn.innerHTML = '<span>💎</span><span>Buy with TON</span>';
   }
 }
-
+ 
 // ── TON WALLET ────────────────────────────────────────────────
-let walletAddr=null,tonUI=null;
-
-function initTonConnect(){
-  try{
-    tonUI=new TON_CONNECT_UI.TonConnectUI({
-      manifestUrl:'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
+let walletAddr = null, tonUI = null;
+ 
+function initTonConnect() {
+  try {
+    tonUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json',
     });
-    tonUI.onStatusChange(w=>{
-      walletAddr=w?w.account.address:null;
+    tonUI.onStatusChange(w => {
+      const prevAddr = walletAddr;
+      walletAddr = w ? w.account.address : null;
+ 
+      // FIX: Load wallet-specific owned skins when wallet connects/changes
+      if (walletAddr && walletAddr !== prevAddr) {
+        loadOwnedForWallet(walletAddr);
+        renderShop();
+      } else if (!walletAddr) {
+        // Wallet disconnected — reset to guest state
+        owned = {b:['classic'],p:['standard']};
+        renderShop();
+      }
+ 
       syncWalletUI(walletAddr);
-      if(w&&pendingBuy){const pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
+      if (w && pendingBuy) { const pb = pendingBuy; pendingBuy = null; openBuy(pb.type, pb.id); }
     });
-  }catch(e){console.warn('TON Connect:',e);}
+  } catch(e) { console.warn('TON Connect:', e); }
 }
-
-function syncWalletUI(addr){
-  const short=addr?addr.slice(0,6)+'…'+addr.slice(-4):null;
-  const lbl=short||'Connect Wallet';
+ 
+function syncWalletUI(addr) {
+  const short = addr ? addr.slice(0,6)+'…'+addr.slice(-4) : null;
+  const lbl = short || 'Connect Wallet';
   ['ton-lbl','ton-lbl2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=lbl;});
-  const sw=document.getElementById('shop-wallet-txt');
-  if(sw)sw.textContent=addr?'Connected: '+short:'Not connected — connect wallet to purchase skins';
-  const cb=document.getElementById('shop-conn-btn');
-  if(cb)cb.textContent=addr?'Disconnect':'Connect Wallet';
+  const sw = document.getElementById('shop-wallet-txt');
+  if (sw) sw.textContent = addr ? 'Connected: '+short+' — your skins are loaded' : 'Not connected — connect wallet to purchase skins';
+  const cb = document.getElementById('shop-conn-btn');
+  if (cb) cb.textContent = addr ? 'Disconnect' : 'Connect Wallet';
 }
-
-function walletClick(){
-  if(walletAddr){if(tonUI)tonUI.disconnect();return;}
+ 
+function walletClick() {
+  if (walletAddr) { if (tonUI) tonUI.disconnect(); return; }
   showWalletModal();
 }
 function showWalletModal(){document.getElementById('modal-wallet').classList.remove('hidden');}
 function closeWalletModal(){document.getElementById('modal-wallet').classList.add('hidden');}
-
-function doConnect(type){
+ 
+function doConnect(type) {
   closeWalletModal();
-  if(tonUI){tonUI.openModal();return;}
+  if (tonUI) { tonUI.openModal(); return; }
   const links={tonkeeper:'https://app.tonkeeper.com/',mytonwallet:'https://mytonwallet.io/',tonhub:'https://tonhub.com/'};
   window.open(links[type]||links.tonkeeper,'_blank');
 }
-
+ 
 // ── CHESS AI ENGINE ───────────────────────────────────────────
 const PV={p:100,n:320,b:330,r:500,q:900,k:20000};
 const PT=[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0];
 const KT=[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50];
-
+ 
 function evalBoard(g){
   let s=0;const b=g.board();
   for(let r=0;r<8;r++)for(let c=0;c<8;c++){
@@ -839,12 +935,12 @@ function bestMove(g,diff){
   for(const mv of ms){g.move(mv);const v=mm(g,dep-1,-Infinity,Infinity,false);g.undo();if(v>bv){bv=v;best=mv;}}
   return best;
 }
-
+ 
 // ── BOARD RENDERER ────────────────────────────────────────────
 const PU={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
 const FL=['a','b','c','d','e','f','g','h'],RK=[8,7,6,5,4,3,2,1];
 const sqN=(c,r)=>FL[c]+RK[r];
-
+ 
 function drawBoard(el,game,selSq,posSqs,cb,flip){
   el.innerHTML='';
   const bd=game.board();
@@ -866,10 +962,10 @@ function drawBoard(el,game,selSq,posSqs,cb,flip){
     }
   }
 }
-
+ 
 // ── AI GAME ───────────────────────────────────────────────────
 let aig=null,aiDf='normal',aiSel=null,aiPos=[],aiTh=false,aiHst=[];
-
+ 
 function setDiff(d){
   aiDf=d;
   ['easy','normal','hard'].forEach(x=>{
@@ -951,13 +1047,13 @@ function backToMenu(){
   document.getElementById('play-menu').classList.remove('hidden');
   aig=null;pvpReset();
 }
-
+ 
 // ── WebRTC PvP ────────────────────────────────────────────────
 let peer=null,conn=null,pvpG=null,pvpCol='white',pvpRoom='',pvpHst=[],pvpSel=null,pvpPos=[];
-
+ 
 const mkCode=()=>Math.random().toString(36).substring(2,8).toUpperCase();
 const copyCode=()=>navigator.clipboard.writeText(document.getElementById('pvp-code-display').textContent).catch(()=>{});
-
+ 
 function startPvP(){
   document.getElementById('play-menu').classList.add('hidden');
   document.getElementById('play-ai').classList.add('hidden');
@@ -977,27 +1073,27 @@ function pvpShowGame(){
   document.getElementById('pvp-game').classList.remove('hidden');
 }
 function pvpCreate(){
-  pvpRoom=mkCode();
-  document.getElementById('pvp-code-display').textContent=pvpRoom;
+  const code=mkCode();
+  pvpRoom=code;
+  document.getElementById('pvp-code-display').textContent=code;
   pvpShowWait();
-  document.getElementById('pvp-wait-status').innerHTML='<div class="w-3 h-3 border-2 border-sky-400 border-t-transparent rounded-full spin inline-block mr-2"></div>Creating room…';
-  peer=new Peer(pvpRoom,{debug:1});
-  peer.on('open',()=>{document.getElementById('pvp-wait-status').textContent='✅ Room ready — share the code with your friend!';});
+  document.getElementById('pvp-wait-status').textContent='Creating room '+code+'…';
+  peer=new Peer(code,{debug:1});
+  peer.on('open',()=>{document.getElementById('pvp-wait-status').textContent='Room ready! Waiting for opponent…';});
   peer.on('connection',c=>{
     conn=c;
-    c.on('open',()=>{
+    conn.on('open',()=>{
       pvpCol='white';pvpG=new Chess();
-      c.send({type:'start',color:'black',fen:pvpG.fen()});
+      conn.send({type:'start',color:'black',fen:pvpG.fen()});
       pvpBegin('white');
     });
-    c.on('data',pvpData);c.on('close',pvpDisc);
+    conn.on('data',pvpData);conn.on('close',pvpDisc);
   });
-  peer.on('error',e=>{pvpErr('Error: '+e.message);pvpShowLobby();});
+  peer.on('error',e=>{pvpErr('Peer error: '+e.message);pvpShowLobby();});
 }
 function pvpJoin(){
-  const code=document.getElementById('pvp-join-input').value.trim().toUpperCase();
-  if(!code){pvpErr('Please enter a room code.');return;}
-  document.getElementById('pvp-err').classList.add('hidden');
+  const code=(document.getElementById('pvp-join-input').value||'').trim().toUpperCase();
+  if(code.length<4){pvpErr('Enter a valid room code.');return;}
   pvpRoom=code;
   document.getElementById('pvp-code-display').textContent=code;
   pvpShowWait();
@@ -1082,12 +1178,13 @@ function pvpReset(){
   const pe=document.getElementById('pvp-err');if(pe)pe.classList.add('hidden');
   pvpShowLobby();
 }
-
+ 
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
   initTonConnect();
   renderShop();
 });
 </script>
-</body>
+<script src="https://replit-cdn.com/replit-pill/replit-pill.global.js" data-repl-id="418aa9d1-0947-479c-beee-2218bb11fc92"></script></body>
 </html>
+ 

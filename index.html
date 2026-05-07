@@ -388,9 +388,9 @@
             <div class="flex items-center gap-2">
               <span class="text-xl">🏆</span>
               <h2 class="text-lg font-black text-sky-700">Leaderboard</h2>
-              <span class="lb-live text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">● Live</span>
+              <span id="lb-live-badge" class="lb-live text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">● Live 30s</span>
             </div>
-            <span class="text-xs text-sky-400 font-semibold">Top points on this device</span>
+            <button id="lb-refresh-btn" onclick="refreshLeaderboard()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-100 text-sky-600 hover:bg-sky-200 transition-all"><span id="lb-refresh-icon" style="display:inline-block">↻</span> Refresh</button>
           </div>
           <div class="flex items-center gap-2 px-3 mb-1">
             <span class="text-xs font-bold text-sky-300 min-w-[26px] text-center">#</span>
@@ -677,6 +677,30 @@ function updateLeaderboard(addr, points, streak) {
     setLbCache(lb.slice(0, 20));
     renderLeaderboard(lb);
   });
+}
+
+function refreshLeaderboard() {
+  var btn = document.getElementById('lb-refresh-btn');
+  var icon = document.getElementById('lb-refresh-icon');
+  if (btn) btn.disabled = true;
+  if (icon) { icon.style.transition = 'transform 0.6s linear'; icon.style.transform = 'rotate(360deg)'; }
+  fetch(API_BASE + '/leaderboard')
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(data) {
+      if (data && data.ok && Array.isArray(data.leaderboard)) {
+        setLbCache(data.leaderboard);
+        renderLeaderboard(data.leaderboard);
+      } else {
+        renderLeaderboard(getLbCache());
+      }
+      if (btn) btn.disabled = false;
+      setTimeout(function() { if (icon) { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; } }, 650);
+    })
+    .catch(function() {
+      renderLeaderboard(getLbCache());
+      if (btn) btn.disabled = false;
+      setTimeout(function() { if (icon) { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; } }, 650);
+    });
 }
 
 function fetchAndRenderLeaderboard() {
@@ -1299,6 +1323,14 @@ window.addEventListener('load', function() {
   renderLeaderboard();
   fetchAndRenderLeaderboard();
   setDiff('normal');
+  var _lbSecs=30;
+  function _lbTick(){
+    _lbSecs--;
+    var b=document.getElementById("lb-live-badge");
+    if(b)b.textContent="\u25cf Live "+_lbSecs+"s";
+    if(_lbSecs<=0){_lbSecs=30;fetchAndRenderLeaderboard();}
+  }
+  setInterval(_lbTick,1000);
 });
 </script>
 </body>

@@ -126,7 +126,7 @@
       <div class="mt-8 flex flex-wrap justify-center gap-4">
         <div class="glass rounded-2xl px-5 py-3 text-center">
           <p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p>
-          <p class="contract-badge mt-1">EQAAAAAAAAAA…AM9c</p>
+          <p class="text-sky-700 font-bold text-sm mt-1">Soon</p>
         </div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p><p class="text-sky-700 font-bold text-sm mt-1">TON Blockchain</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Total Supply</p><p class="text-sky-700 font-bold text-sm mt-1">1,000,000,000 $CHESS</p></div>
@@ -155,7 +155,7 @@
   <section id="tokenomics" class="py-16 px-4 bg-sky-50/80 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-3">Tokenomics</h2>
-      <p class="reveal text-center text-sky-500 text-sm mb-10">Total Supply: 1,000,000,000 $CHESS • Contract: <span class="font-mono text-sky-600 text-xs">EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c</span></p>
+      <p class="reveal text-center text-sky-500 text-sm mb-10">Total Supply: 1,000,000,000 $CHESS • Contract: <span class="font-bold text-sky-600">Soon</span></p>
       <div class="grid md:grid-cols-2 gap-8 items-center">
         <div class="space-y-5" id="tok-bars"></div>
         <div class="reveal glass rounded-2xl p-8">
@@ -213,7 +213,7 @@
         </div>
       </div>
       <div class="mt-6 pt-6 border-t border-sky-800 text-center text-sky-500 text-sm space-y-1">
-        <p class="font-mono text-xs">Contract: EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c</p>
+        <p class="text-xs">Contract: <span class="font-bold text-sky-300">Soon</span></p>
         <p>Chessio is a memecoin. Not financial advice. DYOR. © 2025 Chessio.</p>
       </div>
     </div>
@@ -710,49 +710,56 @@ async function confirmBuy(){
   const errEl=document.getElementById('buy-error');
   const sucEl=document.getElementById('buy-success');
   const btn=document.getElementById('buy-btn');
+
+  // Must have wallet connected
+  if(!walletAddr||!tonUI){
+    errEl.textContent='⚠️ Please connect your TON wallet first.';
+    errEl.classList.remove('hidden');
+    btn.disabled=false;
+    // Re-open wallet modal after short delay
+    setTimeout(()=>{closeBuyModal();showWalletModal();},1200);
+    return;
+  }
+
   btn.disabled=true;
-  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending…';
+  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending to wallet…';
   errEl.classList.add('hidden');sucEl.classList.add('hidden');
 
-  const unlock=()=>{
+  try{
+    // Send exactly 0.3 TON to treasury
+    const result=await tonUI.sendTransaction({
+      validUntil:Math.floor(Date.now()/1000)+600,
+      messages:[{
+        address:TREASURY,
+        amount:SKIN_PRICE_NANO,
+      }]
+    });
+
+    // Transaction signed & broadcast — unlock skin
     if(type==='board'){if(!owned.b.includes(id))owned.b.push(id);}
     else{if(!owned.p.includes(id))owned.p.push(id);}
     saveOwned();
-  };
 
-  try{
-    if(tonUI){
-      // Real TON transaction to treasury
-      await tonUI.sendTransaction({
-        validUntil:Math.floor(Date.now()/1000)+360,
-        messages:[{
-          address:TREASURY,
-          amount:SKIN_PRICE_NANO,
-          payload:'', // no payload needed for simple transfer
-        }]
-      });
-      unlock();
-      sucEl.textContent='✅ Payment confirmed! '+sk.name+' is now unlocked.';
-      sucEl.classList.remove('hidden');
-      btn.innerHTML='✅ Unlocked!';
-      setTimeout(()=>{closeBuyModal();renderShop();},1800);
-    }else{
-      throw new Error('no_wallet');
-    }
+    sucEl.textContent='✅ '+SKIN_PRICE_TON+' TON sent! '+sk.name+' unlocked successfully.';
+    sucEl.classList.remove('hidden');
+    btn.innerHTML='✅ Unlocked!';
+    setTimeout(()=>{closeBuyModal();renderShop();},2000);
+
   }catch(err){
-    const msg=(err&&err.message)||'';
-    if(msg.toLowerCase().includes('reject')||msg.includes('UserDeclined')){
-      errEl.textContent='❌ Transaction cancelled by user.';
-      errEl.classList.remove('hidden');
-      btn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+    const msg=String((err&&(err.message||err.code))||'');
+    const isReject=msg.toLowerCase().includes('reject')
+      ||msg.includes('UserDeclined')
+      ||msg.includes('CANCELLED')
+      ||msg.includes('cancel');
+
+    if(isReject){
+      errEl.textContent='❌ Transaction cancelled. Your TON was NOT sent.';
     }else{
-      // Offline / demo fallback
-      unlock();
-      sucEl.textContent='✅ Skin unlocked (demo mode — deploy to a host for real TON transactions).';
-      sucEl.classList.remove('hidden');
-      btn.innerHTML='✅ Done!';
-      setTimeout(()=>{closeBuyModal();renderShop();},2200);
+      errEl.textContent='❌ Transaction failed: '+(msg||'Unknown error')+'. Please try again.';
     }
+    errEl.classList.remove('hidden');
+    btn.disabled=false;
+    btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
   }
 }
 

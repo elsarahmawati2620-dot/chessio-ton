@@ -75,7 +75,6 @@
     .lb-streak{font-size:10px;font-weight:700;color:#dc2626;white-space:nowrap}
     .lb-empty{text-align:center;padding:20px;color:#7dd3fc;font-size:13px}
     @keyframes lbPulse{0%,100%{opacity:1}50%{opacity:.6}}
-    .lb-live{animation:lbPulse 2s ease-in-out infinite}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
@@ -381,26 +380,6 @@
           </div>
         </div>
 
-        <!-- LEADERBOARD -->
-        <div class="glass rounded-2xl p-5 mt-4">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <span class="text-xl">🏆</span>
-              <h2 class="text-lg font-black text-sky-700">Leaderboard</h2>
-              <span id="lb-live-badge" class="lb-live text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">● Live 30s</span>
-            </div>
-            <button id="lb-refresh-btn" onclick="refreshLeaderboard()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-100 text-sky-600 hover:bg-sky-200 transition-all"><span id="lb-refresh-icon" style="display:inline-block">↻</span> Refresh</button>
-          </div>
-          <div class="flex items-center gap-2 px-3 mb-1">
-            <span class="text-xs font-bold text-sky-300 min-w-[26px] text-center">#</span>
-            <span class="text-xs font-bold text-sky-300 flex-1">Wallet</span>
-            <span class="text-xs font-bold text-sky-300 w-20 text-right">Points</span>
-            <span class="text-xs font-bold text-sky-300 w-14 text-right">Streak</span>
-          </div>
-          <div id="lb-list"></div>
-          <p class="text-xs text-sky-300 text-center mt-3">🔒 Only connected wallets appear on the leaderboard</p>
-        </div>
-
       </div>
     </div><!-- end play-menu -->
 
@@ -543,7 +522,6 @@ function savePts() {
   const sk = getStreakKey(walletAddr);
   if (pk) localStorage.setItem(pk, String(totalPoints));
   if (sk) localStorage.setItem(sk, String(hardStreak));
-  updateLeaderboard(walletAddr, totalPoints, hardStreak);
 }
 
 function loadPointsForWallet(addr) {
@@ -645,101 +623,6 @@ function doConvert() {
   document.getElementById('conv-done').classList.remove('hidden');
 }
 
-// ── LEADERBOARD ───────────────────────────────────────────────
-const API_BASE = '/api';
-const RANK_MEDALS = ['🥇','🥈','🥉'];
-
-const LB_CACHE_KEY = 'chessio_lb_cache';
-function getLbCache() {
-  try { return JSON.parse(localStorage.getItem(LB_CACHE_KEY) || '[]'); } catch(e) { return []; }
-}
-function setLbCache(lb) {
-  try { localStorage.setItem(LB_CACHE_KEY, JSON.stringify(lb)); } catch(e) {}
-}
-
-function updateLeaderboard(addr, points, streak) {
-  if (!addr) return;
-  const short = addr.slice(0,6) + '…' + addr.slice(-4);
-  fetch(API_BASE + '/leaderboard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ walletAddress: addr, shortAddr: short, points: points, streak: streak }),
-  })
-  .then(function(r) { return r.ok ? r.json() : null; })
-  .then(function(data) { if (data && data.ok) fetchAndRenderLeaderboard(); })
-  .catch(function() {
-    var lb = getLbCache();
-    var idx = lb.findIndex(function(e) { return e.walletAddress === addr; });
-    var entry = { walletAddress: addr, shortAddr: short, points: points, streak: streak };
-    if (idx >= 0) { lb[idx] = entry; } else { lb.push(entry); }
-    lb.sort(function(a, b) { return b.points - a.points; });
-    setLbCache(lb.slice(0, 20));
-    renderLeaderboard(lb);
-  });
-}
-
-function refreshLeaderboard() {
-  var btn = document.getElementById('lb-refresh-btn');
-  var icon = document.getElementById('lb-refresh-icon');
-  if (btn) btn.disabled = true;
-  if (icon) { icon.style.transition = 'transform 0.6s linear'; icon.style.transform = 'rotate(360deg)'; }
-  fetch(API_BASE + '/leaderboard')
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(data) {
-      if (data && data.ok && Array.isArray(data.leaderboard)) {
-        setLbCache(data.leaderboard);
-        renderLeaderboard(data.leaderboard);
-      } else {
-        renderLeaderboard(getLbCache());
-      }
-      if (btn) btn.disabled = false;
-      setTimeout(function() { if (icon) { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; } }, 650);
-    })
-    .catch(function() {
-      renderLeaderboard(getLbCache());
-      if (btn) btn.disabled = false;
-      setTimeout(function() { if (icon) { icon.style.transition = 'none'; icon.style.transform = 'rotate(0deg)'; } }, 650);
-    });
-}
-
-function fetchAndRenderLeaderboard() {
-  fetch(API_BASE + '/leaderboard')
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(data) {
-      if (data && data.ok && Array.isArray(data.leaderboard)) {
-        setLbCache(data.leaderboard);
-        renderLeaderboard(data.leaderboard);
-      } else {
-        renderLeaderboard(getLbCache());
-      }
-    })
-    .catch(function() { renderLeaderboard(getLbCache()); });
-}
-
-// FIX: explicit parameter instead of arguments[0]
-function renderLeaderboard(data) {
-  var lb = Array.isArray(data) ? data : getLbCache();
-  var cnt = document.getElementById('lb-list'); if (!cnt) return;
-  if (!lb.length) {
-    cnt.innerHTML = '<div class="lb-empty">No players yet — connect wallet &amp; win games to appear here!</div>';
-    return;
-  }
-  cnt.innerHTML = lb.slice(0, 10).map(function(e, i) {
-    var addr = e.walletAddress || e.addr || '';
-    var short = e.shortAddr || e.short || addr.slice(0,6)+'…'+addr.slice(-4);
-    var isMe = walletAddr && addr === walletAddr;
-    var medal = RANK_MEDALS[i] || '<span class="text-sky-400">'+(i+1)+'</span>';
-    var streakHtml = e.streak > 0 ? '<span class="lb-streak">🔥'+e.streak+'</span>' : '<span class="lb-streak text-sky-200">—</span>';
-    var youBadge = isMe ? '<span class="text-xs font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded-lg ml-1">YOU</span>' : '';
-    return '<div class="lb-row'+(isMe?' lb-me':'')+'">'+
-      '<span class="lb-rank">'+medal+'</span>'+
-      '<span class="lb-addr">'+short+youBadge+'</span>'+
-      '<span class="lb-pts w-20 text-right">⭐ '+((e.points||0).toLocaleString())+'</span>'+
-      '<span class="w-14 text-right">'+streakHtml+'</span>'+
-    '</div>';
-  }).join('');
-}
-
 // ── PARTICLES ─────────────────────────────────────────────────
 (function(){
   var cv=document.getElementById('particle-canvas'),cx=cv.getContext('2d');
@@ -760,7 +643,7 @@ function goto(pg, e) {
   document.getElementById('page-' + pg).classList.add('active');
   scrollTo(0, 0);
   if (pg === 'shop') renderShop();
-  if (pg === 'play') { renderPoints(); fetchAndRenderLeaderboard(); }
+  if (pg === 'play') { renderPoints(); }
 }
 
 // ── SCROLL REVEAL ─────────────────────────────────────────────
@@ -1021,8 +904,6 @@ function initTonConnect() {
 
       syncWalletUI(walletAddr);
       renderPoints();
-      fetchAndRenderLeaderboard();
-
       if (w && pendingBuy) { var pb = pendingBuy; pendingBuy = null; openBuy(pb.type, pb.id); }
     });
   } catch(e) { console.warn('TonConnect init failed:', e); }
@@ -1305,17 +1186,7 @@ window.addEventListener('load', function() {
   initTonConnect();
   renderShop();
   renderPoints();
-  renderLeaderboard();
-  fetchAndRenderLeaderboard();
   setDiff('normal');
-  var _lbSecs=30;
-  function _lbTick(){
-    _lbSecs--;
-    var b=document.getElementById("lb-live-badge");
-    if(b)b.textContent="\u25cf Live "+_lbSecs+"s";
-    if(_lbSecs<=0){_lbSecs=30;fetchAndRenderLeaderboard();}
-  }
-  setInterval(_lbTick,1000);
 });
 </script>
 </body>

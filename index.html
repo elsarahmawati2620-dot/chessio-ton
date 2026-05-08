@@ -160,19 +160,18 @@
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-3">Tokenomics</h2>
       <p class="reveal text-center text-sky-500 text-sm mb-10">Total Supply: 1,000,000,000 $CHESSIO • Contract: <span class="font-bold text-sky-600">Soon</span></p>
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div class="space-y-5" id="tok-bars"></div>
+      <div class="max-w-lg mx-auto">
         <div class="reveal glass rounded-2xl p-8">
-          <p class="text-sky-500 text-xs uppercase tracking-widest font-semibold mb-3">Token Details</p>
-          <div class="space-y-3">
-            <div class="flex justify-between items-center py-2 border-b border-sky-100"><span class="text-sky-600 text-sm">Symbol</span><span class="font-black text-sky-700">$CHESSIO</span></div>
-            <div class="flex justify-between items-center py-2 border-b border-sky-100"><span class="text-sky-600 text-sm">Network</span><span class="font-bold text-sky-700">TON Blockchain</span></div>
-            <div class="flex justify-between items-center py-2 border-b border-sky-100"><span class="text-sky-600 text-sm">Type</span><span class="font-bold text-sky-700">Jetton (TEP-74)</span></div>
-            <div class="flex justify-between items-center py-2 border-b border-sky-100"><span class="text-sky-600 text-sm">Launch</span><span class="font-bold text-sky-700">Groypfi.io</span></div>
-            <div class="flex justify-between items-center py-2 border-b border-sky-100"><span class="text-sky-600 text-sm">Tax</span><span class="font-bold text-green-600">0%</span></div>
-            <div class="flex justify-between items-center py-2"><span class="text-sky-600 text-sm">Total Supply</span><span class="font-black text-sky-700">1,000,000,000</span></div>
+          <p class="text-sky-500 text-xs uppercase tracking-widest font-semibold mb-5 text-center">Token Details</p>
+          <div class="divide-y divide-sky-100">
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Symbol</span><span class="font-black text-sky-700">$CHESSIO</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Network</span><span class="font-bold text-sky-700">TON Blockchain</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Type</span><span class="font-bold text-sky-700">Jetton (TEP-74)</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Launch</span><span class="font-bold text-sky-700">Groypfi.io</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Tax</span><span class="font-black text-green-600">0% 🎉</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Total Supply</span><span class="font-black text-sky-700">1,000,000,000</span></div>
           </div>
-          <a href="https://groypfi.io" target="_blank" class="mt-5 block w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold text-center rounded-xl text-sm">Buy $CHESSIO on Groypfi →</a>
+          <a href="https://groypfi.io" target="_blank" class="mt-6 block w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-center rounded-xl">Buy $CHESSIO on Groypfi →</a>
         </div>
       </div>
     </div>
@@ -770,20 +769,6 @@ function goto(pg, e) {
   document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
 })();
 
-// ── TOKENOMICS ────────────────────────────────────────────────
-(function(){
-  var data=[{l:'Liquidity Pool',p:40,c:'#0ea5e9'},{l:'Community & Airdrop',p:25,c:'#3b82f6'},{l:'Team & Advisors',p:15,c:'#8b5cf6'},{l:'Marketing & CEX',p:12,c:'#ec4899'},{l:'Development Fund',p:8,c:'#22d3ee'}];
-  var cnt=document.getElementById('tok-bars');
-  data.forEach(function(d,i){
-    var el=document.createElement('div');el.className='reveal';el.style.transitionDelay=i*.09+'s';
-    el.innerHTML='<div class="flex justify-between text-sm font-semibold text-sky-700 mb-1.5"><span>'+d.l+'</span><span>'+d.p+'%</span></div><div class="tok-bar"><div class="tok-fill" data-w="'+d.p+'%" style="background:'+d.c+'"></div></div>';
-    cnt.appendChild(el);
-  });
-  var o1=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.style.width=e.target.dataset.w;o1.unobserve(e.target);}});},{threshold:.2});
-  document.querySelectorAll('.tok-fill').forEach(function(b){o1.observe(b);});
-  var o2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');o2.unobserve(e.target);}});},{threshold:.1});
-  document.querySelectorAll('#tok-bars .reveal').forEach(function(el){o2.observe(el);});
-})();
 
 // ── ROADMAP ───────────────────────────────────────────────────
 (function(){

@@ -75,6 +75,19 @@
     .lb-streak{font-size:10px;font-weight:700;color:#dc2626;white-space:nowrap}
     .lb-empty{text-align:center;padding:20px;color:#7dd3fc;font-size:13px}
     @keyframes lbPulse{0%,100%{opacity:1}50%{opacity:.6}}
+    /* Source panel */
+    #src-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:300;display:flex;flex-direction:column}
+    #src-modal.hidden{display:none}
+    #src-modal-inner{flex:1;display:flex;flex-direction:column;padding:16px;gap:12px;max-width:100%;overflow:hidden}
+    #src-textarea{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:12px;padding:16px;resize:none;outline:none;overflow-y:auto;white-space:pre;tab-size:2}
+    .src-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .src-copy-btn{padding:10px 22px;background:linear-gradient(135deg,#0ea5e9,#3b82f6);color:#fff;font-weight:700;border:none;border-radius:12px;cursor:pointer;font-size:14px;white-space:nowrap}
+    .src-copy-btn:hover{background:linear-gradient(135deg,#0284c7,#2563eb)}
+    .src-close-btn{padding:10px 18px;background:#1e293b;color:#94a3b8;font-weight:700;border:none;border-radius:12px;cursor:pointer;font-size:14px}
+    .src-close-btn:hover{background:#334155;color:#fff}
+    .src-title{color:#f1f5f9;font-weight:800;font-size:18px}
+    .src-info{color:#64748b;font-size:12px}
+    #src-copied-msg{color:#22c55e;font-weight:700;font-size:13px;opacity:0;transition:opacity .3s}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
@@ -82,6 +95,24 @@
 
 <canvas id="particle-canvas"></canvas>
 <div id="pts-toast" class="hidden"></div>
+
+<!-- ══ SOURCE CODE MODAL ══ -->
+<div id="src-modal" class="hidden">
+  <div id="src-modal-inner">
+    <div class="src-topbar">
+      <div>
+        <p class="src-title">📄 index.html — Full Source Code</p>
+        <p class="src-info" id="src-info">Loading source…</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span id="src-copied-msg">✓ Copied!</span>
+        <button class="src-copy-btn" onclick="copySource()">📋 Copy All</button>
+        <button class="src-close-btn" onclick="closeSrcModal()">✕ Close</button>
+      </div>
+    </div>
+    <textarea id="src-textarea" readonly spellcheck="false" placeholder="Loading source code…"></textarea>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════ LANDING ══ -->
 <div id="page-landing" class="page active">
@@ -97,6 +128,7 @@
         <a href="#roadmap" class="hover:text-sky-600">Roadmap</a>
         <a href="#" onclick="goto('shop',event)" class="text-purple-600 font-semibold hover:text-purple-800">🎨 Shop</a>
         <a href="#" onclick="goto('play',event)" class="text-sky-600 font-semibold hover:text-sky-800">▶ Play</a>
+        <a href="#" onclick="openSrcModal(event)" class="text-slate-500 font-semibold hover:text-slate-700">📄 Source</a>
       </div>
       <button id="ton-btn" onclick="walletClick()"><span>💎</span><span id="ton-lbl">Connect Wallet</span></button>
     </div>
@@ -320,7 +352,6 @@
     </div>
   </nav>
 
-  <!-- FIX: single pt-20 wrapper now correctly encloses ALL play sub-sections -->
   <div class="pt-20 pb-10 px-4 min-h-screen bg-gradient-to-b from-sky-50 to-blue-50">
 
     <!-- PLAY MENU -->
@@ -358,13 +389,13 @@
           <div class="glass rounded-2xl p-6 text-left">
             <h2 class="text-xl font-bold text-sky-700 mb-1">vs AI</h2>
             <div class="flex gap-2 text-xs mb-4 flex-wrap">
-              <span class="px-2 py-1 bg-sky-100 text-sky-600 rounded-lg font-semibold">Easy: +10 pts</span>
-              <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-lg font-semibold">Normal: +30 pts</span>
-              <span class="px-2 py-1 rounded-lg font-semibold text-white" style="background:linear-gradient(135deg,#dc2626,#b91c1c)">Hard: +100 pts ⭐ +streak</span>
+              <span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg font-semibold">Easy: +10 pts (beginner friendly)</span>
+              <span class="px-2 py-1 bg-blue-100 text-blue-600 rounded-lg font-semibold">Normal: +30 pts (club player)</span>
+              <span class="px-2 py-1 rounded-lg font-semibold text-white" style="background:linear-gradient(135deg,#dc2626,#b91c1c)">Hard: +100 pts ⭐ (professional) +streak</span>
             </div>
             <div class="flex gap-2 mb-4">
-              <button onclick="setDiff('easy')" id="btn-easy" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Easy</button>
-              <button onclick="setDiff('normal')" id="btn-normal" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-md">Normal</button>
+              <button onclick="setDiff('easy')" id="btn-easy" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Easy 🟢</button>
+              <button onclick="setDiff('normal')" id="btn-normal" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-md">Normal 🔵</button>
               <button onclick="setDiff('hard')" id="btn-hard" class="flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200">Hard 🔥</button>
             </div>
             <div id="streak-badge" class="hidden mb-3 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2" style="background:rgba(239,68,68,0.12);color:#dc2626"></div>
@@ -407,9 +438,9 @@
           <div class="glass rounded-2xl p-4">
             <p class="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-2">Difficulty</p>
             <div class="flex gap-2">
-              <button onclick="changeAIDiff('easy')" id="ai-btn-easy" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Easy</button>
-              <button onclick="changeAIDiff('normal')" id="ai-btn-normal" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white">Normal</button>
-              <button onclick="changeAIDiff('hard')" id="ai-btn-hard" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Hard</button>
+              <button onclick="changeAIDiff('easy')" id="ai-btn-easy" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Easy 🟢</button>
+              <button onclick="changeAIDiff('normal')" id="ai-btn-normal" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white">Normal 🔵</button>
+              <button onclick="changeAIDiff('hard')" id="ai-btn-hard" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600">Hard 🔥</button>
             </div>
           </div>
           <div class="glass rounded-2xl p-4">
@@ -486,7 +517,7 @@
       </div>
     </div><!-- end play-pvp -->
 
-  </div><!-- end pt-20 wrapper — now correctly wraps play-menu, play-ai, AND play-pvp -->
+  </div><!-- end pt-20 wrapper -->
 </div><!-- end page-play -->
 
 <script>
@@ -515,7 +546,6 @@ function getStreakKey(addr) {
   if (!addr) return null;
   return 'chessio_str_' + addr.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
-
 function savePts() {
   if (!walletAddr) return;
   const pk = getPointsKey(walletAddr);
@@ -523,7 +553,6 @@ function savePts() {
   if (pk) localStorage.setItem(pk, String(totalPoints));
   if (sk) localStorage.setItem(sk, String(hardStreak));
 }
-
 function loadPointsForWallet(addr) {
   if (!addr) { totalPoints = 0; hardStreak = 0; renderPoints(); return; }
   const pk = getPointsKey(addr);
@@ -532,20 +561,14 @@ function loadPointsForWallet(addr) {
   hardStreak  = sk ? (parseInt(localStorage.getItem(sk)  || '0', 10) || 0) : 0;
   renderPoints();
 }
-
-function resetPointsOnDisconnect() {
-  totalPoints = 0;
-  hardStreak = 0;
-  renderPoints();
-}
+function resetPointsOnDisconnect() { totalPoints = 0; hardStreak = 0; renderPoints(); }
 
 function awardPoints(diff, playerWon) {
   if (pointsAwarded) return;
   pointsAwarded = true;
   if (!playerWon) {
     if (diff === 'hard') { hardStreak = 0; savePts(); }
-    renderPoints();
-    return;
+    renderPoints(); return;
   }
   let earned = POINTS_PER_WIN[diff] || 10;
   if (diff === 'hard') {
@@ -577,9 +600,7 @@ function renderPoints() {
   const bar = document.getElementById('pts-bar'); if (bar) bar.style.width = pct + '%';
   const rem2 = document.getElementById('pts-rem'); if (rem2) rem2.textContent = rem.toLocaleString() + ' / 10,000';
   const cvBtn = document.getElementById('pts-convert-btn');
-  if (cvBtn) {
-    if (chess > 0 && walletAddr) { cvBtn.classList.remove('hidden'); } else { cvBtn.classList.add('hidden'); }
-  }
+  if (cvBtn) { if (chess > 0 && walletAddr) { cvBtn.classList.remove('hidden'); } else { cvBtn.classList.add('hidden'); } }
   const navPts = document.getElementById('nav-pts'); if (navPts) navPts.textContent = totalPoints.toLocaleString();
   const mini = document.getElementById('ai-pts-mini'); if (mini) mini.textContent = '⭐ ' + totalPoints.toLocaleString();
   const gate = document.getElementById('pts-wallet-gate');
@@ -593,9 +614,7 @@ function updateStreakBadge() {
   if (aiDf === 'hard' && hardStreak > 0) {
     badge.textContent = '🔥 Win streak: ' + hardStreak + ' (next win +' + (POINTS_PER_WIN.hard + STREAK_BONUS * hardStreak) + ' pts)';
     badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
-  }
+  } else { badge.classList.add('hidden'); }
 }
 
 function openConvert() {
@@ -605,15 +624,9 @@ function openConvert() {
   document.getElementById('conv-no-wallet').classList.add('hidden');
   document.getElementById('conv-low').classList.add('hidden');
   document.getElementById('conv-btn').classList.add('hidden');
-
-  if (!walletAddr) {
-    document.getElementById('conv-no-wallet').classList.remove('hidden');
-  } else if (chess === 0) {
-    document.getElementById('conv-low').classList.remove('hidden');
-  } else {
-    document.getElementById('conv-btn').classList.remove('hidden');
-    document.getElementById('conv-btn').textContent = '💎 Request ' + chess + ' $CHESSIO Now';
-  }
+  if (!walletAddr) { document.getElementById('conv-no-wallet').classList.remove('hidden'); }
+  else if (chess === 0) { document.getElementById('conv-low').classList.remove('hidden'); }
+  else { document.getElementById('conv-btn').classList.remove('hidden'); document.getElementById('conv-btn').textContent = '💎 Request ' + chess + ' $CHESSIO Now'; }
   document.getElementById('modal-convert').classList.remove('hidden');
 }
 function closeConvert() { document.getElementById('modal-convert').classList.add('hidden'); }
@@ -621,6 +634,51 @@ function doConvert() {
   if (!walletAddr) return;
   document.getElementById('conv-btn').classList.add('hidden');
   document.getElementById('conv-done').classList.remove('hidden');
+}
+
+// ── SOURCE CODE MODAL ─────────────────────────────────────────
+var _srcCache = null;
+function openSrcModal(e) {
+  if (e) e.preventDefault();
+  document.getElementById('src-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  var ta = document.getElementById('src-textarea');
+  var info = document.getElementById('src-info');
+  if (_srcCache) {
+    ta.value = _srcCache;
+    info.textContent = 'Full HTML source — ' + _srcCache.length.toLocaleString() + ' characters';
+    return;
+  }
+  ta.value = 'Loading source code…';
+  info.textContent = 'Fetching…';
+  fetch(window.location.href)
+    .then(function(r) { return r.text(); })
+    .then(function(html) {
+      _srcCache = html;
+      ta.value = html;
+      info.textContent = 'Full HTML source — ' + html.length.toLocaleString() + ' characters. Select all + copy, or use the button.';
+    })
+    .catch(function() {
+      ta.value = '// Could not fetch source. Try right-clicking the page and selecting "View Page Source".';
+      info.textContent = 'Fetch failed';
+    });
+}
+function closeSrcModal() {
+  document.getElementById('src-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+function copySource() {
+  var ta = document.getElementById('src-textarea');
+  var msg = document.getElementById('src-copied-msg');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(ta.value).then(function() {
+      msg.style.opacity = '1';
+      setTimeout(function() { msg.style.opacity = '0'; }, 2000);
+    }).catch(function() { ta.select(); document.execCommand('copy'); });
+  } else {
+    ta.select();
+    try { document.execCommand('copy'); msg.style.opacity = '1'; setTimeout(function() { msg.style.opacity = '0'; }, 2000); } catch(e) {}
+  }
 }
 
 // ── PARTICLES ─────────────────────────────────────────────────
@@ -651,7 +709,6 @@ function goto(pg, e) {
   var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
   document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
 })();
-
 
 // ── ROADMAP ───────────────────────────────────────────────────
 (function(){
@@ -695,16 +752,13 @@ var PIECE_SKINS={
 // ── SKIN STORAGE ──────────────────────────────────────────────
 function getOwnedKey(addr) {
   if (!addr) return null;
-  return 'chessio_owned_' + addr.toLowerCase().replace(/[^a-z0-9]/g,'_');
+  return 'chessio_owned_' + addr.toLowerCase().replace(/[^a-z0-9]/g, '_');
 }
 var owned = { b: ['classic'], p: ['standard'] };
-
-// FIX: validate skin IDs from localStorage to prevent crash if stored value is invalid
 var _storedBoard = localStorage.getItem('chessio_board');
 var _storedPiece = localStorage.getItem('chessio_piece');
 var eqBoard = (_storedBoard && BOARD_SKINS[_storedBoard]) ? _storedBoard : 'classic';
 var eqPiece = (_storedPiece && PIECE_SKINS[_storedPiece]) ? _storedPiece : 'standard';
-
 var pendingBuy = null;
 
 function loadOwnedForWallet(addr) {
@@ -729,7 +783,6 @@ function pieceOwned(id) { return owned.p.indexOf(id) >= 0; }
 function equipBoard(id) { eqBoard=id; localStorage.setItem('chessio_board',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
 function equipPiece(id) { eqPiece=id; localStorage.setItem('chessio_piece',id); renderShop(); renderAIBoard(); renderPvPBoard(); }
 
-// FIX: safe fallback to classic/standard if skin lookup fails
 function applySq(cell, isLight) {
   var skin = BOARD_SKINS[eqBoard] || BOARD_SKINS.classic;
   cell.style.background = isLight ? skin.light : skin.dark;
@@ -755,8 +808,7 @@ function skinBtn(type, sk, own, eq) {
 function renderBoardCards() {
   var cnt = document.getElementById('board-skin-cards'); if (!cnt) return; cnt.innerHTML = '';
   Object.keys(BOARD_SKINS).forEach(function(key) {
-    var sk = BOARD_SKINS[key];
-    var own=boardOwned(sk.id), eq=eqBoard===sk.id;
+    var sk = BOARD_SKINS[key], own=boardOwned(sk.id), eq=eqBoard===sk.id;
     var d=document.createElement('div'); d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
     d.innerHTML=boardPrev(sk)+'<h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+(sk.free?'<div class="text-xs text-center text-green-600 font-bold mb-2">🆓 Free</div>':'')+skinBtn('board',sk,own,eq);
     cnt.appendChild(d);
@@ -765,8 +817,7 @@ function renderBoardCards() {
 function renderPieceCards() {
   var cnt = document.getElementById('piece-skin-cards'); if (!cnt) return; cnt.innerHTML = '';
   Object.keys(PIECE_SKINS).forEach(function(key) {
-    var sk = PIECE_SKINS[key];
-    var own=pieceOwned(sk.id), eq=eqPiece===sk.id;
+    var sk = PIECE_SKINS[key], own=pieceOwned(sk.id), eq=eqPiece===sk.id;
     var d=document.createElement('div'); d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
     d.innerHTML='<div class="flex justify-center gap-3 mb-3"><span class="piece-preview" style="color:'+sk.wp+';text-shadow:'+sk.wsh+'">♕</span><span class="piece-preview" style="color:'+sk.bp+';text-shadow:'+sk.bsh+'">♛</span></div><h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+(sk.free?'<div class="text-xs text-center text-green-600 font-bold mb-2">🆓 Free</div>':'')+skinBtn('piece',sk,own,eq);
     cnt.appendChild(d);
@@ -775,8 +826,7 @@ function renderPieceCards() {
 
 function openBuy(type, id) {
   if (!walletAddr) { pendingBuy={type:type,id:id}; if (tonUI) tonUI.openModal(); return; }
-  var sk = type==='board' ? BOARD_SKINS[id] : PIECE_SKINS[id];
-  if (!sk) return;
+  var sk = type==='board' ? BOARD_SKINS[id] : PIECE_SKINS[id]; if (!sk) return;
   pendingBuy = {type:type, id:id};
   document.getElementById('buy-title').textContent = 'Buy — ' + sk.name;
   document.getElementById('buy-desc').textContent = sk.desc;
@@ -808,8 +858,7 @@ function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
         .then(function(data) {
           if (!data || !data.ok || !Array.isArray(data.result)) return loop();
           for (var i=0; i<data.result.length; i++) {
-            var tx = data.result[i];
-            if (tx.utime < startTimeSec - 60) break;
+            var tx = data.result[i]; if (tx.utime < startTimeSec - 60) break;
             var inMsg = tx.in_msg; if (!inMsg || !inMsg.source) continue;
             var srcNorm = (inMsg.source||'').toLowerCase().trim();
             var addrMatch = srcNorm===senderNorm || (srcNorm.length>8&&senderNorm.length>8&&srcNorm.slice(-24)===senderNorm.slice(-24));
@@ -828,8 +877,7 @@ function verifyTonTransaction(senderAddr, amountNanoStr, startTimeSec) {
 function confirmBuy() {
   if (!pendingBuy) return;
   var type = pendingBuy.type, id = pendingBuy.id;
-  var sk = type==='board' ? BOARD_SKINS[id] : PIECE_SKINS[id];
-  if (!sk) return;
+  var sk = type==='board' ? BOARD_SKINS[id] : PIECE_SKINS[id]; if (!sk) return;
   var errEl=document.getElementById('buy-error'), sucEl=document.getElementById('buy-success'),
       verifyEl=document.getElementById('verify-status'), verifyMsg=document.getElementById('verify-msg');
   var btn=document.getElementById('buy-btn'), cancelBtn=document.getElementById('cancel-btn');
@@ -884,26 +932,15 @@ var walletAddr = null, tonUI = null;
 
 function initTonConnect() {
   try {
-    // FIX: build correct manifest URL regardless of path
     var base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '/');
     var manifestUrl = base + 'tonconnect-manifest.json';
     tonUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: manifestUrl });
     tonUI.onStatusChange(function(w) {
       var prevAddr = walletAddr;
       walletAddr = w ? w.account.address : null;
-
-      if (walletAddr && walletAddr !== prevAddr) {
-        loadOwnedForWallet(walletAddr);
-        loadPointsForWallet(walletAddr);
-        renderShop();
-      } else if (!walletAddr && prevAddr) {
-        owned = { b: ['classic'], p: ['standard'] };
-        resetPointsOnDisconnect();
-        renderShop();
-      }
-
-      syncWalletUI(walletAddr);
-      renderPoints();
+      if (walletAddr && walletAddr !== prevAddr) { loadOwnedForWallet(walletAddr); loadPointsForWallet(walletAddr); renderShop(); }
+      else if (!walletAddr && prevAddr) { owned = { b: ['classic'], p: ['standard'] }; resetPointsOnDisconnect(); renderShop(); }
+      syncWalletUI(walletAddr); renderPoints();
       if (w && pendingBuy) { var pb = pendingBuy; pendingBuy = null; openBuy(pb.type, pb.id); }
     });
   } catch(e) { console.warn('TonConnect init failed:', e); }
@@ -924,13 +961,168 @@ function walletClick() {
   if (tonUI) { tonUI.openModal(); }
 }
 
-// ── CHESS AI ENGINE ───────────────────────────────────────────
-var PV={p:100,n:320,b:330,r:500,q:900,k:20000};
-var PT=[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0];
-var KT=[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50];
-function evalBoard(g){var s=0,b=g.board();for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=b[r][c];if(!p)continue;var v=PV[p.type]||0,idx=p.color==='w'?(7-r)*8+c:r*8+c,bn=0;if(p.type==='p')bn=PT[idx]||0;if(p.type==='n')bn=KT[idx]||0;s+=p.color==='b'?(v+bn):-(v+bn);}return s;}
-function mm(g,d,a,b,mx){if(d===0||g.game_over())return evalBoard(g);var ms=g.moves();if(mx){var m=-Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);var v=mm(g,d-1,a,b,false);g.undo();m=Math.max(m,v);a=Math.max(a,v);if(b<=a)break;}return m;}else{var m=Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);var v=mm(g,d-1,a,b,true);g.undo();m=Math.min(m,v);b=Math.min(b,v);if(b<=a)break;}return m;}}
-function bestMove(g,diff){var ms=g.moves();if(!ms.length)return null;if(diff==='easy')return ms[0|Math.random()*ms.length];var dep=diff==='normal'?2:4,best=null,bv=-Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);var v=mm(g,dep-1,-Infinity,Infinity,false);g.undo();if(v>bv){bv=v;best=ms[i];}}return best;}
+// ══════════════════════════════════════════════════════════════
+// ── CHESS AI ENGINE — IMPROVED DIFFICULTY MODES ───────────────
+// ══════════════════════════════════════════════════════════════
+
+// Piece values
+var PV = {p:100, n:320, b:330, r:500, q:900, k:20000};
+
+// Piece-square tables (index 0=a8, 63=h1, white perspective)
+// For black pieces the index is mirrored: (7-row)*8+col
+var PST_P  = [0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0];
+var PST_N  = [-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50];
+var PST_B  = [-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20];
+var PST_R  = [0,0,0,0,0,0,0,0,5,10,10,10,10,10,10,5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,0,0,0,5,5,0,0,0];
+var PST_Q  = [-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20];
+var PST_KM = [-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20];
+
+function getPST(type, color, row, col) {
+  var idx = color === 'w' ? (7-row)*8+col : row*8+col;
+  switch(type) {
+    case 'p': return PST_P[idx]||0;
+    case 'n': return PST_N[idx]||0;
+    case 'b': return PST_B[idx]||0;
+    case 'r': return PST_R[idx]||0;
+    case 'q': return PST_Q[idx]||0;
+    case 'k': return PST_KM[idx]||0;
+    default: return 0;
+  }
+}
+
+// Standard evaluation (for Easy/Normal)
+function evalBoard(g) {
+  var s=0, board=g.board();
+  for (var r=0;r<8;r++) for (var c=0;c<8;c++) {
+    var p=board[r][c]; if (!p) continue;
+    var val=PV[p.type]||0;
+    var pst=0;
+    if (p.type==='p') pst = PST_P[p.color==='w'?(7-r)*8+c:r*8+c]||0;
+    if (p.type==='n') pst = PST_N[p.color==='w'?(7-r)*8+c:r*8+c]||0;
+    s += p.color==='b' ? (val+pst) : -(val+pst);
+  }
+  return s;
+}
+
+// Enhanced evaluation for Hard mode — all piece-square tables + bishop pair
+function evalBoardHard(g) {
+  var s=0, board=g.board(), wB=0, bB=0;
+  for (var r=0;r<8;r++) for (var c=0;c<8;c++) {
+    var p=board[r][c]; if (!p) continue;
+    var val=PV[p.type]||0;
+    var pst=getPST(p.type, p.color, r, c);
+    if (p.color==='b') { s += val+pst; if(p.type==='b') bB++; }
+    else               { s -= val+pst; if(p.type==='b') wB++; }
+  }
+  // Bishop pair bonus: two bishops give extra coordination
+  if (bB>=2) s+=30;
+  if (wB>=2) s-=30;
+  return s;
+}
+
+// Alpha-beta minimax
+// hard=true uses enhanced eval; mx=true means black (AI) is maximizing
+function mm(g, d, a, b, mx, hard) {
+  if (d===0 || g.game_over()) return hard ? evalBoardHard(g) : evalBoard(g);
+  var ms = g.moves();
+  // Move ordering for hard: captures first (improves alpha-beta cutoffs dramatically)
+  if (hard && ms.length>1) {
+    ms = ms.slice().sort(function(x,y){
+      var xc=x.indexOf('x')!==-1?1:0, yc=y.indexOf('x')!==-1?1:0;
+      return yc-xc;
+    });
+  }
+  if (mx) {
+    var m=-Infinity;
+    for (var i=0;i<ms.length;i++){
+      g.move(ms[i]); var v=mm(g,d-1,a,b,false,hard); g.undo();
+      if(v>m)m=v; if(v>a)a=v; if(b<=a)break;
+    }
+    return m;
+  } else {
+    var m=Infinity;
+    for (var i=0;i<ms.length;i++){
+      g.move(ms[i]); var v=mm(g,d-1,a,b,true,hard); g.undo();
+      if(v<m)m=v; if(v<b)b=v; if(b<=a)break;
+    }
+    return m;
+  }
+}
+
+/*
+  DIFFICULTY MODES:
+  ─────────────────
+  EASY   — Very beginner-friendly. AI makes mostly random moves,
+            avoids captures 40% of the time, and occasionally
+            picks intentionally bad moves. Depth-1 "worst move"
+            10% of the time. Very easy to beat.
+
+  NORMAL — Club-player level. Depth-3 minimax with alpha-beta
+            pruning and material+PST evaluation. Plays solid but
+            makes occasional positional mistakes. Beatable with
+            good play.
+
+  HARD   — Professional level. Depth-4 minimax with full
+            alpha-beta, move ordering (captures first), enhanced
+            evaluation (all piece-square tables, bishop pair
+            bonus). Very strong — plays like a seasoned club
+            player / tournament amateur.
+*/
+function bestMove(g, diff) {
+  var ms = g.moves();
+  if (!ms.length) return null;
+
+  // ── EASY: very random, avoids captures, sometimes picks worst ──
+  if (diff === 'easy') {
+    var r = Math.random();
+    if (r < 0.65) {
+      // Pure random — no strategy
+      return ms[0|Math.random()*ms.length];
+    } else if (r < 0.90) {
+      // Prefer non-capturing moves (passive, aimless)
+      var passive = ms.filter(function(m){ return m.indexOf('x')===-1; });
+      var pool = passive.length>0 ? passive : ms;
+      return pool[0|Math.random()*pool.length];
+    } else {
+      // Pick the worst move at depth 1 (intentional blunder)
+      var worst=null, wv=Infinity;
+      for (var i=0;i<ms.length;i++){
+        g.move(ms[i]);
+        var v=evalBoard(g);
+        g.undo();
+        if(v<wv){wv=v;worst=ms[i];}
+      }
+      return worst || ms[0|Math.random()*ms.length];
+    }
+  }
+
+  // ── NORMAL: depth-3 with standard eval ──
+  if (diff === 'normal') {
+    var best=null, bv=-Infinity;
+    for (var i=0;i<ms.length;i++){
+      g.move(ms[i]);
+      var v=mm(g,2,-Infinity,Infinity,false,false);
+      g.undo();
+      if(v>bv){bv=v;best=ms[i];}
+    }
+    return best;
+  }
+
+  // ── HARD: depth-4 with enhanced eval + move ordering ──
+  // Sort root moves: captures first for better pruning
+  var sorted = ms.slice().sort(function(x,y){
+    var xc=x.indexOf('x')!==-1?1:0, yc=y.indexOf('x')!==-1?1:0;
+    return yc-xc;
+  });
+  var best=null, bv=-Infinity;
+  for (var i=0;i<sorted.length;i++){
+    g.move(sorted[i]);
+    var v=mm(g,3,-Infinity,Infinity,false,true);
+    g.undo();
+    if(v>bv){bv=v;best=sorted[i];}
+  }
+  return best;
+}
 
 // ── BOARD RENDERER ────────────────────────────────────────────
 var PU={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
@@ -961,6 +1153,7 @@ function setDiff(d) {
   ['easy','normal','hard'].forEach(function(x) {
     var b = document.getElementById('btn-'+x); if (!b) return;
     if (x===d && d==='hard') { b.className='flex-1 py-2 rounded-xl text-sm font-bold text-white shadow-md'; b.style.background='linear-gradient(135deg,#dc2626,#b91c1c)'; }
+    else if (x===d && d==='easy') { b.className='flex-1 py-2 rounded-xl text-sm font-bold text-white shadow-md'; b.style.background='linear-gradient(135deg,#16a34a,#22c55e)'; }
     else if (x===d) { b.className='flex-1 py-2 rounded-xl text-sm font-bold bg-sky-600 text-white shadow-md'; b.style.background=''; }
     else { b.className='flex-1 py-2 rounded-xl text-sm font-bold bg-sky-100 text-sky-600 hover:bg-sky-200'; b.style.background=''; }
   });
@@ -972,15 +1165,18 @@ function changeAIDiff(d) {
   ['easy','normal','hard'].forEach(function(x) {
     var b = document.getElementById('ai-btn-'+x); if (!b) return;
     if (x===d && d==='hard') { b.className='flex-1 py-1.5 rounded-lg text-xs font-bold text-white'; b.style.background='linear-gradient(135deg,#dc2626,#b91c1c)'; }
+    else if (x===d && d==='easy') { b.className='flex-1 py-1.5 rounded-lg text-xs font-bold text-white'; b.style.background='linear-gradient(135deg,#16a34a,#22c55e)'; }
     else if (x===d) { b.className='flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white'; b.style.background=''; }
     else { b.className='flex-1 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-600'; b.style.background=''; }
   });
   var badge = document.getElementById('ai-diff-badge');
   if (badge) {
     if (d==='hard') {
-      badge.innerHTML='<p class="text-xs font-bold rounded-lg px-2 py-1" style="background:rgba(220,38,38,.1);color:#dc2626">🔥 Hard Mode'+(hardStreak>0?' x'+hardStreak:'')+'</p><p class="text-xs text-amber-400 mt-1">Win: +'+(POINTS_PER_WIN.hard+(hardStreak>0?STREAK_BONUS*hardStreak:0))+' pts</p>';
+      badge.innerHTML='<p class="text-xs font-bold rounded-lg px-2 py-1" style="background:rgba(220,38,38,.1);color:#dc2626">🔥 Hard — Professional'+(hardStreak>0?' x'+hardStreak:'')+'</p><p class="text-xs text-amber-400 mt-1">Win: +'+(POINTS_PER_WIN.hard+(hardStreak>0?STREAK_BONUS*hardStreak:0))+' pts</p>';
+    } else if (d==='easy') {
+      badge.innerHTML='<p class="text-xs font-bold rounded-lg px-2 py-1" style="background:rgba(22,163,74,.1);color:#16a34a">🟢 Easy — Beginner</p><p class="text-xs text-amber-400 mt-1">Win: +'+POINTS_PER_WIN.easy+' pts</p>';
     } else {
-      badge.innerHTML='<p class="text-xs text-amber-400">Win: +'+POINTS_PER_WIN[d]+' pts</p>';
+      badge.innerHTML='<p class="text-xs font-bold rounded-lg px-2 py-1 bg-sky-100 text-sky-600">🔵 Normal — Club Player</p><p class="text-xs text-amber-400 mt-1">Win: +'+POINTS_PER_WIN.normal+' pts</p>';
     }
   }
   resetAI();
@@ -997,8 +1193,7 @@ function resetAI() {
   aig=new Chess(); aiSel=null; aiPos=[]; aiTh=false; aiHst=[]; pointsAwarded=false;
   updAISt(); updAIHst();
   document.getElementById('ai-thinking').classList.add('hidden');
-  renderAIBoard();
-  renderPoints();
+  renderAIBoard(); renderPoints();
 }
 
 function updAISt() {
@@ -1049,12 +1244,16 @@ function onAISq(sq) {
 function schedAI() {
   if (!aig || aig.game_over()) return;
   aiTh=true; document.getElementById('ai-thinking').classList.remove('hidden'); updAISt(); renderAIBoard();
+  // Easy mode: shorter delay (AI is quick because it's not thinking hard)
+  // Normal: medium delay
+  // Hard: longer delay to feel like it's thinking
+  var delay = aiDf==='easy' ? (150+Math.random()*300) : aiDf==='normal' ? (300+Math.random()*500) : (600+Math.random()*800);
   setTimeout(function() {
     if (!aig) return;
     var mv = bestMove(aig, aiDf);
     if (mv) { var r=aig.move(mv); if (r) { aiHst.push(r.san); updAIHst(); } }
     aiTh=false; document.getElementById('ai-thinking').classList.add('hidden'); updAISt(); renderAIBoard();
-  }, 350 + Math.random()*700);
+  }, delay);
 }
 
 function backToMenu() {
@@ -1067,14 +1266,11 @@ function backToMenu() {
 // ── WebRTC PvP ────────────────────────────────────────────────
 var peer=null, conn=null, pvpG=null, pvpCol='white', pvpRoom='', pvpHst=[], pvpSel=null, pvpPos=[];
 
-// FIX: clipboard fallback for browsers without navigator.clipboard
 function copyCode() {
   var txt = document.getElementById('pvp-code-display').textContent;
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(txt).catch(function() { clipboardFallback(txt); });
-  } else {
-    clipboardFallback(txt);
-  }
+  } else { clipboardFallback(txt); }
 }
 function clipboardFallback(txt) {
   var ta = document.createElement('textarea');

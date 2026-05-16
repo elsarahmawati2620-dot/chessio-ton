@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>CHESSIO — Chess Memecoin on TON</title>
-  <meta name="description" content="Chessio is the ultimate chess memecoin on TON blockchain. Play chess, earn points, convert to $CHESSIO!"/>
+  <title>CHESSIO — Chess Memecoin on Monad</title>
+  <meta name="description" content="Chessio is the ultimate chess memecoin on Monad blockchain. Play chess, earn points, convert to $CHESSIO!"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://unpkg.com/@tonconnect/ui@2.0.6/dist/tonconnect-ui.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
@@ -53,8 +52,8 @@
     .skin-card.equipped{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.25)}
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
     .modal-box{background:#fff;border-radius:24px;padding:32px;max-width:440px;width:100%;position:relative;box-shadow:0 30px 70px rgba(0,0,0,.25)}
-    #ton-btn,#ton-btn2{background:linear-gradient(135deg,#0284c7,#0ea5e9);color:#fff;border:none;border-radius:14px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .2s}
-    #ton-btn:hover,#ton-btn2:hover{background:linear-gradient(135deg,#0369a1,#0284c7);transform:scale(1.03)}
+    #mm-btn,#mm-btn2{background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;border:none;border-radius:14px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .2s}
+    #mm-btn:hover,#mm-btn2:hover{background:linear-gradient(135deg,#5b21b6,#4338ca);transform:scale(1.03)}
     .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
     .dot-green{background:#22c55e;box-shadow:0 0 8px #22c55e}
     .preview-grid{display:grid;grid-template-columns:repeat(4,22px);gap:2px;margin:0 auto;width:fit-content}
@@ -70,8 +69,7 @@
     .lb-addr{font-family:'JetBrains Mono',monospace;font-size:11px;color:#0369a1;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .lb-pts{font-weight:900;font-size:13px;color:#d97706;white-space:nowrap}
     .verify-bar{height:6px;border-radius:999px;overflow:hidden;background:#bae6fd;margin-top:8px}
-    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0ea5e9,#3b82f6);width:0%;transition:width .4s ease}
-    /* Turn Timer */
+    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#6366f1);width:0%;transition:width .4s ease}
     .turn-timer{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;font-weight:700;font-size:13px;transition:all .3s}
     .turn-timer.urgent{background:rgba(239,68,68,.12);color:#dc2626}
     .turn-timer.normal{background:rgba(14,165,233,.1);color:#0369a1}
@@ -106,7 +104,7 @@
         <a href="#" onclick="goto('shop',event)" class="text-purple-600 font-semibold hover:text-purple-800">Shop</a>
         <a href="#" onclick="goto('play',event)" class="text-sky-600 font-semibold hover:text-sky-800">Play</a>
       </div>
-      <button id="ton-btn" onclick="walletClick()"><span>💎</span><span id="ton-lbl">Connect Wallet</span></button>
+      <button id="mm-btn" onclick="walletClick()"><span>🦊</span><span id="mm-lbl">Connect MetaMask</span></button>
     </div>
   </nav>
 
@@ -128,18 +126,18 @@
     <div class="max-w-3xl mx-auto text-center relative z-10">
       <img src="https://i.imgur.com/KfYwnPE.png" class="w-28 h-28 mx-auto mb-6 rounded-full shadow-2xl border-4 border-white/70 object-cover" onerror="this.style.display='none'" alt="Chessio"/>
       <h1 class="text-6xl sm:text-7xl font-black text-sky-700 mb-4 tracking-tight">CHESSIO</h1>
-      <p class="text-xl text-sky-600 mb-2 font-medium">The Ultimate Chess Memecoin on TON Blockchain</p>
+      <p class="text-xl text-sky-600 mb-2 font-medium">The Ultimate Chess Memecoin on Monad Blockchain</p>
       <p class="text-base text-sky-500 mb-8">Play chess. Earn points. Convert to $CHESSIO.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
         <button onclick="goto('play')" class="px-8 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center justify-center gap-2">♞ Play Chess</button>
         <button onclick="goto('shop')" class="px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold text-lg rounded-2xl shadow-lg">Shop Skins</button>
-        <a href="https://groypfi.io/launchpad?token=EQBv0zSCXu9kVu3ANIrmyu3QDELJHUKPQTSEv_oTKbZtgNNZ" target="_blank" rel="noopener noreferrer">
-          <button class="px-8 py-4 bg-white/80 hover:bg-white text-sky-700 font-bold text-lg rounded-2xl shadow-md border border-sky-200 w-full">Buy $CHESSIO on Groypfi</button>
+        <a href="https://nad.fun" target="_blank" rel="noopener noreferrer">
+          <button class="px-8 py-4 bg-white/80 hover:bg-white text-sky-700 font-bold text-lg rounded-2xl shadow-md border border-sky-200 w-full">Buy $CHESSIO on nad.fun</button>
         </a>
       </div>
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p><p class="text-sky-700 font-bold text-sm mt-1">EQBv0zSCXu9kVu3ANIrmyu3QDELJHUKPQTSEv_oTKbZtgNNZ</p></div>
-        <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p><p class="text-sky-700 font-bold text-sm mt-1">TON Blockchain</p></div>
+        <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Contract</p><p class="text-sky-700 font-bold text-sm mt-1">Soon</p></div>
+        <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Network</p><p class="text-sky-700 font-bold text-sm mt-1">Monad Mainnet</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Total Supply</p><p class="text-sky-700 font-bold text-sm mt-1">1,000,000,000 $CHESSIO</p></div>
         <div class="glass rounded-2xl px-5 py-3 text-center"><p class="text-xs text-sky-500 uppercase tracking-widest font-semibold">Skins</p><p class="text-sky-700 font-bold text-sm mt-1">12 Collectibles</p></div>
       </div>
@@ -150,12 +148,12 @@
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-12">
         <h2 class="text-4xl font-black text-sky-700 mb-3">What is Chessio?</h2>
-        <p class="text-sky-600 max-w-2xl mx-auto">Chessio is the first chess-powered memecoin on the TON blockchain. Win games to earn points, convert them to $CHESSIO, collect exclusive skins, and battle friends in real-time P2P matches.</p>
+        <p class="text-sky-600 max-w-2xl mx-auto">Chessio is the first chess-powered memecoin on the Monad blockchain. Win games to earn points, convert them to $CHESSIO, collect exclusive skins, and battle friends in real-time P2P matches.</p>
       </div>
       <div class="grid md:grid-cols-4 gap-5">
         <div class="reveal glass rounded-2xl p-5 text-center hover:scale-105 transition-transform"><div class="text-4xl mb-3">♟</div><h3 class="font-bold text-sky-700 mb-1 text-sm">Chess vs AI</h3><p class="text-sky-600 text-xs">3 difficulty levels — 15s timer every turn!</p></div>
         <div class="reveal glass rounded-2xl p-5 text-center hover:scale-105 transition-transform" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold text-sky-700 mb-1 text-sm">Earn Points</h3><p class="text-sky-600 text-xs">Win games → earn points → convert to $CHESSIO</p></div>
-        <div class="reveal glass rounded-2xl p-5 text-center hover:scale-105 transition-transform" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold text-sky-700 mb-1 text-sm">12 Skins</h3><p class="text-sky-600 text-xs">6 board + 6 piece skins, buyable with TON</p></div>
+        <div class="reveal glass rounded-2xl p-5 text-center hover:scale-105 transition-transform" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold text-sky-700 mb-1 text-sm">12 Skins</h3><p class="text-sky-600 text-xs">6 board + 6 piece skins, buyable with MON</p></div>
         <div class="reveal glass rounded-2xl p-5 text-center hover:scale-105 transition-transform" style="transition-delay:.24s"><div class="text-4xl mb-3">🌐</div><h3 class="font-bold text-sky-700 mb-1 text-sm">WebRTC PvP</h3><p class="text-sky-600 text-xs">Direct P2P play with friends — no server needed</p></div>
       </div>
     </div>
@@ -170,13 +168,16 @@
           <p class="text-sky-500 text-xs uppercase tracking-widest font-semibold mb-5 text-center">Token Details</p>
           <div class="divide-y divide-sky-100">
             <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Symbol</span><span class="font-black text-sky-700">$CHESSIO</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Network</span><span class="font-bold text-sky-700">TON Blockchain</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Type</span><span class="font-bold text-sky-700">Jetton (TEP-74)</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Launch</span><span class="font-bold text-sky-700">Groypfi.io</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Network</span><span class="font-bold text-sky-700">Monad Mainnet</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Type</span><span class="font-bold text-sky-700">ERC-20 (Monad)</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Contract</span><span class="font-bold text-sky-700">Soon</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Launch</span><span class="font-bold text-sky-700">nad.fun</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Tax</span><span class="font-black text-green-600">0%</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Total Supply</span><span class="font-black text-sky-700">1,000,000,000</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Community</span><span class="font-black text-sky-700">100%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sky-600 font-medium">Liquidity</span><span class="font-black text-sky-700">Locked</span></div>
           </div>
-          <a href="https://groypfi.io/launchpad?token=EQBv0zSCXu9kVu3ANIrmyu3QDELJHUKPQTSEv_oTKbZtgNNZ" target="_blank" class="mt-6 block w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-center rounded-xl">Buy $CHESSIO on Groypfi →</a>
+          <a href="https://nad.fun" target="_blank" class="mt-6 block w-full py-3.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-center rounded-xl">Buy $CHESSIO on nad.fun →</a>
         </div>
       </div>
     </div>
@@ -185,7 +186,7 @@
   <section id="roadmap" class="py-16 px-4 z1">
     <div class="max-w-4xl mx-auto">
       <h2 class="reveal text-4xl font-black text-sky-700 text-center mb-3">Roadmap</h2>
-      <p class="reveal text-center text-sky-500 text-sm mb-10">Our journey to becoming the #1 chess memecoin on TON</p>
+      <p class="reveal text-center text-sky-500 text-sm mb-10">Our journey to becoming the #1 chess memecoin on Monad</p>
       <div class="relative"><div class="roadmap-line hidden md:block"></div><div class="space-y-6" id="roadmap-items"></div></div>
     </div>
   </section>
@@ -195,7 +196,7 @@
       <div class="reveal">
         <div class="text-6xl mb-4">♛</div>
         <h2 class="text-4xl font-black mb-3">Join the Chess Revolution</h2>
-        <p class="text-sky-100 mb-8 text-lg">Play. Earn. Convert. The first chess memecoin on TON awaits you.</p>
+        <p class="text-sky-100 mb-8 text-lg">Play. Earn. Convert. The first chess memecoin on Monad awaits you.</p>
         <div class="flex gap-4 justify-center flex-wrap">
           <button onclick="goto('play')" class="px-8 py-4 bg-white text-sky-600 font-black text-lg rounded-2xl hover:scale-105 shadow-2xl">Play &amp; Earn Now</button>
           <button onclick="goto('shop')" class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-black text-lg rounded-2xl hover:scale-105 border border-white/40">Browse Skins</button>
@@ -214,11 +215,11 @@
         <div class="flex gap-6 flex-wrap justify-center">
           <a href="https://x.com/chessiooxyz" target="_blank" class="text-sky-300 hover:text-white text-sm font-medium">X @chessiooxyz</a>
           <a href="https://t.me/Chessioportal" target="_blank" class="text-sky-300 hover:text-white text-sm font-medium">Chessioportal</a>
-          <a href="https://groypfi.io/launchpad?token=EQBv0zSCXu9kVu3ANIrmyu3QDELJHUKPQTSEv_oTKbZtgNNZ" target="_blank" class="text-sky-300 hover:text-white text-sm font-medium">Groypfi.io</a>
+          <a href="https://nad.fun" target="_blank" class="text-sky-300 hover:text-white text-sm font-medium">nad.fun</a>
         </div>
       </div>
       <div class="mt-6 pt-6 border-t border-sky-800 text-center text-sky-500 text-sm space-y-1">
-        <p class="text-xs">Contract: <span class="font-bold text-sky-300">EQBv0zSCXu9kVu3ANIrmyu3QDELJHUKPQTSEv_oTKbZtgNNZ</span></p>
+        <p class="text-xs">Contract: <span class="font-bold text-sky-300">Soon</span> — Network: <span class="font-bold text-sky-300">Monad Mainnet</span></p>
         <p>Chessio is a memecoin. Not financial advice. DYOR. © 2025 Chessio.</p>
       </div>
     </div>
@@ -231,29 +232,29 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
       <button onclick="goto('landing')" class="text-sky-700 hover:text-sky-900 font-semibold text-sm">← Back</button>
       <span class="text-lg font-black text-purple-700">Skin Shop</span>
-      <button id="ton-btn2" onclick="walletClick()"><span>💎</span><span id="ton-lbl2">Connect Wallet</span></button>
+      <button id="mm-btn2" onclick="walletClick()"><span>🦊</span><span id="mm-lbl2">Connect MetaMask</span></button>
     </div>
   </nav>
   <div class="pt-20 pb-16 px-4 min-h-screen" style="background:linear-gradient(135deg,#faf5ff 0%,#f0f9ff 50%,#eff6ff 100%)">
     <div class="max-w-6xl mx-auto">
       <div class="glass rounded-2xl p-4 mb-8 flex items-center justify-between flex-wrap gap-3">
         <div>
-          <p class="text-xs text-purple-500 uppercase tracking-widest font-semibold">TON Wallet</p>
-          <p id="shop-wallet-txt" class="text-sky-700 font-bold text-sm mt-0.5">Not connected — connect wallet to purchase skins</p>
+          <p class="text-xs text-purple-500 uppercase tracking-widest font-semibold">Monad Wallet</p>
+          <p id="shop-wallet-txt" class="text-sky-700 font-bold text-sm mt-0.5">Not connected — connect MetaMask to purchase skins</p>
         </div>
-        <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">Connect Wallet</button>
+        <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">Connect MetaMask</button>
       </div>
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black text-sky-700">Board Skins</h2>
         <span class="text-xs bg-sky-100 text-sky-600 font-bold px-2 py-0.5 rounded-full">6 designs</span>
       </div>
-      <p class="text-sky-400 text-sm mb-5">1 free starter • 5 premium at <strong class="text-sky-600">0.3 TON</strong> each</p>
+      <p class="text-sky-400 text-sm mb-5">1 free starter • 5 premium from <strong class="text-sky-600">60 MON</strong> to <strong class="text-sky-600">200 MON</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="board-skin-cards"></div>
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black text-sky-700">Piece Skins</h2>
         <span class="text-xs bg-purple-100 text-purple-600 font-bold px-2 py-0.5 rounded-full">6 styles</span>
       </div>
-      <p class="text-sky-400 text-sm mb-5">1 free starter • 5 premium at <strong class="text-sky-600">0.3 TON</strong> each</p>
+      <p class="text-sky-400 text-sm mb-5">1 free starter • 5 premium from <strong class="text-sky-600">60 MON</strong> to <strong class="text-sky-600">200 MON</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4" id="piece-skin-cards"></div>
     </div>
   </div>
@@ -275,7 +276,7 @@
       <div class="verify-bar"><div id="verify-fill" class="verify-fill"></div></div>
     </div>
     <div class="flex gap-3">
-      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 text-white font-bold rounded-xl flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#0ea5e9,#3b82f6)"><span>💎</span><span>Buy with TON</span></button>
+      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 text-white font-bold rounded-xl flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#7c3aed,#6366f1)"><span>🦊</span><span>Buy with MON</span></button>
       <button id="cancel-btn" onclick="closeBuyModal()" class="px-5 py-3 bg-sky-100 text-sky-600 font-bold rounded-xl">Cancel</button>
     </div>
   </div>
@@ -290,7 +291,7 @@
       <p id="conv-pts" class="text-3xl font-black text-amber-600">0</p>
     </div>
     <p class="text-sky-400 text-xs text-center mb-4">10,000 pts = 1 $CHESSIO</p>
-    <div id="conv-no-wallet" class="hidden p-3 bg-amber-50 rounded-xl text-amber-700 text-sm font-semibold mb-3">Connect wallet to convert</div>
+    <div id="conv-no-wallet" class="hidden p-3 bg-amber-50 rounded-xl text-amber-700 text-sm font-semibold mb-3">Connect MetaMask to convert</div>
     <div id="conv-low" class="hidden p-3 bg-sky-50 rounded-xl text-sky-600 text-sm mb-3">Need 10,000+ pts to convert</div>
     <div id="conv-done" class="hidden p-3 bg-green-50 rounded-xl text-green-700 text-sm font-semibold mb-3">Conversion request sent!</div>
     <div class="flex gap-3">
@@ -331,7 +332,7 @@
           </div>
           <div class="pts-bar-wrap"><div id="pts-bar" class="pts-bar-fill" style="width:0%"></div></div>
           <p class="text-xs text-sky-400 mt-2">= <span class="pts-chess">0</span> $CHESSIO convertible</p>
-          <div id="pts-wallet-gate" class="wallet-gate">Connect wallet to save points across sessions</div>
+          <div id="pts-wallet-gate" class="wallet-gate">Connect MetaMask to save points across sessions</div>
         </div>
       </div>
       <div class="grid md:grid-cols-2 gap-6">
@@ -550,7 +551,7 @@ var AI_WORKER_CODE = [
 ].join('\n');
 
 var _aiWorker = null;
-var _aiWorkerTimer = null; // hard-kill timeout
+var _aiWorkerTimer = null;
 
 function getAIWorker() {
   if (_aiWorker) return _aiWorker;
@@ -565,18 +566,25 @@ function killAIWorker() {
 }
 
 // ══ Config ══
-var TREASURY = 'UQDsd407dJuB-H6lRIB_BVTL5DI7aZbBN74OYVZuDdMDm4FY';
-var SKIN_PRICE_TON = 0.3;
-var SKIN_PRICE_NANO = String(Math.round(SKIN_PRICE_TON * 1e9));
-var TON_MAINNET = '-239';
+var TREASURY = '0x3B5b7549A5AE9A014A87b2b9F7973baDBCCE7A89';
+// Monad Mainnet chain ID (decimal 10143 = 0x279F for testnet; update when mainnet launches)
+var MONAD_CHAIN_ID = '0xa1ee'; // Placeholder — update to official Monad mainnet chainId
+var MONAD_CHAIN_ID_DEC = 41454;
+var MONAD_PARAMS = {
+  chainId: MONAD_CHAIN_ID,
+  chainName: 'Monad Mainnet',
+  nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+  rpcUrls: ['https://rpc.monad.xyz'],
+  blockExplorerUrls: ['https://explorer.monad.xyz']
+};
 var POINTS_PER_WIN = {easy:10,normal:30,hard:100};
 var STREAK_BONUS = 25;
 var CHESS_RATE = 10000;
-var TURN_LIMIT = 15; // seconds
-var CIRC = 69.12; // 2*pi*11
+var TURN_LIMIT = 15;
+var CIRC = 69.12;
 
 // ══════════════════════════════════════════════════════════════
-// SOUND ENGINE — Web Audio API, fully synthesized, no external files
+// SOUND ENGINE
 // ══════════════════════════════════════════════════════════════
 var SFX = (function(){
   var ctx=null, muted=false;
@@ -615,25 +623,21 @@ var SFX = (function(){
   return {
     toggle:function(){muted=!muted;updateBtn();},
     isMuted:function(){return muted;},
-    // Subtle woody click for a piece move
     move:function(){
       var c=getCtx();if(!c||muted)return;
       osc(900,'square',0.04,0.18);
       osc(600,'square',0.07,0.09,c.currentTime+0.025);
     },
-    // Heavier thud for a capture
     capture:function(){
       var c=getCtx();if(!c||muted)return;
       noise(0.10,0.22);
       osc(160,'sawtooth',0.14,0.28);
     },
-    // Ascending two-note chime for check
     check:function(){
       var c=getCtx();if(!c||muted)return;
-      osc(523,'sine',0.28,0.32);       // C5
-      osc(784,'sine',0.28,0.32,c.currentTime+0.14); // G5
+      osc(523,'sine',0.28,0.32);
+      osc(784,'sine',0.28,0.32,c.currentTime+0.14);
     },
-    // Triumphant fanfare for checkmate
     checkmate:function(){
       var c=getCtx();if(!c||muted)return;
       var t=c.currentTime;
@@ -642,12 +646,10 @@ var SFX = (function(){
       osc(784,'sine',0.38,0.32,t+0.26);
       osc(1047,'sine',0.55,0.45,t+0.44);
     },
-    // Short tick for timer warning (≤5s)
     tick:function(){
       var c=getCtx();if(!c||muted)return;
       osc(1400,'square',0.05,0.13);
     },
-    // Whoosh for auto-move timeout
     autoMove:function(){
       var c=getCtx();if(!c||muted)return;
       var t=c.currentTime;
@@ -656,7 +658,6 @@ var SFX = (function(){
   };
 })();
 
-// Decide which SFX to play based on move result + current game state
 function playSFX(r,game){
   try{
     if(game.in_checkmate()){SFX.checkmate();return;}
@@ -668,7 +669,6 @@ function playSFX(r,game){
 
 var totalPoints=0, hardStreak=0, pointsAwarded=false;
 
-// ── Points persistence ──
 function getPK(a){return a?'chessio_pts_'+a.toLowerCase().replace(/[^a-z0-9]/g,'_'):null;}
 function getSK(a){return a?'chessio_str_'+a.toLowerCase().replace(/[^a-z0-9]/g,'_'):null;}
 function savePts(){var pk=getPK(walletAddr),sk=getSK(walletAddr);if(pk)localStorage.setItem(pk,String(totalPoints));if(sk)localStorage.setItem(sk,String(hardStreak));}
@@ -685,7 +685,7 @@ function awardPoints(diff,won){
 
 function showPtsToast(pts,diff,guest){
   var t=document.getElementById('pts-toast');
-  t.textContent='+'+pts+' pts'+(diff==='hard'&&hardStreak>1?' x'+hardStreak+' WIN STREAK!':' ')+(guest?' (connect wallet to save!)':'');
+  t.textContent='+'+pts+' pts'+(diff==='hard'&&hardStreak>1?' x'+hardStreak+' WIN STREAK!':' ')+(guest?' (connect MetaMask to save!)':'');
   t.classList.remove('hidden');t.classList.add('slide-down');
   setTimeout(function(){t.classList.add('hidden');t.classList.remove('slide-down');},3800);
 }
@@ -715,7 +715,7 @@ function openConvert(){
   ['conv-done','conv-no-wallet','conv-low','conv-btn'].forEach(function(id){document.getElementById(id).classList.add('hidden');});
   if(!walletAddr)document.getElementById('conv-no-wallet').classList.remove('hidden');
   else if(chess===0)document.getElementById('conv-low').classList.remove('hidden');
-  else{var b=document.getElementById('conv-btn');b.classList.remove('hidden');b.textContent='💎 Request '+chess+' $CHESSIO Now';}
+  else{var b=document.getElementById('conv-btn');b.classList.remove('hidden');b.textContent='🦊 Request '+chess+' $CHESSIO Now';}
   document.getElementById('modal-convert').classList.remove('hidden');
 }
 function closeConvert(){document.getElementById('modal-convert').classList.add('hidden');}
@@ -752,9 +752,9 @@ function goto(pg,e){
 // ── Roadmap ──
 (function(){
   var items=[
-    {phase:'Phase 1 — Q2 2025',title:'Launch & Foundation',done:true,items:['Token launch on Groypfi.io','Website & chess minigame live','X & Telegram community launched','WebRTC PvP & skin shop']},
-    {phase:'Phase 2 — Q3 2025',title:'Growth & Listings',done:false,items:['First CEX listing campaign','Strategic partnership announcements','Community chess tournament ($CHESSIO prizes)','Mobile-friendly UI optimization']},
-    {phase:'Phase 3 — Q4 2025',title:'Ecosystem Expansion',done:false,items:['On-chain points → $CHESSIO reward system','Chess skin NFT collection on TON','$CHESSIO staking & yield mechanism','Ranked tournament ladder system']},
+    {phase:'Phase 1 — Q2 2025',title:'Launch & Foundation',done:true,items:['Token launch on nad.fun','Website & chess minigame live','X & Telegram community launched','WebRTC PvP & skin shop']},
+    {phase:'Phase 2 — Q3 2025',title:'Growth & Listings',done:false,items:['First DEX listing on Monad','Strategic partnership announcements','Community chess tournament ($CHESSIO prizes)','Mobile-friendly UI optimization']},
+    {phase:'Phase 3 — Q4 2025',title:'Ecosystem Expansion',done:false,items:['On-chain points → $CHESSIO reward system','Chess skin NFT collection on Monad','$CHESSIO staking & yield mechanism','Ranked tournament ladder system']},
     {phase:'Phase 4 — 2026',title:'Mass Adoption',done:false,items:['Native mobile app (iOS & Android)','AI-powered coaching feature','Top-tier CEX listings','Global chess championship sponsorship']},
   ];
   var cnt=document.getElementById('roadmap-items');
@@ -771,21 +771,29 @@ function goto(pg,e){
 })();
 
 // ── Skin definitions ──
+var RARITY={
+  free:    {label:'Free',     color:'#16a34a',bg:'rgba(22,163,74,.12)',  border:'rgba(22,163,74,.35)',  star:''},
+  common:  {label:'Common',   color:'#0369a1',bg:'rgba(3,105,161,.10)', border:'rgba(3,105,161,.3)',   star:'⭐'},
+  rare:    {label:'Rare',     color:'#7c3aed',bg:'rgba(124,58,237,.12)',border:'rgba(124,58,237,.35)', star:'💜'},
+  epic:    {label:'Epic',     color:'#0891b2',bg:'rgba(8,145,178,.12)', border:'rgba(8,145,178,.35)',  star:'💎'},
+  legend:  {label:'Legendary',color:'#d97706',bg:'rgba(217,119,6,.13)', border:'rgba(217,119,6,.4)',   star:'🔥'},
+};
+
 var BOARD_SKINS={
-  classic:{id:'classic',name:'Classic Blue',  desc:'Signature sky-blue board',free:true, light:'#e0f2fe',dark:'#0284c7'},
-  dark:   {id:'dark',   name:'Dark Knight',   desc:'Dramatic midnight steel',  free:false,light:'#374151',dark:'#111827'},
-  emerald:{id:'emerald',name:'Emerald Forest',desc:'Classic green felt',        free:false,light:'#d1fae5',dark:'#065f46'},
-  purple: {id:'purple', name:'Royal Purple',  desc:'Regal violet court',        free:false,light:'#ede9fe',dark:'#5b21b6'},
-  ocean:  {id:'ocean',  name:'Ocean Deep',    desc:'Deep cyan battlefield',     free:false,light:'#cffafe',dark:'#0e7490'},
-  sunset: {id:'sunset', name:'Sunset Fire',   desc:'Warm amber dusk',           free:false,light:'#ffedd5',dark:'#9a3412'},
+  classic:{id:'classic',name:'Classic Blue',  desc:'Signature sky-blue board',free:true, price:0,   rarity:'free',  light:'#e0f2fe',dark:'#0284c7'},
+  dark:   {id:'dark',   name:'Dark Knight',   desc:'Dramatic midnight steel',  free:false,price:60,  rarity:'common',light:'#374151',dark:'#111827'},
+  emerald:{id:'emerald',name:'Emerald Forest',desc:'Classic green felt',        free:false,price:80,  rarity:'rare',  light:'#d1fae5',dark:'#065f46'},
+  purple: {id:'purple', name:'Royal Purple',  desc:'Regal violet court',        free:false,price:100, rarity:'epic',  light:'#ede9fe',dark:'#5b21b6'},
+  ocean:  {id:'ocean',  name:'Ocean Deep',    desc:'Deep cyan battlefield',     free:false,price:150, rarity:'legend',light:'#cffafe',dark:'#0e7490'},
+  sunset: {id:'sunset', name:'Sunset Fire',   desc:'Warm amber dusk',           free:false,price:200, rarity:'legend',light:'#ffedd5',dark:'#9a3412'},
 };
 var PIECE_SKINS={
-  standard:{id:'standard',name:'Standard',    desc:'Classic pieces',      free:true, wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.9)',bsh:'0 0 3px rgba(255,255,255,.3)'},
-  gold:    {id:'gold',    name:'Golden Royal',desc:'Shimmering gold',     free:false,wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,1)',bsh:'0 0 8px rgba(146,64,14,.8)'},
-  neon:    {id:'neon',    name:'Neon Cyber',  desc:'Cyan & magenta glow', free:false,wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 12px #22d3ee',bsh:'0 0 12px #d946ef'},
-  ice:     {id:'ice',     name:'Ice Crystal', desc:'Frosty glacial blue', free:false,wp:'#bae6fd',bp:'#0369a1',wsh:'0 0 10px rgba(186,230,253,1)',bsh:'0 0 10px rgba(3,105,161,.9)'},
-  blood:   {id:'blood',   name:'Blood Moon',  desc:'Crimson power',       free:false,wp:'#fca5a5',bp:'#7f1d1d',wsh:'0 0 10px rgba(252,165,165,1)',bsh:'0 0 10px rgba(127,29,29,.9)'},
-  sakura:  {id:'sakura',  name:'Sakura Bloom',desc:'Pink elegance',       free:false,wp:'#fbcfe8',bp:'#86198f',wsh:'0 0 10px rgba(251,207,232,1)',bsh:'0 0 10px rgba(134,25,143,.8)'},
+  standard:{id:'standard',name:'Standard',    desc:'Classic pieces',      free:true, price:0,   rarity:'free',  wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.9)',bsh:'0 0 3px rgba(255,255,255,.3)'},
+  gold:    {id:'gold',    name:'Golden Royal',desc:'Shimmering gold',     free:false,price:60,  rarity:'common',wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,1)',bsh:'0 0 8px rgba(146,64,14,.8)'},
+  neon:    {id:'neon',    name:'Neon Cyber',  desc:'Cyan & magenta glow', free:false,price:80,  rarity:'rare',  wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 12px #22d3ee',bsh:'0 0 12px #d946ef'},
+  ice:     {id:'ice',     name:'Ice Crystal', desc:'Frosty glacial blue', free:false,price:100, rarity:'epic',  wp:'#bae6fd',bp:'#0369a1',wsh:'0 0 10px rgba(186,230,253,1)',bsh:'0 0 10px rgba(3,105,161,.9)'},
+  blood:   {id:'blood',   name:'Blood Moon',  desc:'Crimson power',       free:false,price:150, rarity:'legend',wp:'#fca5a5',bp:'#7f1d1d',wsh:'0 0 10px rgba(252,165,165,1)',bsh:'0 0 10px rgba(127,29,29,.9)'},
+  sakura:  {id:'sakura',  name:'Sakura Bloom',desc:'Pink elegance',       free:false,price:200, rarity:'legend',wp:'#fbcfe8',bp:'#86198f',wsh:'0 0 10px rgba(251,207,232,1)',bsh:'0 0 10px rgba(134,25,143,.8)'},
 };
 
 var owned={b:['classic'],p:['standard']};
@@ -813,15 +821,22 @@ function boardPrev(sk){var c=[sk.dark,sk.light,sk.light,sk.dark];return '<div cl
 function skinBtn(type,sk,own,eq){
   if(eq)return '<div class="py-2 bg-sky-50 text-sky-600 font-bold text-center rounded-xl text-xs border border-sky-200">Equipped</div>';
   if(own)return '<button onclick="equip'+(type==='board'?'Board':'Piece')+'(\''+sk.id+'\')" class="w-full py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-xs">Equip</button>';
-  var grad=type==='board'?'linear-gradient(135deg,#0ea5e9,#3b82f6)':'linear-gradient(135deg,#7c3aed,#ec4899)';
-  return '<button onclick="openBuy(\''+type+'\',\''+sk.id+'\')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:'+grad+'">💎 '+SKIN_PRICE_TON+' TON</button>';
+  var grad=type==='board'?'linear-gradient(135deg,#7c3aed,#6366f1)':'linear-gradient(135deg,#7c3aed,#ec4899)';
+  return '<button onclick="openBuy(\''+type+'\',\''+sk.id+'\')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:'+grad+'">🦊 '+sk.price+' MON</button>';
+}
+function rarityBadge(sk){
+  var r=RARITY[sk.rarity]||RARITY.common;
+  return '<div class="flex justify-center mb-2"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:'+r.bg+';color:'+r.color+';border:1px solid '+r.border+';letter-spacing:.04em">'+r.star+(r.star?' ':'')+r.label+'</span></div>';
 }
 function renderBoardCards(){
   var cnt=document.getElementById('board-skin-cards');if(!cnt)return;cnt.innerHTML='';
   Object.keys(BOARD_SKINS).forEach(function(key){
     var sk=BOARD_SKINS[key],own=boardOwned(sk.id),eq=eqBoard===sk.id;
-    var d=document.createElement('div');d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
-    d.innerHTML=boardPrev(sk)+'<h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+(sk.free?'<div class="text-xs text-center text-green-600 font-bold mb-2">Free</div>':'')+skinBtn('board',sk,own,eq);
+    var r=RARITY[sk.rarity]||RARITY.common;
+    var d=document.createElement('div');
+    d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
+    if(!own&&!eq)d.style.borderColor=r.border;
+    d.innerHTML=boardPrev(sk)+rarityBadge(sk)+'<h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+skinBtn('board',sk,own,eq);
     cnt.appendChild(d);
   });
 }
@@ -829,55 +844,30 @@ function renderPieceCards(){
   var cnt=document.getElementById('piece-skin-cards');if(!cnt)return;cnt.innerHTML='';
   Object.keys(PIECE_SKINS).forEach(function(key){
     var sk=PIECE_SKINS[key],own=pieceOwned(sk.id),eq=eqPiece===sk.id;
-    var d=document.createElement('div');d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
-    d.innerHTML='<div class="flex justify-center gap-3 mb-3"><span class="piece-preview" style="color:'+sk.wp+';text-shadow:'+sk.wsh+'">♕</span><span class="piece-preview" style="color:'+sk.bp+';text-shadow:'+sk.bsh+'">♛</span></div><h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+(sk.free?'<div class="text-xs text-center text-green-600 font-bold mb-2">Free</div>':'')+skinBtn('piece',sk,own,eq);
+    var r=RARITY[sk.rarity]||RARITY.common;
+    var d=document.createElement('div');
+    d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
+    if(!own&&!eq)d.style.borderColor=r.border;
+    d.innerHTML='<div class="flex justify-center gap-3 mb-3"><span class="piece-preview" style="color:'+sk.wp+';text-shadow:'+sk.wsh+'">♕</span><span class="piece-preview" style="color:'+sk.bp+';text-shadow:'+sk.bsh+'">♛</span></div>'+rarityBadge(sk)+'<h3 class="font-bold text-sky-700 text-center text-sm">'+sk.name+'</h3><p class="text-sky-400 text-xs text-center mt-0.5 mb-3">'+sk.desc+'</p>'+skinBtn('piece',sk,own,eq);
     cnt.appendChild(d);
   });
 }
 
 function openBuy(type,id){
-  if(!walletAddr){pendingBuy={type:type,id:id};if(tonUI)tonUI.openModal();return;}
+  if(!walletAddr){pendingBuy={type:type,id:id};walletClick();return;}
   var sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];if(!sk)return;
   pendingBuy={type:type,id:id};
   document.getElementById('buy-title').textContent='Buy — '+sk.name;
   document.getElementById('buy-desc').textContent=sk.desc;
-  document.getElementById('buy-price').textContent=SKIN_PRICE_TON+' TON';
+  document.getElementById('buy-price').textContent=sk.price+' MON';
   ['buy-error','buy-success','verify-status'].forEach(function(i){document.getElementById(i).classList.add('hidden');});
-  var btn=document.getElementById('buy-btn');btn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+  var btn=document.getElementById('buy-btn');btn.disabled=false;btn.innerHTML='<span>🦊</span><span>Buy with MON ('+sk.price+' MON)</span>';
   document.getElementById('cancel-btn').disabled=false;
   document.getElementById('modal-buy').classList.remove('hidden');
 }
 function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
 
-function verifyTonTransaction(senderAddr,amountNanoStr,startTimeSec){
-  var TONCENTER='https://toncenter.com/api/v2/getTransactions';
-  var minAmount=BigInt(amountNanoStr),maxAttempts=20,senderNorm=(senderAddr||'').toLowerCase().trim(),attempt=0;
-  function loop(){
-    if(attempt>=maxAttempts)return Promise.resolve({verified:false});
-    attempt++;
-    var pct=Math.min((attempt/maxAttempts)*100,95);
-    var fill=document.getElementById('verify-fill');if(fill)fill.style.width=pct+'%';
-    return new Promise(function(res){setTimeout(res,3000);}).then(function(){
-      var url=TONCENTER+'?address='+encodeURIComponent(TREASURY)+'&limit=20&to_lt=0&archival=false';
-      return fetch(url,{headers:{'Accept':'application/json'}}).then(function(r){return r.ok?r.json():null;})
-      .then(function(data){
-        if(!data||!data.ok||!Array.isArray(data.result))return loop();
-        for(var i=0;i<data.result.length;i++){
-          var tx=data.result[i];if(tx.utime<startTimeSec-60)break;
-          var inMsg=tx.in_msg;if(!inMsg||!inMsg.source)continue;
-          var srcNorm=(inMsg.source||'').toLowerCase().trim();
-          var match=srcNorm===senderNorm||(srcNorm.length>8&&senderNorm.length>8&&srcNorm.slice(-24)===senderNorm.slice(-24));
-          if(!match)continue;
-          if(BigInt(inMsg.value||'0')<minAmount)continue;
-          return{verified:true,txHash:tx.transaction_id?tx.transaction_id.hash:'unknown',amount:inMsg.value,timestamp:tx.utime};
-        }
-        return loop();
-      }).catch(function(){return loop();});
-    });
-  }
-  return loop();
-}
-
+// ══ MetaMask Payment — sends MON (native) to TREASURY on Monad Mainnet ══
 function confirmBuy(){
   if(!pendingBuy)return;
   var type=pendingBuy.type,id=pendingBuy.id;
@@ -885,58 +875,133 @@ function confirmBuy(){
   var errEl=document.getElementById('buy-error'),sucEl=document.getElementById('buy-success'),
       verifyEl=document.getElementById('verify-status'),verifyMsg=document.getElementById('verify-msg');
   var btn=document.getElementById('buy-btn'),cancelBtn=document.getElementById('cancel-btn');
-  if(!walletAddr||!tonUI){errEl.textContent='Please connect your TON wallet first.';errEl.classList.remove('hidden');setTimeout(function(){closeBuyModal();if(tonUI)tonUI.openModal();},1200);return;}
+  if(!walletAddr||!window.ethereum){errEl.textContent='Please connect MetaMask first.';errEl.classList.remove('hidden');setTimeout(function(){closeBuyModal();walletClick();},1200);return;}
   btn.disabled=true;cancelBtn.disabled=true;btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending…';
   errEl.classList.add('hidden');sucEl.classList.add('hidden');verifyEl.classList.add('hidden');
-  var startTimeSec=Math.floor(Date.now()/1000);
-  tonUI.sendTransaction({validUntil:startTimeSec+600,network:TON_MAINNET,messages:[{address:TREASURY,amount:SKIN_PRICE_NANO}]})
-  .then(function(){
-    btn.innerHTML='Confirming on-chain…';
-    document.getElementById('verify-msg').textContent='Verifying on TON mainnet… please wait';
-    document.getElementById('verify-fill').style.width='0%';
+
+  // Amount in wei (sk.price MON, each MON = 10^18 wei)
+  var priceWei = BigInt(sk.price) * BigInt('1000000000000000000');
+  var weiHex = '0x' + priceWei.toString(16);
+
+  ensureMonadChain().then(function(){
+    return window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{
+        from: walletAddr,
+        to: TREASURY,
+        value: weiHex,
+        gas: '0x5208'
+      }]
+    });
+  }).then(function(txHash){
     verifyEl.classList.remove('hidden');
-    return verifyTonTransaction(walletAddr,SKIN_PRICE_NANO,startTimeSec);
-  }).then(function(result){
-    if(result.verified){
+    document.getElementById('verify-msg').textContent='Transaction sent! Hash: '+txHash.slice(0,20)+'…';
+    document.getElementById('verify-fill').style.width='60%';
+    // Wait for confirmation (poll receipt)
+    return waitForReceipt(txHash);
+  }).then(function(receipt){
+    if(receipt && receipt.status === '0x1'){
       if(type==='board'){if(owned.b.indexOf(id)<0)owned.b.push(id);}else{if(owned.p.indexOf(id)<0)owned.p.push(id);}
-      saveOwned();document.getElementById('verify-fill').style.width='100%';
-      document.getElementById('verify-msg').textContent='Transaction confirmed!';
-      sucEl.textContent=SKIN_PRICE_TON+' TON confirmed! '+sk.name+' is yours.';sucEl.classList.remove('hidden');btn.innerHTML='Unlocked!';
+      saveOwned();
+      document.getElementById('verify-fill').style.width='100%';
+      document.getElementById('verify-msg').textContent='Transaction confirmed on Monad!';
+      sucEl.textContent=sk.price+' MON confirmed! '+sk.name+' is yours.';sucEl.classList.remove('hidden');btn.innerHTML='Unlocked!';
       setTimeout(function(){closeBuyModal();renderShop();},2500);
     }else{
-      verifyEl.classList.add('hidden');errEl.textContent='Could not confirm within 60s. Check your wallet.';errEl.classList.remove('hidden');
-      btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>💎</span><span>Try Again</span>';
+      verifyEl.classList.add('hidden');errEl.textContent='Transaction failed on-chain. Please try again.';errEl.classList.remove('hidden');
+      btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>🦊</span><span>Try Again</span>';
     }
   }).catch(function(err){
     var msg=String((err&&(err.message||err.code))||'');
-    var isReject=msg.toLowerCase().indexOf('reject')>=0||msg.indexOf('UserDeclined')>=0||msg.indexOf('cancel')>=0;
-    verifyEl.classList.add('hidden');errEl.textContent=isReject?'Transaction cancelled.':'Transaction failed: '+(msg||'Unknown error');
-    errEl.classList.remove('hidden');btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>💎</span><span>Buy with TON</span>';
+    var isReject=msg.toLowerCase().indexOf('reject')>=0||msg.toLowerCase().indexOf('denied')>=0||msg.toLowerCase().indexOf('cancel')>=0;
+    verifyEl.classList.add('hidden');errEl.textContent=isReject?'Transaction cancelled.':'Transaction failed: '+(msg.slice(0,100)||'Unknown error');
+    errEl.classList.remove('hidden');btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>🦊</span><span>Buy with MON</span>';
   });
 }
 
-// ── TON Wallet ──
-var walletAddr=null,tonUI=null;
-function initTonConnect(){
-  try{
-    var base=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'/');
-    tonUI=new TON_CONNECT_UI.TonConnectUI({manifestUrl:base+'tonconnect-manifest.json'});
-    tonUI.onStatusChange(function(w){
-      var prev=walletAddr;walletAddr=w?w.account.address:null;
-      if(walletAddr&&walletAddr!==prev){loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);renderShop();}
-      else if(!walletAddr&&prev){owned={b:['classic'],p:['standard']};resetPointsOnDisconnect();renderShop();}
-      syncWalletUI(walletAddr);renderPoints();
-      if(w&&pendingBuy){var pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
+function waitForReceipt(txHash,attempts){
+  attempts=attempts||0;
+  if(attempts>40)return Promise.resolve(null);
+  return new Promise(function(res){setTimeout(res,3000);}).then(function(){
+    return window.ethereum.request({method:'eth_getTransactionReceipt',params:[txHash]});
+  }).then(function(receipt){
+    if(receipt)return receipt;
+    return waitForReceipt(txHash,attempts+1);
+  });
+}
+
+// ══ MetaMask Wallet ══
+var walletAddr = null;
+
+function ensureMonadChain(){
+  return window.ethereum.request({method:'eth_chainId'}).then(function(chainId){
+    if(chainId.toLowerCase()===MONAD_CHAIN_ID.toLowerCase())return;
+    return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_CHAIN_ID}]})
+    .catch(function(err){
+      if(err.code===4902||err.code===-32603){
+        return window.ethereum.request({method:'wallet_addEthereumChain',params:[MONAD_PARAMS]});
+      }
+      throw err;
     });
-  }catch(e){}
+  });
 }
+
+function initMetaMask(){
+  if(!window.ethereum)return;
+  // Listen for account changes
+  window.ethereum.on('accountsChanged',function(accounts){
+    var prev=walletAddr;
+    walletAddr=accounts&&accounts.length?accounts[0]:null;
+    if(walletAddr&&walletAddr!==prev){loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);renderShop();}
+    else if(!walletAddr&&prev){owned={b:['classic'],p:['standard']};resetPointsOnDisconnect();renderShop();}
+    syncWalletUI(walletAddr);renderPoints();
+    if(walletAddr&&pendingBuy){var pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
+  });
+  window.ethereum.on('chainChanged',function(){window.location.reload();});
+  // Check if already connected
+  window.ethereum.request({method:'eth_accounts'}).then(function(accounts){
+    if(accounts&&accounts.length){
+      walletAddr=accounts[0];
+      loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);
+      syncWalletUI(walletAddr);renderPoints();renderShop();
+    }
+  }).catch(function(){});
+}
+
+function walletClick(){
+  if(!window.ethereum){
+    alert('MetaMask not detected! Please install MetaMask and connect to Monad Mainnet.');
+    return;
+  }
+  if(walletAddr){
+    // Disconnect — clear local state (MetaMask doesn't have a true disconnect)
+    walletAddr=null;
+    owned={b:['classic'],p:['standard']};
+    resetPointsOnDisconnect();
+    syncWalletUI(null);
+    renderShop();
+    renderPoints();
+    return;
+  }
+  window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
+    if(!accounts||!accounts.length)return;
+    walletAddr=accounts[0];
+    return ensureMonadChain().then(function(){
+      loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);
+      syncWalletUI(walletAddr);renderPoints();renderShop();
+      if(pendingBuy){var pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
+    });
+  }).catch(function(err){
+    console.warn('MetaMask connect error:',err);
+  });
+}
+
 function syncWalletUI(addr){
-  var s=addr?addr.slice(0,6)+'…'+addr.slice(-4):null,lbl=s||'Connect Wallet';
-  ['ton-lbl','ton-lbl2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=lbl;});
-  var sw=document.getElementById('shop-wallet-txt');if(sw)sw.textContent=addr?'Connected: '+s+' — your skins are loaded':'Not connected — connect wallet to purchase skins';
-  var cb=document.getElementById('shop-conn-btn');if(cb)cb.textContent=addr?'Disconnect':'Connect Wallet';
+  var s=addr?addr.slice(0,6)+'…'+addr.slice(-4):null,lbl=s||'Connect MetaMask';
+  ['mm-lbl','mm-lbl2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=lbl;});
+  var sw=document.getElementById('shop-wallet-txt');if(sw)sw.textContent=addr?'Connected: '+s+' (Monad Mainnet)':'Not connected — connect MetaMask to purchase skins';
+  var cb=document.getElementById('shop-conn-btn');if(cb)cb.textContent=addr?'Disconnect':'Connect MetaMask';
 }
-function walletClick(){if(walletAddr){if(tonUI)tonUI.disconnect();return;}if(tonUI)tonUI.openModal();}
 
 // ══════════════════════════════════════════════════════════════
 // BOARD RENDERER
@@ -962,7 +1027,7 @@ function drawBoard(el,game,selSq,posSqs,cb,flip){
 }
 
 // ══════════════════════════════════════════════════════════════
-// TURN TIMER (main thread — never blocked because AI is off-thread)
+// TURN TIMER
 // ══════════════════════════════════════════════════════════════
 var _timerInterval=null,_timerCount=0,_timerMode='ai';
 
@@ -996,6 +1061,7 @@ function resetTimerUI(mode){_updateTimerUI(mode,TURN_LIMIT);var s=document.getEl
 // AI GAME
 // ══════════════════════════════════════════════════════════════
 var aig=null,aiDf='normal',aiSel=null,aiPos=[],aiTh=false,aiHst=[];
+var pointsAwarded=false;
 
 function setDiff(d){
   aiDf=d;
@@ -1044,7 +1110,6 @@ function resetAI(){
 
 function startPlayerTimer(){
   startTurnTimer('ai',function(){
-    // Player timed out — auto-random move
     if(!aig||aig.game_over()||aig.turn()!=='w'||aiTh)return;
     var ms=aig.moves();if(!ms.length)return;
     var mv=ms[0|Math.random()*ms.length];
@@ -1100,9 +1165,7 @@ function schedAI(){
 
   var delay=aiDf==='easy'?150+Math.random()*300:aiDf==='normal'?300+Math.random()*400:300+Math.random()*300;
 
-  // Start 15s timer for AI turn — fires onExpire if worker doesn't finish in time
   startTurnTimer('ai',function(){
-    // AI took too long — kill worker, play random
     killAIWorker();
     if(!aig||aig.game_over()){aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');return;}
     var ms=aig.moves();if(!ms.length){aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');return;}
@@ -1114,15 +1177,13 @@ function schedAI(){
     if(!aig.game_over())startPlayerTimer();
   });
 
-  // Launch AI computation in worker after a small UX delay
   setTimeout(function(){
     if(!aig||!aiTh)return;
     var fen=aig.fen();
     var worker=getAIWorker();
     worker.onmessage=function(e){
-      // Worker responded — cancel the timeout timer
       clearTurnTimer();
-      if(!aiTh)return; // already handled by timeout
+      if(!aiTh)return;
       var mv=e.data.move;
       if(mv&&aig){
         var r=aig.move(mv);if(r){aiHst.push(r.san);playSFX(r,aig);updAIHst();}
@@ -1133,7 +1194,6 @@ function schedAI(){
     };
     worker.onerror=function(){
       clearTurnTimer();
-      // Worker errored — play random
       if(aig&&!aig.game_over()){var ms=aig.moves();if(ms.length){var r=aig.move(ms[0|Math.random()*ms.length]);if(r){aiHst.push(r.san);updAIHst();}}}
       aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');
       updAISt();renderAIBoard();
@@ -1205,7 +1265,7 @@ function pvpStartTimer(){
   var myC=pvpCol==='white'?'w':'b';
   startTurnTimer('pvp',function(){
     if(!pvpG||pvpG.game_over())return;
-    if(pvpG.turn()!==myC)return; // opponent's turn expires on their side
+    if(pvpG.turn()!==myC)return;
     var ms=pvpG.moves();if(!ms.length)return;
     var mv=ms[0|Math.random()*ms.length],r=pvpG.move(mv);
     if(r){pvpHst.push(r.san);pvpSel=null;pvpPos=[];SFX.autoMove();if(conn&&conn.open)conn.send({type:'auto_move',move:r.san});pvpUpdSt();pvpUpdHst();renderPvPBoard();pvpStartTimer();}
@@ -1263,7 +1323,7 @@ function pvpReset(){
 
 // ── Init ──
 window.addEventListener('load',function(){
-  initTonConnect();renderShop();renderPoints();setDiff('normal');
+  initMetaMask();renderShop();renderPoints();setDiff('normal');
 });
 </script>
 </body>

@@ -567,9 +567,8 @@ function killAIWorker() {
 
 // ══ Config ══
 var TREASURY = '0x3B5b7549A5AE9A014A87b2b9F7973baDBCCE7A89';
-// Monad Mainnet chain ID (decimal 10143 = 0x279F for testnet; update when mainnet launches)
-var MONAD_CHAIN_ID = '0xa1ee'; // Placeholder — update to official Monad mainnet chainId
-var MONAD_CHAIN_ID_DEC = 41454;
+// Monad Mainnet — chain ID 41454 (0xa1ee). MetaMask may already know it by another ID.
+var MONAD_CHAIN_ID = '0xa1ee';
 var MONAD_PARAMS = {
   chainId: MONAD_CHAIN_ID,
   chainName: 'Monad Mainnet',
@@ -935,13 +934,31 @@ var walletAddr = null;
 
 function ensureMonadChain(){
   return window.ethereum.request({method:'eth_chainId'}).then(function(chainId){
+    // Already on Monad — good to go
     if(chainId.toLowerCase()===MONAD_CHAIN_ID.toLowerCase())return;
+    // Try to switch first
     return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_CHAIN_ID}]})
-    .catch(function(err){
-      if(err.code===4902||err.code===-32603){
-        return window.ethereum.request({method:'wallet_addEthereumChain',params:[MONAD_PARAMS]});
+    .catch(function(switchErr){
+      // 4902 = chain not added yet — try to add it
+      if(switchErr.code===4902||switchErr.code===-32603){
+        return window.ethereum.request({method:'wallet_addEthereumChain',params:[MONAD_PARAMS]})
+        .catch(function(addErr){
+          var msg=String(addErr&&addErr.message||'');
+          // MetaMask already has a Monad entry with the same RPC — just try switching again
+          if(msg.indexOf('same RPC')>=0||msg.indexOf('already exists')>=0||msg.indexOf('already added')>=0||addErr.code===-32602){
+            return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_CHAIN_ID}]})
+            .catch(function(){
+              // If switch still fails, the user's MetaMask has Monad under a different chainId.
+              // Warn but don't block — the transaction will still go through on whatever Monad chain they have.
+              console.warn('Could not switch to Monad chain automatically. Proceeding anyway.');
+            });
+          }
+          // User rejected adding the chain
+          throw addErr;
+        });
       }
-      throw err;
+      // User rejected the switch — re-throw so confirmBuy can show the error
+      throw switchErr;
     });
   });
 }

@@ -58,7 +58,32 @@
     button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
     .tok-bar{height:14px;border-radius:999px;overflow:hidden;background:rgba(0,214,161,.15)}
     .tok-fill{height:100%;border-radius:999px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-    .roadmap-line{position:absolute;left:30px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#00d6a1,rgba(0,214,161,.1))}
+    .roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+    @media(max-width:767px){.roadmap-grid{grid-template-columns:1fr;gap:24px}}
+    .roadmap-connector{position:absolute;top:52px;left:calc(12.5% + 20px);right:calc(12.5% + 20px);height:2px;background:linear-gradient(90deg,#00d6a1,#fbbf24,rgba(123,97,255,.5),rgba(123,97,255,.2));z-index:0;pointer-events:none}
+    @media(max-width:767px){.roadmap-connector{display:none}}
+    .roadmap-card{position:relative;z-index:1;padding:0 12px}
+    .roadmap-node{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;position:relative;transition:transform .3s}
+    .roadmap-node::after{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0;transition:opacity .3s}
+    .roadmap-card:hover .roadmap-node{transform:scale(1.08)}
+    .roadmap-card:hover .roadmap-node::after{opacity:1}
+    .rm-done .roadmap-node{background:linear-gradient(135deg,rgba(0,214,161,.2),rgba(0,181,137,.1));border:2px solid #00d6a1;box-shadow:0 0 24px rgba(0,214,161,.25)}
+    .rm-done .roadmap-node::after{box-shadow:0 0 40px rgba(0,214,161,.3)}
+    .rm-active .roadmap-node{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(245,158,11,.1));border:2px solid #fbbf24;box-shadow:0 0 24px rgba(251,191,36,.25)}
+    .rm-active .roadmap-node::after{box-shadow:0 0 40px rgba(251,191,36,.3)}
+    .rm-upcoming .roadmap-node{background:rgba(255,255,255,.04);border:2px solid rgba(123,97,255,.35)}
+    .rm-card-inner{background:rgba(13,17,32,0.85);border-radius:20px;padding:22px;text-align:center;border:1px solid rgba(255,255,255,.06);transition:all .3s}
+    .rm-done .rm-card-inner{border-color:rgba(0,214,161,.18);box-shadow:0 4px 24px rgba(0,214,161,.06)}
+    .rm-active .rm-card-inner{border-color:rgba(251,191,36,.25);box-shadow:0 4px 28px rgba(251,191,36,.08)}
+    .rm-upcoming .rm-card-inner{border-color:rgba(123,97,255,.15)}
+    .roadmap-card:hover .rm-card-inner{transform:translateY(-4px)}
+    .rm-done:hover .rm-card-inner{box-shadow:0 12px 40px rgba(0,214,161,.14)}
+    .rm-active:hover .rm-card-inner{box-shadow:0 12px 40px rgba(251,191,36,.14)}
+    .rm-upcoming:hover .rm-card-inner{box-shadow:0 12px 40px rgba(123,97,255,.1)}
+    .rm-progress{height:6px;border-radius:999px;overflow:hidden;margin:12px 0 14px;background:rgba(251,191,36,.12)}
+    .rm-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+    @keyframes rmPulse{0%,100%{box-shadow:0 0 24px rgba(251,191,36,.25)}50%{box-shadow:0 0 40px rgba(251,191,36,.5),0 0 80px rgba(251,191,36,.15)}}
+    .rm-active .roadmap-node{animation:rmPulse 2.4s ease-in-out infinite}
     .move-history{max-height:180px;overflow-y:auto}
     .move-history::-webkit-scrollbar{width:4px}
     .move-history::-webkit-scrollbar-thumb{background:rgba(0,214,161,.4);border-radius:4px}
@@ -97,7 +122,6 @@
     .timer-ring .bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:3}
     .timer-ring .fg{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s}
     .timer-skipped{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;background:rgba(239,68,68,.12);color:#ef4444}
-    /* HL specific */
     .hl-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,214,161,.3),transparent)}
     .hl-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;background:rgba(0,214,161,.1);border:1px solid rgba(0,214,161,.25);color:#00d6a1}
     .hl-card{background:rgba(13,17,32,0.8);border:1px solid rgba(0,214,161,.12);border-radius:18px;padding:20px}
@@ -120,6 +144,8 @@
     .section-sub{color:var(--hl-text2);font-size:.9rem;margin-top:.5rem}
     .feature-card{background:rgba(13,17,32,0.7);border:1px solid rgba(0,214,161,.1);border-radius:20px;padding:24px;text-align:center;transition:all .25s}
     .feature-card:hover{border-color:rgba(0,214,161,.35);transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,214,161,.1)}
+    .tg-sticker-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#229ED9,#1a8bc4);color:#fff;font-weight:800;border:none;border-radius:14px;padding:12px 24px;font-size:.95rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(34,158,217,.3);text-decoration:none}
+    .tg-sticker-btn:hover{transform:scale(1.03);box-shadow:0 6px 28px rgba(34,158,217,.5)}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
@@ -140,6 +166,7 @@
         <a href="#about" class="nav-link">About</a>
         <a href="#tokenomics" class="nav-link">Tokenomics</a>
         <a href="#roadmap" class="nav-link">Roadmap</a>
+        <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="nav-link font-semibold" style="color:#229ED9">🎭 Stickers</a>
         <a href="#" onclick="goto('shop',event)" class="nav-link font-semibold" style="color:#7b61ff">Shop</a>
         <a href="#" onclick="goto('play',event)" class="nav-link font-semibold" style="color:#00d6a1">Play</a>
       </div>
@@ -147,6 +174,7 @@
     </div>
   </nav>
 
+  <!-- Hero -->
   <section class="pt-28 pb-20 px-4 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
       <span class="float-piece absolute opacity-25 text-5xl" style="left:4%;top:12%;--dur:3.2s;color:#00d6a1">♟</span>
@@ -162,7 +190,6 @@
       <span class="float-piece absolute opacity-20 text-6xl" style="left:23%;top:77%;--dur:2.8s;animation-delay:.4s;color:#7b61ff">♛</span>
       <span class="float-piece absolute opacity-18 text-5xl" style="left:77%;top:79%;--dur:3.9s;animation-delay:1.1s;color:#00d6a1">♟</span>
     </div>
-    <!-- Radial glow -->
     <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(0,214,161,.08) 0%,transparent 70%)"></div>
     <div class="max-w-3xl mx-auto text-center relative z-10">
       <div class="flex justify-center mb-7">
@@ -189,22 +216,40 @@
     </div>
   </section>
 
+  <!-- ══ TELEGRAM STICKER BANNER ══ -->
+  <section class="py-10 px-4 z1 relative">
+    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(90deg,rgba(34,158,217,.05),rgba(123,97,255,.05))"></div>
+    <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
+      <div class="glass-bright rounded-3xl p-8" style="border-color:rgba(34,158,217,.3)">
+        <div class="text-5xl mb-4">🎭</div>
+        <h2 class="text-2xl font-black mb-2" style="color:#f0f4ff">Chessio King Telegram Stickers</h2>
+        <p class="mb-5 text-sm" style="color:#8b98b8">Express yourself with exclusive Chessio King sticker pack on Telegram. Free to add, forever yours!</p>
+        <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="tg-sticker-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Add Stickers on Telegram
+        </a>
+        <p class="mt-4 text-xs" style="color:#5a6882">Join our community: <a href="https://t.me/Chessioportal" target="_blank" style="color:#229ED9;text-decoration:none">t.me/Chessioportal</a></p>
+      </div>
+    </div>
+  </section>
+
   <section id="about" class="py-16 px-4 z1">
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-12">
         <div class="hl-badge mx-auto mb-4" style="width:fit-content">About</div>
         <h2 class="section-title">What is Chessio King?</h2>
-        <p class="section-sub max-w-2xl mx-auto mt-3">Chessio King is the first chess-powered memecoin on the HyperEVM blockchain. Win games to earn points, convert them to $CHESSIO, collect exclusive skins, and battle friends in real-time P2P matches.</p>
+        <p class="section-sub max-w-2xl mx-auto mt-3">Chessio King is the first chess-powered memecoin on the HyperEVM blockchain. Win games to earn points, convert them to $CHESSIO, collect exclusive skins (each with unique point bonuses!), and battle friends in real-time P2P matches.</p>
       </div>
       <div class="grid md:grid-cols-4 gap-5">
         <div class="reveal feature-card"><div class="text-4xl mb-3">♟</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">Chess vs AI</h3><p class="text-xs" style="color:#8b98b8">3 difficulty levels — 15s timer every turn!</p></div>
-        <div class="reveal feature-card" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">Earn Points</h3><p class="text-xs" style="color:#8b98b8">Win games → earn points → convert to $CHESSIO</p></div>
-        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">12 Skins</h3><p class="text-xs" style="color:#8b98b8">6 board + 6 piece skins, buyable with USDC</p></div>
+        <div class="reveal feature-card" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">Earn Points</h3><p class="text-xs" style="color:#8b98b8">Win games → earn points → skin bonuses stack!</p></div>
+        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">12 Skins</h3><p class="text-xs" style="color:#8b98b8">Rare skins grant bonus points per win!</p></div>
         <div class="reveal feature-card" style="transition-delay:.24s"><div class="text-4xl mb-3">🌐</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">WebRTC PvP</h3><p class="text-xs" style="color:#8b98b8">Direct P2P play with friends — no server needed</p></div>
       </div>
     </div>
   </section>
 
+  <!-- ══ TOKENOMICS ══ -->
   <section id="tokenomics" class="py-16 px-4 z1" style="background:rgba(0,214,161,.03)">
     <div class="max-w-4xl mx-auto">
       <div class="reveal text-center mb-4">
@@ -212,8 +257,58 @@
         <h2 class="section-title">Token Details</h2>
         <p class="section-sub mt-2">Total Supply: 1,000,000,000 $CHESSIO</p>
       </div>
+
+      <!-- Distribution Visual -->
+      <div class="reveal max-w-lg mx-auto mt-8 mb-6">
+        <div class="hl-card">
+          <p class="text-xs uppercase tracking-widest font-semibold mb-5" style="color:#8b98b8">Token Distribution</p>
+
+          <!-- Community Bar -->
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full inline-block" style="background:#00d6a1"></span>
+                <span class="text-sm font-bold" style="color:#f0f4ff">Community</span>
+              </div>
+              <span class="font-black text-sm" style="color:#00d6a1">93%</span>
+            </div>
+            <div class="tok-bar">
+              <div class="tok-fill" data-width="93" style="background:linear-gradient(90deg,#00d6a1,#00b589)"></div>
+            </div>
+            <p class="text-xs mt-1" style="color:#5a6882">930,000,000 $CHESSIO</p>
+          </div>
+
+          <!-- Dev Bar -->
+          <div class="mb-2">
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full inline-block" style="background:#7b61ff"></span>
+                <span class="text-sm font-bold" style="color:#f0f4ff">Dev</span>
+              </div>
+              <span class="font-black text-sm" style="color:#7b61ff">7%</span>
+            </div>
+            <div class="tok-bar" style="background:rgba(123,97,255,.15)">
+              <div class="tok-fill" data-width="7" style="background:linear-gradient(90deg,#7b61ff,#5b3fe0)"></div>
+            </div>
+            <p class="text-xs mt-1" style="color:#5a6882">70,000,000 $CHESSIO</p>
+          </div>
+
+          <!-- Combined stacked bar -->
+          <div class="mt-5">
+            <div class="h-5 rounded-full overflow-hidden flex" style="background:rgba(255,255,255,.05)">
+              <div style="width:93%;background:linear-gradient(90deg,#00d6a1,#00b589);border-radius:999px 0 0 999px;transition:width 1.2s cubic-bezier(.4,0,.2,1)"></div>
+              <div style="width:7%;background:linear-gradient(90deg,#7b61ff,#5b3fe0);border-radius:0 999px 999px 0;transition:width 1.2s cubic-bezier(.4,0,.2,1)"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-xs" style="color:#5a6882">
+              <span style="color:#00d6a1">● Community 93%</span>
+              <span style="color:#7b61ff">● Dev 7%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="max-w-lg mx-auto">
-        <div class="reveal hl-card mt-8">
+        <div class="reveal hl-card">
           <div class="divide-y" style="border-color:rgba(255,255,255,.06)">
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Symbol</span><span class="font-black text-sm" style="color:#00d6a1">$CHESSIO</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Network</span><span class="font-bold text-sm">HyperEVM Mainnet</span></div>
@@ -222,7 +317,8 @@
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Launch</span><span class="font-bold text-sm">alt.fun</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Tax</span><span class="font-black text-sm" style="color:#00d6a1">0%</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Total Supply</span><span class="font-black text-sm">1,000,000,000</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Community</span><span class="font-black text-sm" style="color:#00d6a1">100%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Community</span><span class="font-black text-sm" style="color:#00d6a1">93%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Dev</span><span class="font-black text-sm" style="color:#7b61ff">7%</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Liquidity</span><span class="font-black text-sm">Locked</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Shop Currency</span><span class="font-black text-sm" style="color:#00d6a1">USDC (HyperEVM)</span></div>
           </div>
@@ -232,14 +328,95 @@
     </div>
   </section>
 
-  <section id="roadmap" class="py-16 px-4 z1">
-    <div class="max-w-4xl mx-auto">
-      <div class="reveal text-center mb-10">
+  <section id="roadmap" class="py-20 px-4 z1" style="background:rgba(0,0,0,.18)">
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-16">
         <div class="hl-badge mx-auto mb-4" style="width:fit-content">Roadmap</div>
         <h2 class="section-title">Our Journey</h2>
         <p class="section-sub mt-2">Our path to becoming the #1 chess memecoin on HyperEVM</p>
       </div>
-      <div class="relative"><div class="roadmap-line hidden md:block"></div><div class="space-y-6" id="roadmap-items"></div></div>
+
+      <div class="roadmap-grid">
+        <div class="roadmap-connector"></div>
+
+        <!-- Phase 1 — Done -->
+        <div class="roadmap-card rm-done reveal">
+          <div class="roadmap-node">✅</div>
+          <div class="rm-card-inner">
+            <p class="text-xs font-bold mb-1" style="color:#00d6a1;letter-spacing:.1em;text-transform:uppercase">Phase 1</p>
+            <h3 class="text-xl font-black mb-2">Launch</h3>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(0,214,161,.12);color:#00d6a1;border:1px solid rgba(0,214,161,.3)">
+              <span style="width:6px;height:6px;border-radius:50%;background:#00d6a1;display:inline-block"></span>
+              Completed
+            </span>
+            <ul class="space-y-2 text-left">
+              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">Chess game with AI (3 difficulty levels)</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">12 collectible skins with rarity bonuses</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">WebRTC P2P multiplayer</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">Telegram sticker pack launched</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 2 — Active -->
+        <div class="roadmap-card rm-active reveal" style="transition-delay:.12s">
+          <div class="roadmap-node">🚀</div>
+          <div class="rm-card-inner">
+            <p class="text-xs font-bold mb-1" style="color:#fbbf24;letter-spacing:.1em;text-transform:uppercase">Phase 2</p>
+            <h3 class="text-xl font-black mb-2">Growth</h3>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-2" style="background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.35)">
+              <span style="width:6px;height:6px;border-radius:50%;background:#fbbf24;display:inline-block;animation:rmPulse 1.2s ease-in-out infinite"></span>
+              In Progress
+            </span>
+            <div class="rm-progress"><div class="rm-progress-fill" data-width="35"></div></div>
+            <ul class="space-y-2 text-left">
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Deploy $CHESSIO on HyperEVM via alt.fun</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">CEX listings &amp; partnerships</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Community tournaments</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Enhanced leaderboard system</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Mobile-optimized experience</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 3 — Upcoming -->
+        <div class="roadmap-card rm-upcoming reveal" style="transition-delay:.24s">
+          <div class="roadmap-node">🔮</div>
+          <div class="rm-card-inner">
+            <p class="text-xs font-bold mb-1" style="color:#7b61ff;letter-spacing:.1em;text-transform:uppercase">Phase 3</p>
+            <h3 class="text-xl font-black mb-2">Ecosystem</h3>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(123,97,255,.1);color:#7b61ff;border:1px solid rgba(123,97,255,.3)">
+              <span style="width:6px;height:6px;border-radius:50%;background:#7b61ff;display:inline-block"></span>
+              Coming Soon
+            </span>
+            <ul class="space-y-2 text-left">
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">On-chain point verification</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">NFT skin integration</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Cross-chain bridge</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">DAO governance for token holders</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 4 — Future -->
+        <div class="roadmap-card rm-upcoming reveal" style="transition-delay:.36s">
+          <div class="roadmap-node" style="background:rgba(255,255,255,.03);border:2px solid rgba(245,158,11,.25)">✨</div>
+          <div class="rm-card-inner" style="border-color:rgba(245,158,11,.12)">
+            <p class="text-xs font-bold mb-1" style="color:#f59e0b;letter-spacing:.1em;text-transform:uppercase">Phase 4</p>
+            <h3 class="text-xl font-black mb-2">Expansion</h3>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.25)">
+              <span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block"></span>
+              Future
+            </span>
+            <ul class="space-y-2 text-left">
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">$CHESSIO staking &amp; yield rewards</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">DAO governance voting for holders</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Cross-game integrations &amp; partnerships</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Global chess tournament with prize pool</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -254,6 +431,7 @@
         <div class="flex gap-4 justify-center flex-wrap">
           <button onclick="goto('play')" class="btn-primary">Play &amp; Earn Now</button>
           <button onclick="goto('shop')" class="btn-ghost">Browse Skins</button>
+          <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="tg-sticker-btn">🎭 Get Stickers</a>
         </div>
       </div>
     </div>
@@ -269,6 +447,7 @@
         <div class="flex gap-6 flex-wrap justify-center">
           <a href="https://x.com/chessiooxyz" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">X @chessiooxyz</a>
           <a href="https://t.me/Chessioportal" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">Chessioportal</a>
+          <a href="https://t.me/addstickers/ChessioKING" target="_blank" class="text-sm font-medium" style="color:#229ED9" onmouseover="this.style.color='#5eb8e8'" onmouseout="this.style.color='#229ED9'">🎭 Sticker Pack</a>
           <a href="https://alt.fun" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">alt.fun</a>
         </div>
       </div>
@@ -298,12 +477,27 @@
         </div>
         <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0)">Connect Wallet</button>
       </div>
+
+      <!-- Rarity bonus legend -->
+      <div class="hl-card mb-8" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.18)">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#fbbf24">⭐ Skin Rarity Bonuses — Bonus pts per win (board + piece stack!)</p>
+        <div class="flex flex-wrap gap-3">
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1">Free — +0 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(139,152,184,.1);color:#8b98b8">⭐ Common — +5 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(123,97,255,.1);color:#7b61ff">💜 Rare — +15 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(94,234,212,.1);color:#5eead4">💎 Epic — +30 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(251,191,36,.1);color:#fbbf24">🔥 Legendary — +50 pts</span>
+        </div>
+        <p class="text-xs mt-3" style="color:#5a6882">Max possible bonus: <strong style="color:#fbbf24">+100 pts/win</strong> (Legendary board + Legendary piece skin both equipped)</p>
+      </div>
+
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black">Board Skins</h2>
         <span class="hl-badge text-xs">6 designs</span>
       </div>
       <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#00d6a1">1 USDC</strong> to <strong style="color:#00d6a1">5 USDC</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="board-skin-cards"></div>
+
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black">Piece Skins</h2>
         <span class="hl-badge text-xs" style="background:rgba(123,97,255,.1);border-color:rgba(123,97,255,.25);color:#7b61ff">6 styles</span>
@@ -318,7 +512,8 @@
 <div id="modal-buy" class="modal-bg hidden">
   <div class="modal-box">
     <h3 id="buy-title" class="text-xl font-black mb-1" style="color:#00d6a1">Buy Skin</h3>
-    <p id="buy-desc" class="text-sm mb-4" style="color:#8b98b8"></p>
+    <p id="buy-desc" class="text-sm mb-1" style="color:#8b98b8"></p>
+    <p id="buy-bonus-info" class="text-xs font-bold mb-4" style="color:#fbbf24"></p>
     <div class="rounded-2xl p-4 text-center mb-5" style="background:rgba(0,214,161,.06);border:1px solid rgba(0,214,161,.15)">
       <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Price</p>
       <p id="buy-price" class="text-3xl font-black" style="color:#00d6a1"></p>
@@ -380,6 +575,10 @@
           <div>
             <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Your Progress</p>
             <p class="text-2xl font-black" style="color:#00d6a1">⭐ <span class="pts-total">0</span> pts</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xs mb-1" style="color:#5a6882">Active skin bonus</p>
+            <p id="skin-bonus-display" class="text-sm font-black" style="color:#fbbf24">+0 pts/win</p>
           </div>
           <div class="text-right">
             <p class="text-xs mb-1" style="color:#5a6882">Progress to next $CHESSIO</p>
@@ -449,7 +648,7 @@
     <div id="play-ai" class="hidden max-w-5xl mx-auto mt-4">
       <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
         <div class="flex-shrink-0 w-full" style="max-width:480px;margin:0 auto">
-          <div class="hl-card p-3 shadow-xl" style="box-shadow:0 8px 40px rgba(0,214,161,.12)"><div id="ai-board" class="chess-board"></div></div>
+          <div class="hl-card p-3 shadow-xl"><div id="ai-board" class="chess-board"></div></div>
           <div id="ai-thinking" class="hidden mt-3 flex items-center gap-2 text-sm" style="color:#8b98b8">
             <div class="w-4 h-4 border-2 rounded-full spin" style="border-color:rgba(0,214,161,.3);border-top-color:#00d6a1"></div>
             AI thinking…
@@ -529,7 +728,7 @@
             <div class="w-3 h-3 border-2 rounded-full spin" style="border-color:rgba(0,214,161,.3);border-top-color:#00d6a1"></div>
             <span id="pvp-wait-status"></span>
           </div>
-          <button onclick="pvpReset()" class="mt-5 text-sm underline block mx-auto" style="color:#4a5568" onmouseover="this.style.color='#8b98b8'" onmouseout="this.style.color='#4a5568'">Cancel</button>
+          <button onclick="pvpReset()" class="mt-5 text-sm underline block mx-auto" style="color:#4a5568">Cancel</button>
         </div>
       </div>
       <div id="pvp-game" class="hidden">
@@ -580,445 +779,304 @@
 <script>
 'use strict';
 
-// ══════════════════════════════════════════════════════════════
-// WEB WORKER — AI runs off main thread
-// ══════════════════════════════════════════════════════════════
+// ══ Web Worker — AI runs off main thread ══
 var AI_WORKER_CODE = [
 "importScripts('https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js');",
-"var PV={p:100,n:320,b:330,r:500,q:900,k:20000};",
-"var PST_P=[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0];",
-"var PST_N=[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50];",
-"var PST_B=[-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,10,10,5,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20];",
-"var PST_R=[0,0,0,0,0,0,0,0,5,10,10,10,10,10,10,5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,0,0,0,5,5,0,0,0];",
-"var PST_KM=[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20];",
-"function gPST(t,c,r,col){var idx=c==='w'?(7-r)*8+col:r*8+col;if(t==='p')return PST_P[idx]||0;if(t==='n')return PST_N[idx]||0;if(t==='b')return PST_B[idx]||0;if(t==='r')return PST_R[idx]||0;if(t==='k')return PST_KM[idx]||0;return 0;}",
-"function evalH(g){var s=0,bd=g.board(),wB=0,bB=0;for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=bd[r][c];if(!p)continue;var v=PV[p.type]||0,pst=gPST(p.type,p.color,r,c);if(p.color==='b'){s+=v+pst;if(p.type==='b')bB++;}else{s-=v+pst;if(p.type==='b')wB++;}}if(bB>=2)s+=30;if(wB>=2)s-=30;return s;}",
-"function evalN(g){var s=0,bd=g.board();for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=bd[r][c];if(!p)continue;var v=(PV[p.type]||0)+(PST_P[p.color==='w'?(7-r)*8+c:r*8+c]||0);s+=p.color==='b'?v:-v;}return s;}",
-"var _abort=false;",
-"function mm(g,d,a,b,mx,hard){",
-"  if(_abort)return mx?-Infinity:Infinity;",
-"  if(d===0||g.game_over())return hard?evalH(g):evalN(g);",
-"  var ms=g.moves();",
-"  if(hard&&ms.length>1)ms=ms.slice().sort(function(x,y){return (y.indexOf('x')>=0?1:0)-(x.indexOf('x')>=0?1:0);});",
-"  if(mx){var m=-Infinity;for(var i=0;i<ms.length;i++){if(_abort)break;g.move(ms[i]);var v=mm(g,d-1,a,b,false,hard);g.undo();if(v>m)m=v;if(v>a)a=v;if(b<=a)break;}return m;}",
-"  else{var m=Infinity;for(var i=0;i<ms.length;i++){if(_abort)break;g.move(ms[i]);var v=mm(g,d-1,a,b,true,hard);g.undo();if(v<m)m=v;if(v<b)b=v;if(b<=a)break;}return m;}",
-"}",
-"self.onmessage=function(e){",
-"  _abort=false;",
-"  var fen=e.data.fen,diff=e.data.diff;",
-"  var g=new Chess(fen);",
-"  var ms=g.moves();",
-"  if(!ms.length){self.postMessage({move:null});return;}",
-"  if(diff==='easy'){",
-"    var r=Math.random();",
-"    if(r<0.65){self.postMessage({move:ms[0|Math.random()*ms.length]});return;}",
-"    else if(r<0.90){var ps=ms.filter(function(m){return m.indexOf('x')===-1;});var pool=ps.length?ps:ms;self.postMessage({move:pool[0|Math.random()*pool.length]});return;}",
-"    else{var wm=null,wv=Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);var v=evalN(g);g.undo();if(v<wv){wv=v;wm=ms[i];}}self.postMessage({move:wm||ms[0|Math.random()*ms.length]});return;}",
-"  }",
-"  var depth=diff==='hard'?4:2;",
-"  var sorted=diff==='hard'?ms.slice().sort(function(x,y){return (y.indexOf('x')>=0?1:0)-(x.indexOf('x')>=0?1:0);}):ms;",
-"  var best=null,bv=-Infinity;",
-"  for(var i=0;i<sorted.length;i++){",
-"    if(_abort)break;",
-"    g.move(sorted[i]);",
-"    var v=mm(g,depth-1,-Infinity,Infinity,false,diff==='hard');",
-"    g.undo();",
-"    if(v>bv){bv=v;best=sorted[i];}",
-"  }",
-"  self.postMessage({move:best||ms[0|Math.random()*ms.length]});",
-"};"
+"var PIECE_VALUES={p:100,n:320,b:330,r:500,q:900,k:20000};",
+"var PST={p:[[0,0,0,0,0,0,0,0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[5,5,10,25,25,10,5,5],[0,0,0,20,20,0,0,0],[5,-5,-10,0,0,-10,-5,5],[5,10,10,-20,-20,10,10,5],[0,0,0,0,0,0,0,0]],n:[[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20,0,0,0,0,-20,-40],[-30,0,10,15,15,10,0,-30],[-30,5,15,20,20,15,5,-30],[-30,0,15,20,20,15,0,-30],[-30,5,10,15,15,10,5,-30],[-40,-20,0,5,5,0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],b:[[-20,-10,-10,-10,-10,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,10,10,5,0,-10],[-10,5,5,10,10,5,5,-10],[-10,0,10,10,10,10,0,-10],[-10,10,10,10,10,10,10,-10],[-10,5,0,0,0,0,5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],r:[[0,0,0,0,0,0,0,0],[5,10,10,10,10,10,10,5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[0,0,0,5,5,0,0,0]],q:[[-20,-10,-10,-5,-5,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,5,5,5,0,-10],[-5,0,5,5,5,5,0,-5],[0,0,5,5,5,5,0,-5],[-10,5,5,5,5,5,0,-10],[-10,0,5,0,0,0,0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],k:[[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[20,20,0,0,0,0,20,20],[20,30,10,0,0,10,30,20]]};",
+"function evalBoard(g){var b=g.board(),s=0;for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=b[r][c];if(!p)continue;var v=PIECE_VALUES[p.type]||0,t=PST[p.type];if(t){var ri=p.color==='w'?7-r:r;v+=t[ri][c];}s+=p.color==='w'?v:-v;}return s;}",
+"function minimax(g,d,a,b,max){if(d===0||g.game_over())return evalBoard(g);var ms=g.moves();if(max){var best=-Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);best=Math.max(best,minimax(g,d-1,a,b,false));g.undo();a=Math.max(a,best);if(b<=a)break;}return best;}else{var best2=Infinity;for(var j=0;j<ms.length;j++){g.move(ms[j]);best2=Math.min(best2,minimax(g,d-1,a,b,true));g.undo();b=Math.min(b,best2);if(b<=a)break;}return best2;}}",
+"self.onmessage=function(e){var g=new Chess(e.data.fen),diff=e.data.diff,depth=diff==='hard'?3:diff==='normal'?2:1,ms=g.moves(),best=null,bestV=-Infinity;for(var i=0;i<ms.length;i++){g.move(ms[i]);var v=-minimax(g,depth-1,-Infinity,Infinity,false);g.undo();if(v>bestV){bestV=v;best=ms[i];}}self.postMessage({move:best});};",
 ].join('\n');
 
-var _aiWorker = null;
-var _aiWorkerTimer = null;
-
-function getAIWorker() {
-  if (_aiWorker) return _aiWorker;
-  var blob = new Blob([AI_WORKER_CODE], {type: 'application/javascript'});
-  _aiWorker = new Worker(URL.createObjectURL(blob));
-  return _aiWorker;
-}
-
-function killAIWorker() {
-  if (_aiWorkerTimer) { clearTimeout(_aiWorkerTimer); _aiWorkerTimer = null; }
-  if (_aiWorker) { _aiWorker.terminate(); _aiWorker = null; }
-}
+var _aiWorker=null;
+function getAIWorker(){if(!_aiWorker){var blob=new Blob([AI_WORKER_CODE],{type:'application/javascript'});_aiWorker=new Worker(URL.createObjectURL(blob));}return _aiWorker;}
+function killAIWorker(){if(_aiWorker){_aiWorker.terminate();_aiWorker=null;}}
 
 // ══ Config ══
-var TREASURY = '0x07F9a4B36F985b88929768A5dEC0594D67740585';
-var HYPEREVM_CHAIN_ID = '0x3E7';
-var HYPEREVM_PARAMS = {
-  chainId: HYPEREVM_CHAIN_ID,
-  chainName: 'HyperEVM Mainnet',
-  nativeCurrency: { name: 'HYPE', symbol: 'HYPE', decimals: 18 },
-  rpcUrls: ['https://rpc.hyperliquid.xyz/evm'],
-  blockExplorerUrls: ['https://purrsec.com']
-};
-var USDC_CONTRACT = '0x0d1c9cEEA389460DCEc06d8E3F36E4d2be1F804F';
+var TURN_LIMIT=15,CIRC=2*Math.PI*11,STREAK_BONUS=5;
+var POINTS_PER_WIN={easy:15,normal:30,hard:50};
+var HYPEREVM_CHAIN_ID='0x32b';
+var HYPEREVM_PARAMS={chainId:'0x32b',chainName:'HyperEVM Mainnet',nativeCurrency:{name:'HYPE',symbol:'HYPE',decimals:18},rpcUrls:['https://rpc.hyperliquid.xyz/evm'],blockExplorerUrls:['https://explorer.hyperliquid.xyz']};
 
-var POINTS_PER_WIN = {easy:10,normal:30,hard:100};
-var STREAK_BONUS = 25;
-var CHESS_RATE = 10000;
-var TURN_LIMIT = 15;
-var CIRC = 69.12;
-
-// ══════════════════════════════════════════════════════════════
-// SOUND ENGINE
-// ══════════════════════════════════════════════════════════════
-var SFX = (function(){
-  var ctx=null, muted=false;
-  function getCtx(){
-    if(ctx)return ctx;
-    try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}
-    return ctx;
-  }
-  function osc(freq,type,dur,vol,when){
-    var c=getCtx();if(!c||muted)return;
-    try{
-      var o=c.createOscillator(),g=c.createGain();
-      o.connect(g);g.connect(c.destination);
-      o.type=type||'sine';o.frequency.value=freq;
-      var t=when!=null?when:c.currentTime;
-      g.gain.setValueAtTime(vol||0.25,t);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.start(t);o.stop(t+dur+0.02);
-    }catch(e){}
-  }
-  function noise(dur,vol){
-    var c=getCtx();if(!c||muted)return;
-    try{
-      var n=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,n,c.sampleRate),d=buf.getChannelData(0);
-      for(var i=0;i<n;i++)d[i]=Math.random()*2-1;
-      var src=c.createBufferSource(),g=c.createGain();
-      src.buffer=buf;src.connect(g);g.connect(c.destination);
-      g.gain.setValueAtTime(vol||0.1,c.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+dur);
-      src.start();
-    }catch(e){}
-  }
-  function updateBtn(){
-    document.querySelectorAll('.sfx-mute-btn').forEach(function(b){b.textContent=muted?'🔇':'🔊';});
-  }
-  return {
-    toggle:function(){muted=!muted;updateBtn();},
-    isMuted:function(){return muted;},
-    move:function(){
-      var c=getCtx();if(!c||muted)return;
-      osc(900,'square',0.04,0.18);
-      osc(600,'square',0.07,0.09,c.currentTime+0.025);
-    },
-    capture:function(){
-      var c=getCtx();if(!c||muted)return;
-      noise(0.10,0.22);
-      osc(160,'sawtooth',0.14,0.28);
-    },
-    check:function(){
-      var c=getCtx();if(!c||muted)return;
-      osc(523,'sine',0.28,0.32);
-      osc(784,'sine',0.28,0.32,c.currentTime+0.14);
-    },
-    checkmate:function(){
-      var c=getCtx();if(!c||muted)return;
-      var t=c.currentTime;
-      osc(523,'sine',0.38,0.38,t);
-      osc(659,'sine',0.38,0.32,t+0.13);
-      osc(784,'sine',0.38,0.32,t+0.26);
-      osc(1047,'sine',0.55,0.45,t+0.44);
-    },
-    tick:function(){
-      var c=getCtx();if(!c||muted)return;
-      osc(1400,'square',0.05,0.13);
-    },
-    autoMove:function(){
-      var c=getCtx();if(!c||muted)return;
-      var t=c.currentTime;
-      for(var i=0;i<4;i++)osc(380+i*90,'sawtooth',0.07,0.14-i*0.03,t+i*0.035);
-    }
-  };
-})();
-
-function playSFX(r,game){
-  try{
-    if(game.in_checkmate()){SFX.checkmate();return;}
-    if(game.in_check()){SFX.check();return;}
-    if(r&&r.captured){SFX.capture();return;}
-    SFX.move();
-  }catch(e){}
-}
-
-var totalPoints=0, hardStreak=0, pointsAwarded=false;
-
-function getPK(a){return a?'chessio_pts_'+a.toLowerCase().replace(/[^a-z0-9]/g,'_'):null;}
-function getSK(a){return a?'chessio_str_'+a.toLowerCase().replace(/[^a-z0-9]/g,'_'):null;}
-function savePts(){var pk=getPK(walletAddr),sk=getSK(walletAddr);if(pk)localStorage.setItem(pk,String(totalPoints));if(sk)localStorage.setItem(sk,String(hardStreak));}
-function loadPointsForWallet(a){if(!a){totalPoints=0;hardStreak=0;renderPoints();return;}totalPoints=parseInt(localStorage.getItem(getPK(a))||'0',10)||0;hardStreak=parseInt(localStorage.getItem(getSK(a))||'0',10)||0;renderPoints();}
-function resetPointsOnDisconnect(){totalPoints=0;hardStreak=0;renderPoints();}
-
-function awardPoints(diff,won){
-  if(pointsAwarded)return;pointsAwarded=true;
-  if(!won){if(diff==='hard'){hardStreak=0;savePts();}renderPoints();return;}
-  var earned=POINTS_PER_WIN[diff]||10;
-  if(diff==='hard'){hardStreak++;if(hardStreak>1)earned+=STREAK_BONUS*(hardStreak-1);}
-  totalPoints+=earned;savePts();showPtsToast(earned,diff,!walletAddr);renderPoints();
-}
-
-function showPtsToast(pts,diff,guest){
-  var t=document.getElementById('pts-toast');
-  t.textContent='+'+pts+' pts'+(diff==='hard'&&hardStreak>1?' x'+hardStreak+' WIN STREAK!':' ')+(guest?' (connect wallet to save!)':'');
-  t.classList.remove('hidden');t.classList.add('slide-down');
-  setTimeout(function(){t.classList.add('hidden');t.classList.remove('slide-down');},3800);
-}
+// ══ Points ══
+var userPts=0,hardStreak=0,pointsAwarded=false;
+function loadPointsForWallet(addr){var k='chessio_pts_'+addr.toLowerCase(),v=parseInt(localStorage.getItem(k)||'0',10);userPts=isNaN(v)?0:v;renderPoints();}
+function savePointsForWallet(){if(!walletAddr)return;localStorage.setItem('chessio_pts_'+walletAddr.toLowerCase(),String(userPts));}
+function resetPointsOnDisconnect(){userPts=0;hardStreak=0;renderPoints();}
 
 function renderPoints(){
-  var chess=Math.floor(totalPoints/CHESS_RATE),rem=totalPoints%CHESS_RATE,pct=Math.round((rem/CHESS_RATE)*100);
-  document.querySelectorAll('.pts-total').forEach(function(el){el.textContent=totalPoints.toLocaleString();});
-  document.querySelectorAll('.pts-chess').forEach(function(el){el.textContent=chess.toLocaleString();});
-  var bar=document.getElementById('pts-bar');if(bar)bar.style.width=pct+'%';
-  var rem2=document.getElementById('pts-rem');if(rem2)rem2.textContent=rem.toLocaleString()+' / 10,000';
-  var cv=document.getElementById('pts-convert-btn');if(cv){chess>0&&walletAddr?cv.classList.remove('hidden'):cv.classList.add('hidden');}
-  var np=document.getElementById('nav-pts');if(np)np.textContent=totalPoints.toLocaleString();
-  var mp=document.getElementById('ai-pts-mini');if(mp)mp.textContent='⭐ '+totalPoints.toLocaleString();
-  var gate=document.getElementById('pts-wallet-gate');if(gate){walletAddr?gate.classList.add('hidden'):gate.classList.remove('hidden');}
-  updateStreakBadge();
+  var chess=Math.floor(userPts/10000),rem=userPts%10000,pct=Math.min(rem/10000*100,100);
+  document.querySelectorAll('.pts-total').forEach(function(el){el.textContent=userPts.toLocaleString();});
+  document.querySelectorAll('.pts-chess').forEach(function(el){el.textContent=chess;});
+  var pb=document.getElementById('pts-bar');if(pb)pb.style.width=pct+'%';
+  var pr=document.getElementById('pts-rem');if(pr)pr.textContent=rem.toLocaleString()+' / 10,000';
+  var nav=document.getElementById('nav-pts');if(nav)nav.textContent=userPts.toLocaleString();
+  var mini=document.getElementById('ai-pts-mini');if(mini)mini.textContent='⭐ '+userPts.toLocaleString();
+  var cb=document.getElementById('pts-convert-btn');if(cb){if(chess>0&&walletAddr)cb.classList.remove('hidden');else cb.classList.add('hidden');}
+  var gate=document.getElementById('pts-wallet-gate');if(gate)gate.style.display=walletAddr?'none':'';
+  var convPts=document.getElementById('conv-pts');if(convPts)convPts.textContent=userPts.toLocaleString();
+  var cb2=document.getElementById('conv-btn');if(cb2){cb2.textContent='Convert '+chess+' $CHESSIO';if(chess>0&&walletAddr){cb2.classList.remove('hidden');}else{cb2.classList.add('hidden');}}
+  var noW=document.getElementById('conv-no-wallet'),low=document.getElementById('conv-low');
+  if(noW&&low){if(!walletAddr){noW.classList.remove('hidden');low.classList.add('hidden');}else if(chess===0){noW.classList.add('hidden');low.classList.remove('hidden');}else{noW.classList.add('hidden');low.classList.add('hidden');}}
+  var sb=document.getElementById('skin-bonus-display');if(sb)sb.textContent='+'+getSkinBonus()+' pts/win';
+}
+
+function getSkinBonus(){
+  var b=BOARD_SKINS[eqBoard]||BOARD_SKINS.classic,p=PIECE_SKINS[eqPiece]||PIECE_SKINS.standard;
+  return (b.bonus||0)+(p.bonus||0);
 }
 
 function updateStreakBadge(){
-  var b=document.getElementById('streak-badge');if(!b)return;
-  if(aiDf==='hard'&&hardStreak>0){b.textContent='🔥 Win streak: '+hardStreak+' (next win +'+(POINTS_PER_WIN.hard+STREAK_BONUS*hardStreak)+' pts)';b.classList.remove('hidden');}
-  else b.classList.add('hidden');
+  var el=document.getElementById('streak-badge');if(!el)return;
+  if(hardStreak>1){el.textContent='🔥 Hard Streak x'+hardStreak;el.classList.remove('hidden');}else{el.classList.add('hidden');}
 }
 
-function openConvert(){
-  var chess=Math.floor(totalPoints/CHESS_RATE);
-  document.getElementById('conv-pts').textContent=totalPoints.toLocaleString();
-  ['conv-done','conv-no-wallet','conv-low','conv-btn'].forEach(function(id){document.getElementById(id).classList.add('hidden');});
-  if(!walletAddr)document.getElementById('conv-no-wallet').classList.remove('hidden');
-  else if(chess===0)document.getElementById('conv-low').classList.remove('hidden');
-  else{var b=document.getElementById('conv-btn');b.classList.remove('hidden');b.textContent='Request '+chess+' $CHESSIO Now';}
-  document.getElementById('modal-convert').classList.remove('hidden');
+function awardPoints(diff,won){
+  if(pointsAwarded||!won)return;pointsAwarded=true;
+  var base=POINTS_PER_WIN[diff]||0,sb=getSkinBonus(),streak=0;
+  if(diff==='hard'){hardStreak++;if(hardStreak>1)streak=STREAK_BONUS*(hardStreak-1);}else{hardStreak=0;}
+  updateStreakBadge();
+  var total=base+sb+streak;userPts+=total;savePointsForWallet();renderPoints();showPtsToast('+'+total+' pts!');
 }
+
+function showPtsToast(msg){
+  var el=document.getElementById('pts-toast');if(!el)return;
+  el.textContent=msg;el.classList.remove('hidden');el.classList.add('slide-down');
+  setTimeout(function(){el.classList.add('hidden');el.classList.remove('slide-down');},2500);
+}
+
+function openConvert(){document.getElementById('modal-convert').classList.remove('hidden');renderPoints();}
 function closeConvert(){document.getElementById('modal-convert').classList.add('hidden');}
-function doConvert(){if(!walletAddr)return;document.getElementById('conv-btn').classList.add('hidden');document.getElementById('conv-done').classList.remove('hidden');}
-
-// ── Particles ──
-(function(){
-  var cv=document.getElementById('particle-canvas'),cx=cv.getContext('2d');
-  var PS=['♟','♞','♝','♜','♛','♚','♙','♘','♗','♖','♕','♔'],pp=[],W,H;
-  function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight;}
-  addEventListener('resize',rsz);rsz();
-  function rnd(a,b){return Math.random()*(b-a)+a;}
-  function mk(){return{x:rnd(0,W),y:rnd(-60,H+60),vx:rnd(-.4,.4),vy:rnd(.12,.55),sz:rnd(16,38),op:rnd(.06,.18),p:PS[0|Math.random()*PS.length],r:rnd(0,6.28),rs:rnd(-.007,.007),c:['#00d6a1','#5eead4','#7b61ff','#4ade80','#00b589','#a78bfa'][0|Math.random()*6]};}
-  for(var i=0;i<60;i++)pp.push(mk());
-  (function fr(){cx.clearRect(0,0,W,H);pp.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;if(p.y>H+70){p.y=-70;p.x=rnd(0,W);}if(p.x<-70)p.x=W+70;if(p.x>W+70)p.x=-70;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=p.op;cx.font=p.sz+'px serif';cx.fillStyle=p.c;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(p.p,0,0);cx.restore();});requestAnimationFrame(fr);})();
-})();
-
-// ── Navigation ──
-function goto(pg,e){
-  if(e)e.preventDefault();
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('page-'+pg).classList.add('active');
-  scrollTo(0,0);
-  if(pg==='shop')renderShop();
-  if(pg==='play')renderPoints();
+function doConvert(){
+  var chess=Math.floor(userPts/10000);if(chess<=0||!walletAddr)return;
+  userPts=userPts%10000;savePointsForWallet();renderPoints();
+  document.getElementById('conv-done').classList.remove('hidden');
+  setTimeout(function(){document.getElementById('conv-done').classList.add('hidden');closeConvert();},2500);
 }
 
-// ── Scroll reveal ──
-(function(){
-  var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.1});
-  document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
-})();
+// ══ Pages ══
+function goto(page,e){if(e)e.preventDefault();document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});var el=document.getElementById('page-'+page);if(el)el.classList.add('active');window.scrollTo(0,0);}
 
-// ── Roadmap ──
-(function(){
-  var items=[
-    {phase:'Phase 1 — Q2 2025',title:'Launch & Foundation',done:true,items:['Website & chess minigame live','X & Telegram community launched','WebRTC PvP & USDC skin shop deployed on HyperEVM']},
-    {phase:'Phase 2 — Q3 2025',title:'Growth & Listings',done:false,items:['Deploy $CHESSIO on HyperEVM via alt.fun','First DEX listing on HyperEVM','Strategic partnership announcements','Community chess tournament ($CHESSIO prizes)','Mobile-friendly UI optimization']},
-    {phase:'Phase 3 — Q4 2025',title:'Ecosystem Expansion',done:false,items:['On-chain points → $CHESSIO reward system','Chess skin NFT collection on HyperEVM','$CHESSIO staking & yield mechanism','Ranked tournament ladder system']},
-    {phase:'Phase 4 — 2026',title:'Mass Adoption',done:false,items:['Native mobile app (iOS & Android)','AI-powered coaching feature','Top-tier CEX listings','Global chess championship sponsorship']},
-  ];
-  var cnt=document.getElementById('roadmap-items');
-  items.forEach(function(item,i){
-    var d=document.createElement('div');
-    d.className='reveal md:ml-16 rounded-2xl p-6 relative';
-    d.style.cssText='background:rgba(13,17,32,0.7);border:1px solid '+(item.done?'rgba(0,214,161,.3)':'rgba(255,255,255,.07)')+';transition-delay:'+i*.1+'s';
-    var dBg=item.done?'#00d6a1':'#090c14',dBd=item.done?'#00d6a1':'rgba(255,255,255,.2)';
-    d.innerHTML='<div class="hidden md:flex absolute items-center justify-center w-7 h-7 rounded-full border-2" style="border-color:'+dBd+';background:'+dBg+';left:-44px;top:22px">'+(item.done?'<span style="color:#090c14;font-size:11px;font-weight:900">✓</span>':'')+'</div>'+
-      '<div class="flex items-center gap-3 mb-3 flex-wrap"><span class="text-xs font-bold px-3 py-1 rounded-full '+(item.done?'':'')+ '" style="background:'+(item.done?'rgba(0,214,161,.1)':'rgba(255,255,255,.05)')+';color:'+(item.done?'#00d6a1':'#8b98b8')+'">'+item.phase+'</span><h3 class="text-lg font-bold">'+item.title+'</h3>'+(item.done?'<span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:rgba(0,214,161,.1);color:#00d6a1">Completed</span>':'')+'</div>'+
-      '<ul class="grid sm:grid-cols-2 gap-1">'+item.items.map(function(it){return '<li class="text-sm flex items-start gap-1" style="color:#8b98b8"><span style="color:rgba(0,214,161,.6);margin-top:2px">•</span>'+it+'</li>';}).join('')+'</ul>';
-    cnt.appendChild(d);
-    var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');o.unobserve(e.target);}});},{threshold:.1});
-    o.observe(d);
-  });
-})();
-
-// ── Skin definitions — prices in USDC ──
-var RARITY={
-  free:    {label:'Free',     color:'#00d6a1',bg:'rgba(0,214,161,.1)',   border:'rgba(0,214,161,.3)',  star:''},
-  common:  {label:'Common',   color:'#8b98b8',bg:'rgba(139,152,184,.08)',border:'rgba(139,152,184,.2)',star:'⭐'},
-  rare:    {label:'Rare',     color:'#7b61ff',bg:'rgba(123,97,255,.1)',  border:'rgba(123,97,255,.3)', star:'💜'},
-  epic:    {label:'Epic',     color:'#5eead4',bg:'rgba(94,234,212,.1)',  border:'rgba(94,234,212,.3)', star:'💎'},
-  legend:  {label:'Legendary',color:'#fbbf24',bg:'rgba(251,191,36,.1)',  border:'rgba(251,191,36,.3)', star:'🔥'},
-};
-
+// ══ Skins ══
 var BOARD_SKINS={
-  classic:{id:'classic',name:'Classic Blue',  desc:'Signature sky-blue board',free:true, price:0,   rarity:'free',  light:'#e0f2fe',dark:'#0284c7'},
-  dark:   {id:'dark',   name:'Dark Knight',   desc:'Dramatic midnight steel',  free:false,price:1,   rarity:'common',light:'#374151',dark:'#111827'},
-  emerald:{id:'emerald',name:'Emerald Forest',desc:'Classic green felt',        free:false,price:2,   rarity:'rare',  light:'#d1fae5',dark:'#065f46'},
-  purple: {id:'purple', name:'Royal Purple',  desc:'Regal violet court',        free:false,price:3,   rarity:'epic',  light:'#ede9fe',dark:'#5b21b6'},
-  ocean:  {id:'ocean',  name:'Ocean Deep',    desc:'Deep cyan battlefield',     free:false,price:5,   rarity:'legend',light:'#cffafe',dark:'#0e7490'},
-  sunset: {id:'sunset', name:'Sunset Fire',   desc:'Warm amber dusk',           free:false,price:5,   rarity:'legend',light:'#ffedd5',dark:'#9a3412'},
+  classic:{name:'Classic',light:'#f0d9b5',dark:'#b58863',bonus:0,price:0,rarity:'free'},
+  ocean:{name:'Ocean',light:'#cde5f5',dark:'#3a7bd5',bonus:5,price:1,rarity:'common'},
+  forest:{name:'Forest',light:'#d4edda',dark:'#2d6a4f',bonus:5,price:1,rarity:'common'},
+  night:{name:'Night',light:'#2d2d44',dark:'#1a1a2e',bonus:15,price:2,rarity:'rare'},
+  neon:{name:'Neon',light:'#1a0533',dark:'#7b00ff',bonus:15,price:2,rarity:'rare'},
+  golden:{name:'Golden',light:'#fffde7',dark:'#c7960c',bonus:50,price:5,rarity:'legendary'}
 };
 var PIECE_SKINS={
-  standard:{id:'standard',name:'Standard',    desc:'Classic pieces',      free:true, price:0,   rarity:'free',  wp:'#ffffff',bp:'#0f172a',wsh:'0 0 3px rgba(0,0,0,.9)',bsh:'0 0 3px rgba(255,255,255,.3)'},
-  gold:    {id:'gold',    name:'Golden Royal',desc:'Shimmering gold',     free:false,price:1,   rarity:'common',wp:'#fbbf24',bp:'#92400e',wsh:'0 0 8px rgba(251,191,36,1)',bsh:'0 0 8px rgba(146,64,14,.8)'},
-  neon:    {id:'neon',    name:'Neon Cyber',  desc:'Cyan & magenta glow', free:false,price:2,   rarity:'rare',  wp:'#22d3ee',bp:'#d946ef',wsh:'0 0 12px #22d3ee',bsh:'0 0 12px #d946ef'},
-  ice:     {id:'ice',     name:'Ice Crystal', desc:'Frosty glacial blue', free:false,price:3,   rarity:'epic',  wp:'#bae6fd',bp:'#0369a1',wsh:'0 0 10px rgba(186,230,253,1)',bsh:'0 0 10px rgba(3,105,161,.9)'},
-  blood:   {id:'blood',   name:'Blood Moon',  desc:'Crimson power',       free:false,price:5,   rarity:'legend',wp:'#fca5a5',bp:'#7f1d1d',wsh:'0 0 10px rgba(252,165,165,1)',bsh:'0 0 10px rgba(127,29,29,.9)'},
-  sakura:  {id:'sakura',  name:'Sakura Bloom',desc:'Pink elegance',       free:false,price:5,   rarity:'legend',wp:'#fbcfe8',bp:'#86198f',wsh:'0 0 10px rgba(251,207,232,1)',bsh:'0 0 10px rgba(134,25,143,.8)'},
+  standard:{name:'Standard',wColor:'#f5f5f5',bColor:'#333',bonus:0,price:0,rarity:'free'},
+  crystal:{name:'Crystal',wColor:'#e0f7fa',bColor:'#006064',bonus:5,price:1,rarity:'common'},
+  ember:{name:'Ember',wColor:'#fff3e0',bColor:'#bf360c',bonus:5,price:1,rarity:'common'},
+  shadow:{name:'Shadow',wColor:'#b0bec5',bColor:'#1c1c2e',bonus:15,price:2,rarity:'rare'},
+  galaxy:{name:'Galaxy',wColor:'#e8eaf6',bColor:'#1a237e',bonus:30,price:3,rarity:'epic'},
+  phoenix:{name:'Phoenix',wColor:'#fff9c4',bColor:'#e65100',bonus:50,price:5,rarity:'legendary'}
 };
 
-var owned={b:['classic'],p:['standard']};
-var eqBoard=(function(){var s=localStorage.getItem('chessio_board');return s&&BOARD_SKINS[s]?s:'classic';})();
-var eqPiece=(function(){var s=localStorage.getItem('chessio_piece');return s&&PIECE_SKINS[s]?s:'standard';})();
-var pendingBuy=null;
+var eqBoard='classic',eqPiece='standard',owned={b:['classic'],p:['standard']};
 
-function getOK(a){return a?'chessio_owned_'+a.toLowerCase().replace(/[^a-z0-9]/g,'_'):null;}
-function loadOwnedForWallet(a){
-  var key=getOK(a),raw=key?localStorage.getItem(key):null;
-  if(raw){try{owned=JSON.parse(raw);}catch(e){owned={b:['classic'],p:['standard']};}}
+function loadOwnedForWallet(addr){
+  var k='chessio_owned_'+addr.toLowerCase(),v=localStorage.getItem(k);
+  if(v){try{var d=JSON.parse(v);owned={b:d.b||['classic'],p:d.p||['standard']};}catch(e){owned={b:['classic'],p:['standard']};}}
   else{owned={b:['classic'],p:['standard']};}
-}
-function saveOwned(){var k=getOK(walletAddr);if(k)localStorage.setItem(k,JSON.stringify(owned));}
-function boardOwned(id){return owned.b.indexOf(id)>=0;}
-function pieceOwned(id){return owned.p.indexOf(id)>=0;}
-function equipBoard(id){eqBoard=id;localStorage.setItem('chessio_board',id);renderShop();renderAIBoard();renderPvPBoard();}
-function equipPiece(id){eqPiece=id;localStorage.setItem('chessio_piece',id);renderShop();renderAIBoard();renderPvPBoard();}
-
-function applySq(cell,lt){var sk=BOARD_SKINS[eqBoard]||BOARD_SKINS.classic;cell.style.background=lt?sk.light:sk.dark;}
-function applyPiece(span,isW){var sk=PIECE_SKINS[eqPiece]||PIECE_SKINS.standard;span.style.color=isW?sk.wp:sk.bp;span.style.textShadow=isW?sk.wsh:sk.bsh;}
-
-function renderShop(){renderBoardCards();renderPieceCards();}
-function boardPrev(sk){var c=[sk.dark,sk.light,sk.light,sk.dark];return '<div class="preview-grid mb-3">'+c.map(function(x){return '<div style="background:'+x+';width:22px;height:22px;border-radius:3px"></div>';}).join('')+'</div>';}
-function skinBtn(type,sk,own,eq){
-  if(eq)return '<div class="py-2 font-bold text-center rounded-xl text-xs" style="background:rgba(0,214,161,.1);color:#00d6a1;border:1px solid rgba(0,214,161,.2)">Equipped</div>';
-  if(own)return '<button onclick="equip'+(type==='board'?'Board':'Piece')+'(\''+sk.id+'\')" class="w-full py-2 font-bold rounded-xl text-xs" style="background:rgba(0,214,161,.1);color:#00d6a1;border:1px solid rgba(0,214,161,.2)">Equip</button>';
-  var grad=type==='board'?'linear-gradient(135deg,#7b61ff,#5b3fe0)':'linear-gradient(135deg,#7b61ff,#ec4899)';
-  return '<button onclick="openBuy(\''+type+'\',\''+sk.id+'\')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:'+grad+'">💵 '+sk.price+' USDC</button>';
-}
-function rarityBadge(sk){
-  var r=RARITY[sk.rarity]||RARITY.common;
-  return '<div class="flex justify-center mb-2"><span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:'+r.bg+';color:'+r.color+';border:1px solid '+r.border+';letter-spacing:.04em">'+r.star+(r.star?' ':'')+r.label+'</span></div>';
-}
-function renderBoardCards(){
-  var cnt=document.getElementById('board-skin-cards');if(!cnt)return;cnt.innerHTML='';
-  Object.keys(BOARD_SKINS).forEach(function(key){
-    var sk=BOARD_SKINS[key],own=boardOwned(sk.id),eq=eqBoard===sk.id;
-    var r=RARITY[sk.rarity]||RARITY.common;
-    var d=document.createElement('div');
-    d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
-    if(!own&&!eq)d.style.borderColor=r.border;
-    d.innerHTML=boardPrev(sk)+rarityBadge(sk)+'<h3 class="font-bold text-center text-sm" style="color:#f0f4ff">'+sk.name+'</h3><p class="text-xs text-center mt-0.5 mb-3" style="color:#5a6882">'+sk.desc+'</p>'+skinBtn('board',sk,own,eq);
-    cnt.appendChild(d);
-  });
-}
-function renderPieceCards(){
-  var cnt=document.getElementById('piece-skin-cards');if(!cnt)return;cnt.innerHTML='';
-  Object.keys(PIECE_SKINS).forEach(function(key){
-    var sk=PIECE_SKINS[key],own=pieceOwned(sk.id),eq=eqPiece===sk.id;
-    var r=RARITY[sk.rarity]||RARITY.common;
-    var d=document.createElement('div');
-    d.className='skin-card glass rounded-2xl p-4'+(own?' owned':'')+(eq?' equipped':'');
-    if(!own&&!eq)d.style.borderColor=r.border;
-    d.innerHTML='<div class="flex justify-center gap-3 mb-3"><span class="piece-preview" style="color:'+sk.wp+';text-shadow:'+sk.wsh+'">♕</span><span class="piece-preview" style="color:'+sk.bp+';text-shadow:'+sk.bsh+'">♛</span></div>'+rarityBadge(sk)+'<h3 class="font-bold text-center text-sm" style="color:#f0f4ff">'+sk.name+'</h3><p class="text-xs text-center mt-0.5 mb-3" style="color:#5a6882">'+sk.desc+'</p>'+skinBtn('piece',sk,own,eq);
-    cnt.appendChild(d);
-  });
+  eqBoard=localStorage.getItem('chessio_eqb_'+addr.toLowerCase())||'classic';
+  eqPiece=localStorage.getItem('chessio_eqp_'+addr.toLowerCase())||'standard';
+  renderShop();
 }
 
+function saveOwned(){
+  if(!walletAddr)return;
+  localStorage.setItem('chessio_owned_'+walletAddr.toLowerCase(),JSON.stringify(owned));
+  localStorage.setItem('chessio_eqb_'+walletAddr.toLowerCase(),eqBoard);
+  localStorage.setItem('chessio_eqp_'+walletAddr.toLowerCase(),eqPiece);
+}
+
+function applySq(cell,isLight){
+  var skin=BOARD_SKINS[eqBoard]||BOARD_SKINS.classic;
+  cell.style.background=isLight?skin.light:skin.dark;
+}
+function applyPiece(span,isWhite){
+  var skin=PIECE_SKINS[eqPiece]||PIECE_SKINS.standard;
+  span.style.color=isWhite?skin.wColor:skin.bColor;
+  span.style.textShadow=isWhite?'0 1px 3px rgba(0,0,0,.4)':'0 1px 3px rgba(0,0,0,.6)';
+}
+
+function rarityColor(r){return{free:'#00d6a1',common:'#8b98b8',rare:'#7b61ff',epic:'#5eead4',legendary:'#fbbf24'}[r]||'#8b98b8';}
+function rarityLabel(r){return{free:'Free',common:'⭐ Common',rare:'💜 Rare',epic:'💎 Epic',legendary:'🔥 Legendary'}[r]||r;}
+
+function previewBoard(id){
+  var skin=BOARD_SKINS[id]||BOARD_SKINS.classic,html='';
+  for(var i=0;i<4;i++)for(var j=0;j<4;j++){var light=(i+j)%2===0;html+='<div style="width:22px;height:22px;background:'+(light?skin.light:skin.dark)+'"></div>';}
+  return html;
+}
+
+function previewPiece(id){
+  var skin=PIECE_SKINS[id]||PIECE_SKINS.standard;
+  return '<span style="font-size:34px;color:'+skin.wColor+';text-shadow:0 1px 3px rgba(0,0,0,.4)">♚</span><span style="font-size:34px;color:'+skin.bColor+';text-shadow:0 1px 3px rgba(0,0,0,.6)">♚</span>';
+}
+
+var pendingBuy=null;
 function openBuy(type,id){
   if(!walletAddr){pendingBuy={type:type,id:id};walletClick();return;}
-  var sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];if(!sk)return;
-  pendingBuy={type:type,id:id};
-  document.getElementById('buy-title').textContent='Buy — '+sk.name;
-  document.getElementById('buy-desc').textContent=sk.desc;
-  document.getElementById('buy-price').textContent=sk.price+' USDC';
-  ['buy-error','buy-success','verify-status'].forEach(function(i){document.getElementById(i).classList.add('hidden');});
-  var btn=document.getElementById('buy-btn');btn.disabled=false;btn.innerHTML='<span>💵</span><span>Buy with USDC ('+sk.price+' USDC)</span>';
-  document.getElementById('cancel-btn').disabled=false;
+  var skins=type==='b'?BOARD_SKINS:PIECE_SKINS,skin=skins[id];if(!skin)return;
+  document.getElementById('buy-title').textContent='Buy '+skin.name;
+  document.getElementById('buy-desc').textContent=(type==='b'?'Board Skin':'Piece Skin')+' — '+rarityLabel(skin.rarity);
+  document.getElementById('buy-bonus-info').textContent=skin.bonus>0?'Bonus: +'+skin.bonus+' pts per win':'No bonus points';
+  document.getElementById('buy-price').textContent=skin.price+' USDC';
+  document.getElementById('buy-error').classList.add('hidden');
+  document.getElementById('buy-success').classList.add('hidden');
+  document.getElementById('verify-status').classList.add('hidden');
+  document.getElementById('buy-btn').dataset.type=type;document.getElementById('buy-btn').dataset.id=id;
   document.getElementById('modal-buy').classList.remove('hidden');
 }
 function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
 
-// ══ USDC ERC-20 transfer encoding ══
-function encodeUSDCTransfer(to, amountUSDC) {
-  var amount = BigInt(amountUSDC) * BigInt('1000000');
-  var selector = 'a9059cbb';
-  var paddedTo = to.toLowerCase().replace('0x','').padStart(64,'0');
-  var amountHex = amount.toString(16).padStart(64,'0');
-  return '0x' + selector + paddedTo + amountHex;
+var USDC_CONTRACT='0x6919b02C3f7d7b0aC1DbC5b17ab6F9ea0E0fB27';
+var USDC_ABI=[{"inputs":[{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
+var DEV_WALLET='0x0000000000000000000000000000000000000001';
+
+async function confirmBuy(){
+  var btn=document.getElementById('buy-btn'),type=btn.dataset.type,id=btn.dataset.id;
+  var skins=type==='b'?BOARD_SKINS:PIECE_SKINS,skin=skins[id];if(!skin||!walletAddr)return;
+  if(owned[type].indexOf(id)>=0){
+    var arr=type==='b'?owned.b:owned.p;
+    var idx=arr.indexOf(id);if(idx>=0)arr.splice(idx,1);
+    if(type==='b'){if(eqBoard===id)eqBoard='classic';}else{if(eqPiece===id)eqPiece='standard';}
+    saveOwned();renderShop();closeBuyModal();return;
+  }
+  var errEl=document.getElementById('buy-error'),sucEl=document.getElementById('buy-success'),vsEl=document.getElementById('verify-status'),vmEl=document.getElementById('verify-msg'),vfEl=document.getElementById('verify-fill');
+  errEl.classList.add('hidden');sucEl.classList.add('hidden');vsEl.classList.add('hidden');
+  btn.disabled=true;btn.innerHTML='<div class="w-4 h-4 border-2 rounded-full spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff"></div><span>Processing…</span>';
+  try{
+    await ensureHyperEVMChain();
+    var amtHex='0x'+Math.floor(skin.price*1e6).toString(16).padStart(64,'0');
+    var data='0xa9059cbb'+'000000000000000000000000'+DEV_WALLET.slice(2).toLowerCase()+amtHex;
+    var txHash=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:walletAddr,to:USDC_CONTRACT,data:data,gas:'0x13880'}]});
+    vsEl.classList.remove('hidden');vmEl.textContent='Verifying transaction…';
+    var pct=0,interval=setInterval(function(){pct=Math.min(pct+8,90);vfEl.style.width=pct+'%';},300);
+    await new Promise(function(res){setTimeout(res,4000);});
+    clearInterval(interval);vfEl.style.width='100%';
+    owned[type].push(id);saveOwned();
+    vsEl.classList.add('hidden');sucEl.textContent='Purchase successful! '+skin.name+' unlocked!';sucEl.classList.remove('hidden');
+    setTimeout(function(){closeBuyModal();renderShop();},1800);
+  }catch(err){
+    var msg=String(err&&err.message||'');
+    errEl.textContent=err&&err.code===4001?'Transaction cancelled.':msg.indexOf('insufficient')>=0?'Insufficient USDC balance.':'Transaction failed. Please try again.';
+    errEl.classList.remove('hidden');
+  }finally{btn.disabled=false;btn.innerHTML='<span>💵</span><span>Buy with USDC</span>';}
 }
 
-// ══ Confirm Buy ══
-function confirmBuy(){
-  if(!pendingBuy)return;
-  var type=pendingBuy.type,id=pendingBuy.id;
-  var sk=type==='board'?BOARD_SKINS[id]:PIECE_SKINS[id];if(!sk)return;
-  var errEl=document.getElementById('buy-error'),sucEl=document.getElementById('buy-success'),
-      verifyEl=document.getElementById('verify-status'),verifyMsg=document.getElementById('verify-msg');
-  var btn=document.getElementById('buy-btn'),cancelBtn=document.getElementById('cancel-btn');
-  if(!walletAddr||!window.ethereum){errEl.textContent='Please connect your wallet first.';errEl.classList.remove('hidden');setTimeout(function(){closeBuyModal();walletClick();},1200);return;}
-  btn.disabled=true;cancelBtn.disabled=true;btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending USDC…';
-  errEl.classList.add('hidden');sucEl.classList.add('hidden');verifyEl.classList.add('hidden');
+function equipSkin(type,id){
+  var arr=type==='b'?owned.b:owned.p;if(arr.indexOf(id)<0)return;
+  if(type==='b')eqBoard=id;else eqPiece=id;
+  saveOwned();renderShop();renderPoints();
+}
 
-  var data = encodeUSDCTransfer(TREASURY, sk.price);
+function renderShop(){
+  var bc=document.getElementById('board-skin-cards'),pc=document.getElementById('piece-skin-cards');
+  if(!bc||!pc)return;
+  bc.innerHTML='';pc.innerHTML='';
+  Object.keys(BOARD_SKINS).forEach(function(id){
+    var skin=BOARD_SKINS[id],isOwned=owned.b.indexOf(id)>=0,isEq=eqBoard===id;
+    var card=document.createElement('div');
+    card.className='hl-card skin-card'+(isEq?' equipped':isOwned?' owned':'');
+    card.innerHTML='<div class="preview-grid mb-3">'+previewBoard(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1">Equipped ✓</div>':'<button onclick="equipSkin(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.1);color:#00d6a1">Equip</button>'))+'</div>';
+    bc.appendChild(card);
+  });
+  Object.keys(PIECE_SKINS).forEach(function(id){
+    var skin=PIECE_SKINS[id],isOwned=owned.p.indexOf(id)>=0,isEq=eqPiece===id;
+    var card=document.createElement('div');
+    card.className='hl-card skin-card'+(isEq?' equipped':isOwned?' owned':'');
+    card.innerHTML='<div class="flex gap-1 justify-center mb-3">'+previewPiece(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1">Equipped ✓</div>':'<button onclick="equipSkin(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.1);color:#00d6a1">Equip</button>'))+'</div>';
+    pc.appendChild(card);
+  });
+}
 
-  ensureHyperEVMChain().then(function(){
-    return window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [{
-        from: walletAddr,
-        to: USDC_CONTRACT,
-        data: data,
-        gas: '0x15F90'
-      }]
+
+// ══ Particles ══
+(function(){
+  var c=document.getElementById('particle-canvas');if(!c)return;
+  var ctx=c.getContext('2d'),W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  for(var i=0;i<60;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,214,161,'+(.08+p.a*.08)+')';ctx.fill();
     });
-  }).then(function(txHash){
-    verifyEl.classList.remove('hidden');
-    document.getElementById('verify-msg').textContent='USDC sent! Tx: '+txHash.slice(0,20)+'…';
-    document.getElementById('verify-fill').style.width='60%';
-    return waitForReceipt(txHash);
-  }).then(function(receipt){
-    if(receipt && receipt.status === '0x1'){
-      if(type==='board'){if(owned.b.indexOf(id)<0)owned.b.push(id);}else{if(owned.p.indexOf(id)<0)owned.p.push(id);}
-      saveOwned();
-      document.getElementById('verify-fill').style.width='100%';
-      document.getElementById('verify-msg').textContent='Transaction confirmed on HyperEVM!';
-      sucEl.textContent=sk.price+' USDC confirmed! '+sk.name+' is yours.';sucEl.classList.remove('hidden');btn.innerHTML='Unlocked!';
-      setTimeout(function(){closeBuyModal();renderShop();},2500);
-    }else{
-      verifyEl.classList.add('hidden');errEl.textContent='Transaction failed on-chain. Please try again.';errEl.classList.remove('hidden');
-      btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>💵</span><span>Try Again</span>';
-    }
-  }).catch(function(err){
-    var msg=String((err&&(err.message||err.code))||'');
-    var isReject=msg.toLowerCase().indexOf('reject')>=0||msg.toLowerCase().indexOf('denied')>=0||msg.toLowerCase().indexOf('cancel')>=0;
-    verifyEl.classList.add('hidden');errEl.textContent=isReject?'Transaction cancelled.':'Transaction failed: '+(msg.slice(0,100)||'Unknown error');
-    errEl.classList.remove('hidden');btn.disabled=false;cancelBtn.disabled=false;btn.innerHTML='<span>💵</span><span>Buy with USDC</span>';
-  });
-}
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-function waitForReceipt(txHash,attempts){
-  attempts=attempts||0;
-  if(attempts>40)return Promise.resolve(null);
-  return new Promise(function(res){setTimeout(res,3000);}).then(function(){
-    return window.ethereum.request({method:'eth_getTransactionReceipt',params:[txHash]});
-  }).then(function(receipt){
-    if(receipt)return receipt;
-    return waitForReceipt(txHash,attempts+1);
-  });
+// ══ Reveal on scroll ══
+(function(){
+  var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.05,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+  // Fallback: ensure nothing stays hidden forever
+  setTimeout(function(){document.querySelectorAll('.reveal:not(.visible)').forEach(function(el){el.classList.add('visible');});},1800);
+})();
+
+// ══ Roadmap progress bar animate on scroll ══
+(function(){
+  var io3=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.rm-progress-fill[data-width]').forEach(function(bar){
+          setTimeout(function(){bar.style.width=bar.dataset.width+'%';},300);
+        });
+      }
+    });
+  },{threshold:.2});
+  var rmSec=document.getElementById('roadmap');if(rmSec)io3.observe(rmSec);
+})();
+
+// ══ Tok bars animate on scroll ══
+(function(){
+  var io2=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.tok-fill[data-width]').forEach(function(bar){
+          setTimeout(function(){bar.style.width=bar.dataset.width+'%';},100);
+        });
+      }
+    });
+  },{threshold:.2});
+  var tokSec=document.getElementById('tokenomics');if(tokSec)io2.observe(tokSec);
+})();
+
+// ══ SFX ══
+var SFX=(function(){
+  var ctx=null,muted=false;
+  function ac(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();return ctx;}
+  function beep(f,d,t){try{var c=ac(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;g.gain.setValueAtTime(.15,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.start(c.currentTime);o.stop(c.currentTime+d);}catch(e){}}
+  return{
+    move:function(){if(!muted)beep(440,.08);},
+    capture:function(){if(!muted)beep(220,.15);},
+    check:function(){if(!muted)beep(660,.2);},
+    win:function(){if(!muted){beep(523,.1);setTimeout(function(){beep(659,.1);},120);setTimeout(function(){beep(784,.2);},240);}},
+    autoMove:function(){if(!muted)beep(330,.06);},
+    tick:function(){if(!muted)beep(880,.04);},
+    toggle:function(){muted=!muted;document.querySelectorAll('.sfx-mute-btn').forEach(function(b){b.textContent=muted?'🔇':'🔊';});}
+  };
+})();
+
+function playSFX(mv,game){
+  if(game.in_check())SFX.check();
+  else if(mv.flags.indexOf('c')>=0||mv.flags.indexOf('e')>=0)SFX.capture();
+  else SFX.move();
+  if(game.in_checkmate())SFX.win();
 }
 
 // ══ MetaMask Wallet ══
-var walletAddr = null;
+var walletAddr=null;
 
 function ensureHyperEVMChain(){
   return window.ethereum.request({method:'eth_chainId'}).then(function(chainId){
@@ -1030,10 +1088,7 @@ function ensureHyperEVMChain(){
         .catch(function(addErr){
           var msg=String(addErr&&addErr.message||'');
           if(msg.indexOf('same RPC')>=0||msg.indexOf('already exists')>=0||msg.indexOf('already added')>=0||addErr.code===-32602){
-            return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:HYPEREVM_CHAIN_ID}]})
-            .catch(function(){
-              console.warn('Could not switch to HyperEVM automatically. Proceeding anyway.');
-            });
+            return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:HYPEREVM_CHAIN_ID}]}).catch(function(){});
           }
           throw addErr;
         });
@@ -1046,8 +1101,7 @@ function ensureHyperEVMChain(){
 function initMetaMask(){
   if(!window.ethereum)return;
   window.ethereum.on('accountsChanged',function(accounts){
-    var prev=walletAddr;
-    walletAddr=accounts&&accounts.length?accounts[0]:null;
+    var prev=walletAddr;walletAddr=accounts&&accounts.length?accounts[0]:null;
     if(walletAddr&&walletAddr!==prev){loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);renderShop();}
     else if(!walletAddr&&prev){owned={b:['classic'],p:['standard']};resetPointsOnDisconnect();renderShop();}
     syncWalletUI(walletAddr);renderPoints();
@@ -1055,38 +1109,21 @@ function initMetaMask(){
   });
   window.ethereum.on('chainChanged',function(){window.location.reload();});
   window.ethereum.request({method:'eth_accounts'}).then(function(accounts){
-    if(accounts&&accounts.length){
-      walletAddr=accounts[0];
-      loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);
-      syncWalletUI(walletAddr);renderPoints();renderShop();
-    }
+    if(accounts&&accounts.length){walletAddr=accounts[0];loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);syncWalletUI(walletAddr);renderPoints();renderShop();}
   }).catch(function(){});
 }
 
 function walletClick(){
-  if(!window.ethereum){
-    alert('MetaMask not detected! Please install MetaMask and connect to HyperEVM Mainnet.');
-    return;
-  }
-  if(walletAddr){
-    walletAddr=null;
-    owned={b:['classic'],p:['standard']};
-    resetPointsOnDisconnect();
-    syncWalletUI(null);
-    renderShop();
-    return;
-  }
+  if(!window.ethereum){alert('MetaMask not detected! Please install MetaMask and connect to HyperEVM Mainnet.');return;}
+  if(walletAddr){walletAddr=null;owned={b:['classic'],p:['standard']};resetPointsOnDisconnect();syncWalletUI(null);renderShop();return;}
   window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
     if(!accounts||!accounts.length)return;
     walletAddr=accounts[0];
     return ensureHyperEVMChain().then(function(){
-      loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);
-      syncWalletUI(walletAddr);renderPoints();renderShop();
+      loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);syncWalletUI(walletAddr);renderPoints();renderShop();
       if(pendingBuy){var pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
     });
-  }).catch(function(err){
-    console.warn('Wallet connect error:',err);
-  });
+  }).catch(function(err){console.warn('Wallet connect error:',err);});
 }
 
 function syncWalletUI(addr){
@@ -1123,21 +1160,15 @@ function drawBoard(el,game,selSq,posSqs,cb,flip){
 // TURN TIMER
 // ══════════════════════════════════════════════════════════════
 var _timerInterval=null,_timerCount=0,_timerMode='ai';
-
 function startTurnTimer(mode,onExpire){
-  clearTurnTimer();
-  _timerMode=mode;_timerCount=TURN_LIMIT;
-  _updateTimerUI(mode,TURN_LIMIT);
+  clearTurnTimer();_timerMode=mode;_timerCount=TURN_LIMIT;_updateTimerUI(mode,TURN_LIMIT);
   var sk=document.getElementById(mode+'-timer-skipped');if(sk)sk.classList.add('hidden');
   _timerInterval=setInterval(function(){
-    _timerCount--;
-    _updateTimerUI(mode,_timerCount);
+    _timerCount--;_updateTimerUI(mode,_timerCount);
     if(_timerCount<=0){clearTurnTimer();var s=document.getElementById(mode+'-timer-skipped');if(s){s.classList.remove('hidden');setTimeout(function(){s.classList.add('hidden');},2000);}onExpire();}
   },1000);
 }
-
 function clearTurnTimer(){if(_timerInterval){clearInterval(_timerInterval);_timerInterval=null;}}
-
 function _updateTimerUI(mode,secs){
   var txt=document.getElementById(mode+'-timer-text'),ring=document.getElementById(mode+'-timer-ring-fg'),disp=document.getElementById(mode+'-timer-display');
   if(!txt||!ring||!disp)return;
@@ -1147,14 +1178,12 @@ function _updateTimerUI(mode,secs){
   else if(secs<=6){ring.style.stroke='#fbbf24';disp.className='turn-timer warning';}
   else{ring.style.stroke='#00d6a1';disp.className='turn-timer normal';}
 }
-
 function resetTimerUI(mode){_updateTimerUI(mode,TURN_LIMIT);var s=document.getElementById(mode+'-timer-skipped');if(s)s.classList.add('hidden');}
 
 // ══════════════════════════════════════════════════════════════
 // AI GAME
 // ══════════════════════════════════════════════════════════════
 var aig=null,aiDf='normal',aiSel=null,aiPos=[],aiTh=false,aiHst=[];
-var pointsAwarded=false;
 
 function setDiff(d){
   aiDf=d;
@@ -1165,11 +1194,11 @@ function setDiff(d){
     else if(x===d){b.style.background='rgba(0,214,161,.15)';b.style.color='#00d6a1';b.style.border='1px solid rgba(0,214,161,.3)';}
     else{b.style.background='rgba(255,255,255,.05)';b.style.color='#8b98b8';b.style.border='1px solid rgba(255,255,255,.08)';}
   });
-  var badge=document.getElementById('diff-pts-badge');
+  var badge=document.getElementById('diff-pts-badge'),sb=getSkinBonus();
   if(badge){
-    if(d==='hard')badge.innerHTML='Hard win: <strong style="color:#fbbf24">+'+POINTS_PER_WIN.hard+' pts</strong>';
-    else if(d==='easy')badge.innerHTML='Easy win: <strong style="color:#fbbf24">+'+POINTS_PER_WIN.easy+' pts</strong>';
-    else badge.innerHTML='Normal win: <strong style="color:#fbbf24">+'+POINTS_PER_WIN.normal+' pts</strong>';
+    if(d==='hard')badge.innerHTML='Hard win: <strong style="color:#fbbf24">+'+(POINTS_PER_WIN.hard+sb)+' pts</strong>'+(sb>0?' <span style="color:#fbbf24;font-size:10px">(+'+sb+' skin bonus)</span>':'');
+    else if(d==='easy')badge.innerHTML='Easy win: <strong style="color:#fbbf24">+'+(POINTS_PER_WIN.easy+sb)+' pts</strong>'+(sb>0?' <span style="color:#fbbf24;font-size:10px">(+'+sb+' skin bonus)</span>':'');
+    else badge.innerHTML='Normal win: <strong style="color:#fbbf24">+'+(POINTS_PER_WIN.normal+sb)+' pts</strong>'+(sb>0?' <span style="color:#fbbf24;font-size:10px">(+'+sb+' skin bonus)</span>':'');
   }
   updateStreakBadge();
 }
@@ -1178,17 +1207,16 @@ function changeAIDiff(d){
   aiDf=d;
   ['easy','normal','hard'].forEach(function(x){
     var b=document.getElementById('ai-btn-'+x);if(!b)return;
-    b.style.background='';b.style.color='';b.style.border='';
-    if(x===d&&d==='hard'){b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)';}
-    else if(x===d&&d==='easy'){b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3)';}
-    else if(x===d){b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(0,214,161,.15);color:#00d6a1;border:1px solid rgba(0,214,161,.3)';}
-    else{b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:#8b98b8';}
+    if(x===d&&d==='hard')b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)';
+    else if(x===d&&d==='easy')b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3)';
+    else if(x===d)b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(0,214,161,.15);color:#00d6a1;border:1px solid rgba(0,214,161,.3)';
+    else b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:#8b98b8';
   });
-  var badge=document.getElementById('ai-diff-badge');
+  var badge=document.getElementById('ai-diff-badge'),sb=getSkinBonus();
   if(badge){
-    if(d==='hard')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(239,68,68,.1);color:#ef4444">Hard'+(hardStreak>0?' x'+hardStreak:'')+'</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.hard+(hardStreak>0?STREAK_BONUS*hardStreak:0))+' pts</span>';
-    else if(d==='easy')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(74,222,128,.1);color:#4ade80">Easy</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+POINTS_PER_WIN.easy+' pts</span>';
-    else badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1">Normal</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+POINTS_PER_WIN.normal+' pts</span>';
+    if(d==='hard')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(239,68,68,.1);color:#ef4444">Hard'+(hardStreak>0?' x'+hardStreak:'')+'</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.hard+STREAK_BONUS*(hardStreak>0?hardStreak:0)+sb)+' pts</span>';
+    else if(d==='easy')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(74,222,128,.1);color:#4ade80">Easy</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.easy+sb)+' pts</span>';
+    else badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1">Normal</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.normal+sb)+' pts</span>';
   }
   resetAI();
 }
@@ -1212,8 +1240,7 @@ function startPlayerTimer(){
   startTurnTimer('ai',function(){
     if(!aig||aig.game_over()||aig.turn()!=='w'||aiTh)return;
     var ms=aig.moves();if(!ms.length)return;
-    var mv=ms[0|Math.random()*ms.length];
-    var r=aig.move(mv);
+    var mv=ms[0|Math.random()*ms.length],r=aig.move(mv);
     if(r){aiHst.push(r.san);aiSel=null;aiPos=[];SFX.autoMove();updAISt();updAIHst();renderAIBoard();if(!aig.game_over())schedAI();}
   });
 }
@@ -1245,10 +1272,7 @@ function onAISq(sq){
   }else{
     if(sq===aiSel){aiSel=null;aiPos=[];}
     else{
-      try{
-        var mv=aig.move({from:aiSel,to:sq,promotion:'q'});
-        if(mv){clearTurnTimer();aiHst.push(mv.san);aiSel=null;aiPos=[];playSFX(mv,aig);updAISt();updAIHst();renderAIBoard();if(!aig.game_over())schedAI();return;}
-      }catch(e){}
+      try{var mv=aig.move({from:aiSel,to:sq,promotion:'q'});if(mv){clearTurnTimer();aiHst.push(mv.san);aiSel=null;aiPos=[];playSFX(mv,aig);updAISt();updAIHst();renderAIBoard();if(!aig.game_over())schedAI();return;}}catch(e){}
       var p2=aig.get(sq);
       if(p2&&p2.color==='w'){aiSel=sq;aiPos=aig.moves({square:sq,verbose:true}).map(function(m){return m.to;});}
       else{aiSel=null;aiPos=[];}
@@ -1259,46 +1283,26 @@ function onAISq(sq){
 
 function schedAI(){
   if(!aig||aig.game_over())return;
-  aiTh=true;
-  document.getElementById('ai-thinking').classList.remove('hidden');
-  updAISt();renderAIBoard();
-
-  var delay=aiDf==='easy'?150+Math.random()*300:aiDf==='normal'?300+Math.random()*400:300+Math.random()*300;
-
+  aiTh=true;document.getElementById('ai-thinking').classList.remove('hidden');updAISt();renderAIBoard();
+  var delay=aiDf==='easy'?150+Math.random()*300:300+Math.random()*400;
   startTurnTimer('ai',function(){
     killAIWorker();
     if(!aig||aig.game_over()){aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');return;}
     var ms=aig.moves();if(!ms.length){aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');return;}
-    var mv=ms[0|Math.random()*ms.length];
-    var r=aig.move(mv);
-    if(r){aiHst.push(r.san);SFX.autoMove();updAIHst();}
-    aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');
-    updAISt();renderAIBoard();
-    if(!aig.game_over())startPlayerTimer();
+    var mv=ms[0|Math.random()*ms.length],r=aig.move(mv);if(r){aiHst.push(r.san);SFX.autoMove();updAIHst();}
+    aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');updAISt();renderAIBoard();if(!aig.game_over())startPlayerTimer();
   });
-
   setTimeout(function(){
     if(!aig||!aiTh)return;
-    var fen=aig.fen();
-    var worker=getAIWorker();
+    var fen=aig.fen(),worker=getAIWorker();
     worker.onmessage=function(e){
-      clearTurnTimer();
-      if(!aiTh)return;
-      var mv=e.data.move;
-      if(mv&&aig){
-        var r=aig.move(mv);if(r){aiHst.push(r.san);playSFX(r,aig);updAIHst();}
-      }
-      aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');
-      updAISt();renderAIBoard();
-      if(!aig.game_over())startPlayerTimer();
+      clearTurnTimer();if(!aiTh)return;
+      var mv=e.data.move;if(mv&&aig){var r=aig.move(mv);if(r){aiHst.push(r.san);playSFX(r,aig);updAIHst();}}
+      aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');updAISt();renderAIBoard();if(!aig.game_over())startPlayerTimer();
     };
     worker.onerror=function(){
-      clearTurnTimer();
-      if(aig&&!aig.game_over()){var ms=aig.moves();if(ms.length){var r=aig.move(ms[0|Math.random()*ms.length]);if(r){aiHst.push(r.san);updAIHst();}}}
-      aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');
-      updAISt();renderAIBoard();
-      _aiWorker=null;
-      if(!aig.game_over())startPlayerTimer();
+      clearTurnTimer();if(aig&&!aig.game_over()){var ms=aig.moves();if(ms.length){var r=aig.move(ms[0|Math.random()*ms.length]);if(r){aiHst.push(r.san);updAIHst();}}}
+      aiTh=false;document.getElementById('ai-thinking').classList.add('hidden');updAISt();renderAIBoard();_aiWorker=null;if(!aig.game_over())startPlayerTimer();
     };
     worker.postMessage({fen:fen,diff:aiDf});
   },delay);
@@ -1319,15 +1323,14 @@ var peer=null,conn=null,pvpG=null,pvpCol='white',pvpRoom='',pvpHst=[],pvpSel=nul
 
 function copyCode(){var txt=document.getElementById('pvp-code-display').textContent;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).catch(function(){cbFb(txt);});}else{cbFb(txt);}}
 function cbFb(txt){var ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
-
 function startPvP(){document.getElementById('play-menu').classList.add('hidden');document.getElementById('play-ai').classList.add('hidden');document.getElementById('play-pvp').classList.remove('hidden');pvpShowLobby();}
 function pvpShowLobby(){['pvp-waiting','pvp-game'].forEach(function(id){document.getElementById(id).classList.add('hidden');});document.getElementById('pvp-lobby').classList.remove('hidden');}
 function pvpShowWait(){['pvp-lobby','pvp-game'].forEach(function(id){document.getElementById(id).classList.add('hidden');});document.getElementById('pvp-waiting').classList.remove('hidden');}
 function pvpShowGame(){['pvp-lobby','pvp-waiting'].forEach(function(id){document.getElementById(id).classList.add('hidden');});document.getElementById('pvp-game').classList.remove('hidden');}
 
 function pvpCreate(){
-  var code=(Math.random().toString(36).substring(2,8)).toUpperCase();
-  pvpRoom=code;document.getElementById('pvp-code-display').textContent=code;pvpShowWait();
+  var code=(Math.random().toString(36).substring(2,8)).toUpperCase();pvpRoom=code;
+  document.getElementById('pvp-code-display').textContent=code;pvpShowWait();
   document.getElementById('pvp-wait-status').textContent='Creating room '+code+'…';
   peer=new Peer(code,{debug:1});
   peer.on('open',function(){document.getElementById('pvp-wait-status').textContent='Room ready! Waiting for opponent…';});
@@ -1364,8 +1367,7 @@ function pvpStartTimer(){
   if(!pvpG||pvpG.game_over()){clearTurnTimer();return;}
   var myC=pvpCol==='white'?'w':'b';
   startTurnTimer('pvp',function(){
-    if(!pvpG||pvpG.game_over())return;
-    if(pvpG.turn()!==myC)return;
+    if(!pvpG||pvpG.game_over())return;if(pvpG.turn()!==myC)return;
     var ms=pvpG.moves();if(!ms.length)return;
     var mv=ms[0|Math.random()*ms.length],r=pvpG.move(mv);
     if(r){pvpHst.push(r.san);pvpSel=null;pvpPos=[];SFX.autoMove();if(conn&&conn.open)conn.send({type:'auto_move',move:r.san});pvpUpdSt();pvpUpdHst();renderPvPBoard();pvpStartTimer();}
@@ -1399,10 +1401,7 @@ function onPvPSq(sq){
   }else{
     if(sq===pvpSel){pvpSel=null;pvpPos=[];}
     else{
-      try{
-        var r=pvpG.move({from:pvpSel,to:sq,promotion:'q'});
-        if(r){clearTurnTimer();pvpHst.push(r.san);pvpSel=null;pvpPos=[];playSFX(r,pvpG);if(conn&&conn.open)conn.send({type:'move',move:r.san});pvpUpdSt();pvpUpdHst();renderPvPBoard();pvpStartTimer();return;}
-      }catch(e){}
+      try{var r=pvpG.move({from:pvpSel,to:sq,promotion:'q'});if(r){clearTurnTimer();pvpHst.push(r.san);pvpSel=null;pvpPos=[];playSFX(r,pvpG);if(conn&&conn.open)conn.send({type:'move',move:r.san});pvpUpdSt();pvpUpdHst();renderPvPBoard();pvpStartTimer();return;}}catch(e){}
       var p2=pvpG.get(sq);
       if(p2&&p2.color===myC){pvpSel=sq;pvpPos=pvpG.moves({square:sq,verbose:true}).map(function(m){return m.to;});}
       else{pvpSel=null;pvpPos=[];}
@@ -1418,10 +1417,10 @@ function pvpReset(){
   pvpG=null;pvpSel=null;pvpPos=[];pvpHst=[];
   var errEl=document.getElementById('pvp-err');if(errEl)errEl.classList.add('hidden');
 }
-
 function pvpShowErr(msg){var el=document.getElementById('pvp-err');if(el){el.textContent=msg;el.classList.remove('hidden');}}
 
-// Init
+// ── Init ──
+renderShop();
 setDiff('normal');
 initMetaMask();
 renderPoints();

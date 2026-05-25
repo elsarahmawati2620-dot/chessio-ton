@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>CHESSIO KING — Chess Memecoin on HyperEVM</title>
-  <meta name="description" content="Chessio King is the ultimate chess memecoin on HyperEVM blockchain. Play chess, earn points, convert to $CHESSIO!"/>
+  <title>CHESSIO KING — Chess Memecoin on Monad</title>
+  <meta name="description" content="Chessio King is the ultimate chess memecoin on Monad Mainnet. Play chess, earn points, convert to $CHESSIO!"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -14,23 +14,23 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
-      --hl-bg:#090c14;
-      --hl-bg2:#0d1120;
-      --hl-bg3:#111827;
-      --hl-primary:#00d6a1;
-      --hl-primary-hover:#00b589;
-      --hl-purple:#7b61ff;
-      --hl-purple-hover:#6449ff;
-      --hl-text:#f0f4ff;
-      --hl-text2:#8b98b8;
-      --hl-border:rgba(255,255,255,0.08);
-      --hl-glass:rgba(255,255,255,0.04);
-      --hl-glass2:rgba(0,214,161,0.07);
+      --hl-bg:#f0f9ff;
+      --hl-bg2:#e0f2fe;
+      --hl-bg3:#ffffff;
+      --hl-primary:#0ea5e9;
+      --hl-primary-hover:#0284c7;
+      --hl-purple:#7c3aed;
+      --hl-purple-hover:#6d28d9;
+      --hl-text:#0f172a;
+      --hl-text2:#475569;
+      --hl-border:rgba(0,0,0,0.08);
+      --hl-glass:rgba(255,255,255,0.88);
+      --hl-glass2:rgba(14,165,233,0.07);
     }
     body{font-family:'Inter',sans-serif;background:var(--hl-bg);color:var(--hl-text);overflow-x:hidden}
     #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
-    .glass{background:rgba(13,17,32,0.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--hl-border)}
-    .glass-bright{background:rgba(0,214,161,0.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(0,214,161,0.18)}
+    .glass{background:rgba(255,255,255,0.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 16px rgba(14,165,233,.08)}
+    .glass-bright{background:rgba(224,242,254,0.8);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(14,165,233,0.25)}
     nav,section,footer,.z1{position:relative;z-index:1}
     html{scroll-behavior:smooth}
     .reveal{opacity:0;transform:translateY(32px);transition:opacity .65s ease,transform .65s ease}
@@ -41,13 +41,13 @@
     .spin{animation:spin .8s linear infinite}
     @keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
     .slide-down{animation:slideDown .4s ease}
-    @keyframes hlGlow{0%,100%{box-shadow:0 0 20px rgba(0,214,161,.3)}50%{box-shadow:0 0 40px rgba(0,214,161,.6)}}
-    .chess-board{display:grid;grid-template-columns:repeat(8,1fr);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,214,161,.18);user-select:none}
+    @keyframes hlGlow{0%,100%{box-shadow:0 0 20px rgba(14,165,233,.3)}50%{box-shadow:0 0 40px rgba(14,165,233,.6)}}
+    .chess-board{display:grid;grid-template-columns:repeat(8,1fr);border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(14,165,233,.18);user-select:none}
     .chess-square{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:filter .15s}
     .chess-square:hover{filter:brightness(.82)}
-    .chess-square.selected{outline:4px solid #00d6a1;outline-offset:-4px;z-index:2}
-    .chess-square.possible{background:rgba(0,214,161,.35)!important}
-    .chess-square.possible::after{content:'';position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(0,214,161,.7)}
+    .chess-square.selected{outline:4px solid #0ea5e9;outline-offset:-4px;z-index:2}
+    .chess-square.possible{background:rgba(14,165,233,.35)!important}
+    .chess-square.possible::after{content:'';position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(14,165,233,.7)}
     .chess-piece{font-size:clamp(18px,5vw,34px);line-height:1;pointer-events:none;transition:transform .1s}
     .chess-square:hover .chess-piece{transform:scale(1.12)}
     .coord-label{position:absolute;font-size:9px;font-weight:700;opacity:.55;font-family:'JetBrains Mono',monospace}
@@ -57,96 +57,109 @@
     button{cursor:pointer;transition:all .2s}
     button:hover:not(:disabled){transform:scale(1.03)}
     button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
-    .tok-bar{height:14px;border-radius:999px;overflow:hidden;background:rgba(0,214,161,.15)}
+    .tok-bar{height:14px;border-radius:999px;overflow:hidden;background:rgba(14,165,233,.12)}
     .tok-fill{height:100%;border-radius:999px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
     .roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
     @media(max-width:767px){.roadmap-grid{grid-template-columns:1fr;gap:24px}}
-    .roadmap-connector{position:absolute;top:52px;left:calc(12.5% + 20px);right:calc(12.5% + 20px);height:2px;background:linear-gradient(90deg,#00d6a1,#fbbf24,rgba(123,97,255,.5),rgba(123,97,255,.2));z-index:0;pointer-events:none}
+    .roadmap-connector{position:absolute;top:52px;left:calc(12.5% + 20px);right:calc(12.5% + 20px);height:2px;background:linear-gradient(90deg,#0ea5e9,#fbbf24,rgba(124,58,237,.5),rgba(245,158,11,.3));z-index:0;pointer-events:none}
     @media(max-width:767px){.roadmap-connector{display:none}}
     .roadmap-card{position:relative;z-index:1;padding:0 12px}
     .roadmap-node{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;position:relative;transition:transform .3s}
     .roadmap-node::after{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:0;transition:opacity .3s}
     .roadmap-card:hover .roadmap-node{transform:scale(1.08)}
     .roadmap-card:hover .roadmap-node::after{opacity:1}
-    .rm-done .roadmap-node{background:linear-gradient(135deg,rgba(0,214,161,.2),rgba(0,181,137,.1));border:2px solid #00d6a1;box-shadow:0 0 24px rgba(0,214,161,.25)}
-    .rm-done .roadmap-node::after{box-shadow:0 0 40px rgba(0,214,161,.3)}
+    .rm-done .roadmap-node{background:linear-gradient(135deg,rgba(14,165,233,.18),rgba(2,132,199,.08));border:2px solid #0ea5e9;box-shadow:0 0 24px rgba(14,165,233,.25)}
+    .rm-done .roadmap-node::after{box-shadow:0 0 40px rgba(14,165,233,.3)}
     .rm-active .roadmap-node{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(245,158,11,.1));border:2px solid #fbbf24;box-shadow:0 0 24px rgba(251,191,36,.25)}
     .rm-active .roadmap-node::after{box-shadow:0 0 40px rgba(251,191,36,.3)}
-    .rm-upcoming .roadmap-node{background:rgba(255,255,255,.04);border:2px solid rgba(123,97,255,.35)}
-    .rm-card-inner{background:rgba(13,17,32,0.85);border-radius:20px;padding:22px;text-align:center;border:1px solid rgba(255,255,255,.06);transition:all .3s}
-    .rm-done .rm-card-inner{border-color:rgba(0,214,161,.18);box-shadow:0 4px 24px rgba(0,214,161,.06)}
+    .rm-upcoming .roadmap-node{background:rgba(240,240,255,.8);border:2px solid rgba(124,58,237,.35)}
+    .rm-card-inner{background:#ffffff;border-radius:20px;padding:22px;text-align:center;border:1px solid rgba(0,0,0,.07);transition:all .3s;box-shadow:0 2px 12px rgba(14,165,233,.06)}
+    .rm-done .rm-card-inner{border-color:rgba(14,165,233,.22);box-shadow:0 4px 24px rgba(14,165,233,.08)}
     .rm-active .rm-card-inner{border-color:rgba(251,191,36,.25);box-shadow:0 4px 28px rgba(251,191,36,.08)}
-    .rm-upcoming .rm-card-inner{border-color:rgba(123,97,255,.15)}
+    .rm-upcoming .rm-card-inner{border-color:rgba(124,58,237,.15)}
     .roadmap-card:hover .rm-card-inner{transform:translateY(-4px)}
-    .rm-done:hover .rm-card-inner{box-shadow:0 12px 40px rgba(0,214,161,.14)}
+    .rm-done:hover .rm-card-inner{box-shadow:0 12px 40px rgba(14,165,233,.16)}
     .rm-active:hover .rm-card-inner{box-shadow:0 12px 40px rgba(251,191,36,.14)}
-    .rm-upcoming:hover .rm-card-inner{box-shadow:0 12px 40px rgba(123,97,255,.1)}
+    .rm-upcoming:hover .rm-card-inner{box-shadow:0 12px 40px rgba(124,58,237,.12)}
     .rm-progress{height:6px;border-radius:999px;overflow:hidden;margin:12px 0 14px;background:rgba(251,191,36,.12)}
     .rm-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
     @keyframes rmPulse{0%,100%{box-shadow:0 0 24px rgba(251,191,36,.25)}50%{box-shadow:0 0 40px rgba(251,191,36,.5),0 0 80px rgba(251,191,36,.15)}}
     .rm-active .roadmap-node{animation:rmPulse 2.4s ease-in-out infinite}
     .move-history{max-height:180px;overflow-y:auto}
     .move-history::-webkit-scrollbar{width:4px}
-    .move-history::-webkit-scrollbar-thumb{background:rgba(0,214,161,.4);border-radius:4px}
+    .move-history::-webkit-scrollbar-thumb{background:rgba(14,165,233,.4);border-radius:4px}
     .skin-card{border:2px solid transparent;transition:all .25s;cursor:default}
-    .skin-card:hover{border-color:rgba(0,214,161,.4);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,214,161,.12)}
-    .skin-card.owned{border-color:rgba(0,214,161,.6)}
-    .skin-card.equipped{border-color:#00d6a1;box-shadow:0 0 0 3px rgba(0,214,161,.2)}
+    .skin-card:hover{border-color:rgba(14,165,233,.4);transform:translateY(-3px);box-shadow:0 8px 28px rgba(14,165,233,.12)}
+    .skin-card.owned{border-color:rgba(14,165,233,.6)}
+    .skin-card.equipped{border-color:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
     .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
-    .modal-box{background:#111827;border:1px solid rgba(0,214,161,.2);border-radius:24px;padding:32px;max-width:440px;width:100%;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-    #mm-btn,#mm-btn2{background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff;border:none;border-radius:14px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .2s}
-    #mm-btn:hover,#mm-btn2:hover{background:linear-gradient(135deg,#6449ff,#4a30c5);transform:scale(1.03)}
+    .modal-box{background:#ffffff;border:1px solid rgba(14,165,233,.2);border-radius:24px;padding:32px;max-width:440px;width:100%;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.2)}
+    #mm-btn,#mm-btn2{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:14px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .2s}
+    #mm-btn:hover,#mm-btn2:hover{background:linear-gradient(135deg,#0284c7,#0369a1);transform:scale(1.03)}
     .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-    .dot-green{background:#00d6a1;box-shadow:0 0 8px #00d6a1}
+    .dot-green{background:#0ea5e9;box-shadow:0 0 8px #0ea5e9}
     .preview-grid{display:grid;grid-template-columns:repeat(4,22px);gap:2px;margin:0 auto;width:fit-content}
     .piece-preview{font-size:34px}
     .pts-bar-wrap{height:10px;border-radius:999px;overflow:hidden;background:rgba(251,191,36,.15)}
     .pts-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#fbbf24,#f59e0b);transition:width .7s ease}
-    #pts-toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:200;background:linear-gradient(135deg,#00d6a1,#00b589);color:#090c14;font-weight:900;font-size:18px;padding:12px 28px;border-radius:20px;box-shadow:0 8px 32px rgba(0,214,161,.45);pointer-events:none}
-    .wallet-gate{background:rgba(251,191,36,.08);border:1.5px dashed rgba(251,191,36,.5);border-radius:14px;padding:10px 14px;text-align:center;font-size:12px;color:#d4a017;font-weight:600;margin-top:6px}
+    #pts-toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:200;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#ffffff;font-weight:900;font-size:18px;padding:12px 28px;border-radius:20px;box-shadow:0 8px 32px rgba(14,165,233,.45);pointer-events:none}
+    .wallet-gate{background:rgba(251,191,36,.08);border:1.5px dashed rgba(245,158,11,.5);border-radius:14px;padding:10px 14px;text-align:center;font-size:12px;color:#d4a017;font-weight:600;margin-top:6px}
     .lb-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;transition:background .15s}
-    .lb-row:hover{background:rgba(0,214,161,.06)}
-    .lb-row.lb-me{background:linear-gradient(90deg,rgba(0,214,161,.12),rgba(0,181,137,.06));border:1.5px solid rgba(0,214,161,.3)}
+    .lb-row:hover{background:rgba(14,165,233,.06)}
+    .lb-row.lb-me{background:linear-gradient(90deg,rgba(14,165,233,.1),rgba(2,132,199,.05));border:1.5px solid rgba(14,165,233,.3)}
     .lb-rank{font-family:'JetBrains Mono',monospace;font-weight:900;font-size:13px;min-width:26px;text-align:center}
-    .lb-addr{font-family:'JetBrains Mono',monospace;font-size:11px;color:#00d6a1;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .lb-addr{font-family:'JetBrains Mono',monospace;font-size:11px;color:#0284c7;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .lb-pts{font-weight:900;font-size:13px;color:#fbbf24;white-space:nowrap}
-    .verify-bar{height:6px;border-radius:999px;overflow:hidden;background:rgba(0,214,161,.15);margin-top:8px}
-    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7b61ff,#00d6a1);width:0%;transition:width .4s ease}
+    .verify-bar{height:6px;border-radius:999px;overflow:hidden;background:rgba(14,165,233,.12);margin-top:8px}
+    .verify-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#0ea5e9);width:0%;transition:width .4s ease}
     .turn-timer{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;font-weight:700;font-size:13px;transition:all .3s}
     .turn-timer.urgent{background:rgba(239,68,68,.12);color:#ef4444}
-    .turn-timer.normal{background:rgba(0,214,161,.1);color:#00d6a1}
+    .turn-timer.normal{background:rgba(14,165,233,.1);color:#0284c7}
     .turn-timer.warning{background:rgba(251,191,36,.1);color:#fbbf24}
     @keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:.55}}
     .turn-timer.urgent{animation:urgentPulse .6s ease-in-out infinite}
     .timer-ring{width:28px;height:28px;position:relative;flex-shrink:0}
     .timer-ring svg{transform:rotate(-90deg)}
-    .timer-ring .bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:3}
+    .timer-ring .bg{fill:none;stroke:rgba(0,0,0,.1);stroke-width:3}
     .timer-ring .fg{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .3s}
     .timer-skipped{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;background:rgba(239,68,68,.12);color:#ef4444}
-    .hl-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(0,214,161,.3),transparent)}
-    .hl-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;background:rgba(0,214,161,.1);border:1px solid rgba(0,214,161,.25);color:#00d6a1}
-    .hl-card{background:rgba(13,17,32,0.8);border:1px solid rgba(0,214,161,.12);border-radius:18px;padding:20px}
-    .hl-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f0f4ff;padding:10px 14px;outline:none;transition:border-color .2s}
-    .hl-input:focus{border-color:rgba(0,214,161,.5)}
-    .hl-input::placeholder{color:#4a5568}
+    .hl-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(14,165,233,.3),transparent)}
+    .hl-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);color:#0284c7}
+    .hl-card{background:#ffffff;border:1px solid rgba(14,165,233,.15);border-radius:18px;padding:20px;box-shadow:0 2px 12px rgba(14,165,233,.06)}
+    .hl-input{background:#f8fafc;border:1px solid rgba(0,0,0,.12);border-radius:12px;color:#0f172a;padding:10px 14px;outline:none;transition:border-color .2s}
+    .hl-input:focus{border-color:rgba(14,165,233,.6)}
+    .hl-input::placeholder{color:#94a3b8}
     .nav-link{color:var(--hl-text2);transition:color .2s;font-weight:500;font-size:.875rem}
     .nav-link:hover{color:var(--hl-primary)}
-    .btn-primary{background:linear-gradient(135deg,#00d6a1,#00b589);color:#090c14;font-weight:800;border:none;border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(0,214,161,.3)}
-    .btn-primary:hover{transform:scale(1.03);box-shadow:0 6px 28px rgba(0,214,161,.5)}
-    .btn-secondary{background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff;font-weight:800;border:none;border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(123,97,255,.25)}
+    .btn-primary{background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#ffffff;font-weight:800;border:none;border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(14,165,233,.3)}
+    .btn-primary:hover{transform:scale(1.03);box-shadow:0 6px 28px rgba(14,165,233,.5)}
+    .btn-secondary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-weight:800;border:none;border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(123,97,255,.25)}
     .btn-secondary:hover{transform:scale(1.03);box-shadow:0 6px 28px rgba(123,97,255,.45)}
-    .btn-ghost{background:rgba(255,255,255,.06);color:var(--hl-text);font-weight:700;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s}
-    .btn-ghost:hover{background:rgba(255,255,255,.1);transform:scale(1.03)}
+    .btn-ghost{background:rgba(255,255,255,.9);color:#0f172a;font-weight:700;border:1px solid rgba(0,0,0,.12);border-radius:14px;padding:14px 28px;font-size:1.05rem;cursor:pointer;transition:all .2s}
+    .btn-ghost:hover{background:#f0f9ff;transform:scale(1.03)}
     .btn-sm{padding:8px 16px;font-size:.8rem;border-radius:10px}
-    .stat-card{background:rgba(13,17,32,0.7);border:1px solid rgba(0,214,161,.12);border-radius:16px;padding:18px 22px;text-align:center}
+    .stat-card{background:#ffffff;border:1px solid rgba(14,165,233,.15);border-radius:16px;padding:18px 22px;text-align:center;box-shadow:0 2px 10px rgba(14,165,233,.06)}
     .stat-card .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--hl-text2);font-weight:600;margin-bottom:4px}
     .stat-card .value{font-weight:900;color:var(--hl-primary);font-size:1rem}
     .section-title{font-size:2.25rem;font-weight:900;color:var(--hl-text);letter-spacing:-.02em}
     .section-sub{color:var(--hl-text2);font-size:.9rem;margin-top:.5rem}
-    .feature-card{background:rgba(13,17,32,0.7);border:1px solid rgba(0,214,161,.1);border-radius:20px;padding:24px;text-align:center;transition:all .25s}
-    .feature-card:hover{border-color:rgba(0,214,161,.35);transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,214,161,.1)}
+    .feature-card{background:#ffffff;border:1px solid rgba(14,165,233,.12);border-radius:20px;padding:24px;text-align:center;transition:all .25s;box-shadow:0 2px 12px rgba(14,165,233,.05)}
+    .feature-card:hover{border-color:rgba(14,165,233,.4);transform:translateY(-4px);box-shadow:0 12px 36px rgba(14,165,233,.12)}
     .tg-sticker-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#229ED9,#1a8bc4);color:#fff;font-weight:800;border:none;border-radius:14px;padding:12px 24px;font-size:.95rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(34,158,217,.3);text-decoration:none}
     .tg-sticker-btn:hover{transform:scale(1.03);box-shadow:0 6px 28px rgba(34,158,217,.5)}
+
+    /* Lightbox */
+    #lb-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .3s}
+    #lb-overlay.open{opacity:1;pointer-events:all}
+    #lb-img-wrap{position:relative;max-width:90vw;max-height:90vh;display:flex;align-items:center;justify-content:center}
+    #lb-img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.6);transition:transform .25s;display:block}
+    #lb-close{position:fixed;top:18px;right:22px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:10001}
+    #lb-close:hover{background:rgba(255,255,255,.3)}
+    #lb-prev,#lb-next{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:10001}
+    #lb-prev{left:14px}#lb-next{right:14px}
+    #lb-prev:hover,#lb-next:hover{background:rgba(255,255,255,.3)}
+    #lb-counter{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.75);font-size:13px;font-weight:700;letter-spacing:.06em;background:rgba(0,0,0,.4);padding:5px 14px;border-radius:999px;z-index:10001}
+    @media(max-width:600px){#lb-prev{left:4px}#lb-next{right:4px}}
   </style>
   <script>tailwind.config={theme:{extend:{fontFamily:{sans:['Inter'],mono:['JetBrains Mono']}}}}</script>
 </head>
@@ -157,19 +170,20 @@
 
 <!-- ══════════════ LANDING ══════════════ -->
 <div id="page-landing" class="page active">
-  <nav class="fixed top-0 left-0 right-0 z-50 glass border-b" style="border-color:rgba(0,214,161,.12)">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass border-b" style="border-color:rgba(14,165,233,.18)">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
-        <img src="https://i.imgur.com/vEET08t.png" class="w-9 h-9 rounded-full object-cover" style="box-shadow:0 0 12px rgba(0,214,161,.4)" onerror="this.style.display='none'" alt=""/>
-        <span class="text-xl font-extrabold tracking-tight" style="color:#00d6a1">CHESSIO KING</span>
+        <img src="https://i.imgur.com/vEET08t.png" class="w-9 h-9 rounded-full object-cover" style="box-shadow:0 0 12px rgba(14,165,233,.35)" onerror="this.style.display='none'" alt=""/>
+        <span class="text-xl font-extrabold tracking-tight" style="color:#0ea5e9">CHESSIO KING</span>
       </div>
       <div class="hidden md:flex items-center gap-5">
         <a href="#about" class="nav-link">About</a>
         <a href="#tokenomics" class="nav-link">Tokenomics</a>
         <a href="#roadmap" class="nav-link">Roadmap</a>
+        <a href="#memes" class="nav-link">Memes</a>
         <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="nav-link font-semibold" style="color:#229ED9">🎭 Stickers</a>
         <a href="#" onclick="goto('shop',event)" class="nav-link font-semibold" style="color:#7b61ff">Shop</a>
-        <a href="#" onclick="goto('play',event)" class="nav-link font-semibold" style="color:#00d6a1">Play</a>
+        <a href="#" onclick="goto('play',event)" class="nav-link font-semibold" style="color:#0ea5e9">Play</a>
       </div>
       <button id="mm-btn" onclick="walletClick()"><span>🦊</span><span id="mm-lbl">Connect Wallet</span></button>
     </div>
@@ -178,80 +192,61 @@
   <!-- Hero -->
   <section class="pt-28 pb-20 px-4 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
-      <span class="float-piece absolute opacity-25 text-5xl" style="left:4%;top:12%;--dur:3.2s;color:#00d6a1">♟</span>
+      <span class="float-piece absolute opacity-25 text-5xl" style="left:4%;top:12%;--dur:3.2s;color:#0ea5e9">♟</span>
       <span class="float-piece absolute opacity-20 text-7xl" style="left:16%;top:42%;--dur:4.1s;animation-delay:.5s;color:#7b61ff">♞</span>
-      <span class="float-piece absolute opacity-22 text-4xl" style="left:28%;top:20%;--dur:3.7s;animation-delay:1s;color:#00d6a1">♝</span>
+      <span class="float-piece absolute opacity-22 text-4xl" style="left:28%;top:20%;--dur:3.7s;animation-delay:1s;color:#0ea5e9">♝</span>
       <span class="float-piece absolute opacity-18 text-6xl" style="left:53%;top:8%;--dur:2.9s;animation-delay:.3s;color:#5eead4">♜</span>
       <span class="float-piece absolute opacity-20 text-5xl" style="left:70%;top:36%;--dur:3.5s;animation-delay:.8s;color:#7b61ff">♛</span>
-      <span class="float-piece absolute opacity-18 text-6xl" style="left:83%;top:15%;--dur:4.3s;animation-delay:1.5s;color:#00d6a1">♚</span>
+      <span class="float-piece absolute opacity-18 text-6xl" style="left:83%;top:15%;--dur:4.3s;animation-delay:1.5s;color:#0ea5e9">♚</span>
       <span class="float-piece absolute opacity-22 text-4xl" style="left:91%;top:58%;--dur:3.1s;animation-delay:.2s;color:#5eead4">♟</span>
       <span class="float-piece absolute opacity-20 text-5xl" style="left:41%;top:63%;--dur:3.8s;animation-delay:1.2s;color:#7b61ff">♞</span>
-      <span class="float-piece absolute opacity-16 text-7xl" style="left:7%;top:66%;--dur:4.5s;animation-delay:.7s;color:#00d6a1">♝</span>
+      <span class="float-piece absolute opacity-16 text-7xl" style="left:7%;top:66%;--dur:4.5s;animation-delay:.7s;color:#0ea5e9">♝</span>
       <span class="float-piece absolute opacity-18 text-4xl" style="left:61%;top:71%;--dur:3.4s;animation-delay:1.8s;color:#5eead4">♜</span>
       <span class="float-piece absolute opacity-20 text-6xl" style="left:23%;top:77%;--dur:2.8s;animation-delay:.4s;color:#7b61ff">♛</span>
-      <span class="float-piece absolute opacity-18 text-5xl" style="left:77%;top:79%;--dur:3.9s;animation-delay:1.1s;color:#00d6a1">♟</span>
+      <span class="float-piece absolute opacity-18 text-5xl" style="left:77%;top:79%;--dur:3.9s;animation-delay:1.1s;color:#0ea5e9">♟</span>
     </div>
-    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(0,214,161,.08) 0%,transparent 70%)"></div>
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(14,165,233,.1) 0%,transparent 70%)"></div>
     <div class="max-w-3xl mx-auto text-center relative z-10">
       <div class="flex justify-center mb-7">
         <div class="relative">
-          <img src="https://i.imgur.com/vEET08t.png" class="w-32 h-32 rounded-full object-cover" style="border:3px solid rgba(0,214,161,.5);box-shadow:0 0 40px rgba(0,214,161,.35),0 0 80px rgba(0,214,161,.15)" onerror="this.style.display='none'" alt="CHESSIO KING"/>
+          <img src="https://i.imgur.com/vEET08t.png" class="w-32 h-32 rounded-full object-cover" style="border:3px solid rgba(14,165,233,.5);box-shadow:0 0 30px rgba(14,165,233,.25),0 0 60px rgba(14,165,233,.1)" onerror="this.style.display='none'" alt="CHESSIO KING"/>
         </div>
       </div>
-      <h1 class="text-6xl sm:text-7xl font-black mb-3 tracking-tight" style="background:linear-gradient(135deg,#00d6a1,#5eead4,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">CHESSIO KING</h1>
-      <p class="text-lg mb-2 font-semibold" style="color:#8b98b8">The Ultimate Chess Memecoin on HyperEVM Blockchain</p>
-      <p class="text-sm mb-8" style="color:#5a6882">Play chess. Earn points. Convert to $CHESSIO.</p>
+      <h1 class="text-6xl sm:text-7xl font-black mb-3 tracking-tight" style="background:linear-gradient(135deg,#0ea5e9,#38bdf8,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">CHESSIO KING</h1>
+      <p class="text-lg mb-2 font-semibold" style="color:#64748b">The Ultimate Chess Memecoin on Monad Blockchain</p>
+      <p class="text-sm mb-8" style="color:#64748b">Play chess. Earn points. Convert to $CHESSIO.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
         <button onclick="goto('play')" class="btn-primary flex items-center justify-center gap-2">♞ Play Chess</button>
         <button onclick="goto('shop')" class="btn-secondary">Shop Skins</button>
-        <a href="https://alt.fun/token/0x316491F2dc1e393C987B80Bc0A880A3B95b00000" target="_blank" rel="noopener noreferrer">
-          <button class="btn-ghost w-full">Buy $CHESSIO on alt.fun</button>
-        </a>
       </div>
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <div class="stat-card"><p class="label">Contract</p><p class="value" style="font-size:.62rem;font-family:'JetBrains Mono',monospace;word-break:break-all">0x3164…0000</p></div>
-        <div class="stat-card"><p class="label">Network</p><p class="value text-sm">HyperEVM Mainnet</p></div>
+        <div class="stat-card"><p class="label">Contract</p><p class="value text-sm">Soon</p></div>
+        <div class="stat-card"><p class="label">Network</p><p class="value text-sm">Monad Mainnet</p></div>
         <div class="stat-card"><p class="label">Total Supply</p><p class="value text-sm">1,000,000,000</p></div>
         <div class="stat-card"><p class="label">Skins</p><p class="value text-sm">12 Collectibles</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ══ TELEGRAM STICKER BANNER ══ -->
-  <section class="py-10 px-4 z1 relative">
-    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(90deg,rgba(34,158,217,.05),rgba(123,97,255,.05))"></div>
-    <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
-      <div class="glass-bright rounded-3xl p-8" style="border-color:rgba(34,158,217,.3)">
-        <div class="text-5xl mb-4">🎭</div>
-        <h2 class="text-2xl font-black mb-2" style="color:#f0f4ff">Chessio King Telegram Stickers</h2>
-        <p class="mb-5 text-sm" style="color:#8b98b8">Express yourself with exclusive Chessio King sticker pack on Telegram. Free to add, forever yours!</p>
-        <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="tg-sticker-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          Add Stickers on Telegram
-        </a>
-        <p class="mt-4 text-xs" style="color:#5a6882">Join our community: <a href="https://t.me/Chessioportal" target="_blank" style="color:#229ED9;text-decoration:none">t.me/Chessioportal</a></p>
-      </div>
-    </div>
-  </section>
 
   <section id="about" class="py-16 px-4 z1">
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-12">
         <div class="hl-badge mx-auto mb-4" style="width:fit-content">About</div>
         <h2 class="section-title">What is Chessio King?</h2>
-        <p class="section-sub max-w-2xl mx-auto mt-3">Chessio King is the first chess-powered memecoin on the HyperEVM blockchain. Win games to earn points, convert them to $CHESSIO, collect exclusive skins (each with unique point bonuses!), and battle friends in real-time P2P matches.</p>
+        <p class="section-sub max-w-2xl mx-auto mt-3">Chessio King is the first chess-powered memecoin on Monad Mainnet. Win games to earn points, convert them to $CHESSIO, collect exclusive skins (each with unique point bonuses!), and battle friends in real-time P2P matches.</p>
       </div>
       <div class="grid md:grid-cols-4 gap-5">
-        <div class="reveal feature-card"><div class="text-4xl mb-3">♟</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">Chess vs AI</h3><p class="text-xs" style="color:#8b98b8">3 difficulty levels — 15s timer every turn!</p></div>
-        <div class="reveal feature-card" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">Earn Points</h3><p class="text-xs" style="color:#8b98b8">Win games → earn points → skin bonuses stack!</p></div>
-        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">12 Skins</h3><p class="text-xs" style="color:#8b98b8">Rare skins grant bonus points per win!</p></div>
-        <div class="reveal feature-card" style="transition-delay:.24s"><div class="text-4xl mb-3">🌐</div><h3 class="font-bold mb-1 text-sm" style="color:#00d6a1">WebRTC PvP</h3><p class="text-xs" style="color:#8b98b8">Direct P2P play with friends — no server needed</p></div>
+        <div class="reveal feature-card"><div class="text-4xl mb-3">♟</div><h3 class="font-bold mb-1 text-sm" style="color:#0ea5e9">Chess vs AI</h3><p class="text-xs" style="color:#64748b">3 difficulty levels — 15s timer every turn!</p></div>
+        <div class="reveal feature-card" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold mb-1 text-sm" style="color:#0ea5e9">Earn Points</h3><p class="text-xs" style="color:#64748b">Win games → earn points → skin bonuses stack!</p></div>
+        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#0ea5e9">12 Skins</h3><p class="text-xs" style="color:#64748b">Rare skins grant bonus points per win!</p></div>
+        <div class="reveal feature-card" style="transition-delay:.24s"><div class="text-4xl mb-3">🌐</div><h3 class="font-bold mb-1 text-sm" style="color:#0ea5e9">WebRTC PvP</h3><p class="text-xs" style="color:#64748b">Direct P2P play with friends — no server needed</p></div>
       </div>
     </div>
   </section>
 
   <!-- ══ TOKENOMICS ══ -->
-  <section id="tokenomics" class="py-16 px-4 z1" style="background:rgba(0,214,161,.03)">
+  <section id="tokenomics" class="py-16 px-4 z1" style="background:rgba(14,165,233,.04)">
     <div class="max-w-4xl mx-auto">
       <div class="reveal text-center mb-4">
         <div class="hl-badge mx-auto mb-4" style="width:fit-content">Tokenomics</div>
@@ -262,21 +257,21 @@
       <!-- Distribution Visual -->
       <div class="reveal max-w-lg mx-auto mt-8 mb-6">
         <div class="hl-card">
-          <p class="text-xs uppercase tracking-widest font-semibold mb-5" style="color:#8b98b8">Token Distribution</p>
+          <p class="text-xs uppercase tracking-widest font-semibold mb-5" style="color:#64748b">Token Distribution</p>
 
           <!-- Community Bar -->
           <div class="mb-4">
             <div class="flex justify-between items-center mb-2">
               <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full inline-block" style="background:#00d6a1"></span>
-                <span class="text-sm font-bold" style="color:#f0f4ff">Community</span>
+                <span class="w-3 h-3 rounded-full inline-block" style="background:#0ea5e9"></span>
+                <span class="text-sm font-bold" style="color:#0f172a">Community</span>
               </div>
-              <span class="font-black text-sm" style="color:#00d6a1">93%</span>
+              <span class="font-black text-sm" style="color:#0ea5e9">93%</span>
             </div>
             <div class="tok-bar">
-              <div class="tok-fill" data-width="93" style="background:linear-gradient(90deg,#00d6a1,#00b589)"></div>
+              <div class="tok-fill" data-width="93" style="background:linear-gradient(90deg,#0ea5e9,#0284c7)"></div>
             </div>
-            <p class="text-xs mt-1" style="color:#5a6882">930,000,000 $CHESSIO</p>
+            <p class="text-xs mt-1" style="color:#64748b">930,000,000 $CHESSIO</p>
           </div>
 
           <!-- Dev Bar -->
@@ -284,24 +279,24 @@
             <div class="flex justify-between items-center mb-2">
               <div class="flex items-center gap-2">
                 <span class="w-3 h-3 rounded-full inline-block" style="background:#7b61ff"></span>
-                <span class="text-sm font-bold" style="color:#f0f4ff">Dev</span>
+                <span class="text-sm font-bold" style="color:#0f172a">Dev</span>
               </div>
               <span class="font-black text-sm" style="color:#7b61ff">7%</span>
             </div>
             <div class="tok-bar" style="background:rgba(123,97,255,.15)">
               <div class="tok-fill" data-width="7" style="background:linear-gradient(90deg,#7b61ff,#5b3fe0)"></div>
             </div>
-            <p class="text-xs mt-1" style="color:#5a6882">70,000,000 $CHESSIO</p>
+            <p class="text-xs mt-1" style="color:#64748b">70,000,000 $CHESSIO</p>
           </div>
 
           <!-- Combined stacked bar -->
           <div class="mt-5">
             <div class="h-5 rounded-full overflow-hidden flex" style="background:rgba(255,255,255,.05)">
-              <div style="width:93%;background:linear-gradient(90deg,#00d6a1,#00b589);border-radius:999px 0 0 999px;transition:width 1.2s cubic-bezier(.4,0,.2,1)"></div>
+              <div style="width:93%;background:linear-gradient(90deg,#0ea5e9,#0284c7);border-radius:999px 0 0 999px;transition:width 1.2s cubic-bezier(.4,0,.2,1)"></div>
               <div style="width:7%;background:linear-gradient(90deg,#7b61ff,#5b3fe0);border-radius:0 999px 999px 0;transition:width 1.2s cubic-bezier(.4,0,.2,1)"></div>
             </div>
-            <div class="flex justify-between mt-2 text-xs" style="color:#5a6882">
-              <span style="color:#00d6a1">● Community 93%</span>
+            <div class="flex justify-between mt-2 text-xs" style="color:#64748b">
+              <span style="color:#0ea5e9">● Community 93%</span>
               <span style="color:#7b61ff">● Dev 7%</span>
             </div>
           </div>
@@ -310,31 +305,30 @@
 
       <div class="max-w-lg mx-auto">
         <div class="reveal hl-card">
-          <div class="divide-y" style="border-color:rgba(255,255,255,.06)">
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Symbol</span><span class="font-black text-sm" style="color:#00d6a1">$CHESSIO</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Network</span><span class="font-bold text-sm">HyperEVM Mainnet</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Type</span><span class="font-bold text-sm">ERC-20 (HyperEVM)</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Contract</span><a href="https://alt.fun/token/0x316491F2dc1e393C987B80Bc0A880A3B95b00000" target="_blank" style="color:#00d6a1;font-family:'JetBrains Mono',monospace;font-size:11px;word-break:break-all;text-decoration:none" title="0x316491F2dc1e393C987B80Bc0A880A3B95b00000">0x3164…0000</a></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Launch</span><span class="font-bold text-sm">alt.fun</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Tax</span><span class="font-black text-sm" style="color:#00d6a1">0%</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Total Supply</span><span class="font-black text-sm">1,000,000,000</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Community</span><span class="font-black text-sm" style="color:#00d6a1">93%</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Dev</span><span class="font-black text-sm" style="color:#7b61ff">7%</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Liquidity</span><span class="font-black text-sm">Locked</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Shop Currency</span><span class="font-black text-sm" style="color:#00d6a1">USDC (HyperEVM)</span></div>
+          <div class="divide-y" style="border-color:rgba(0,0,0,.06)">
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Symbol</span><span class="font-black text-sm" style="color:#0ea5e9">$CHESSIO</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Network</span><span class="font-bold text-sm">Monad Mainnet</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Type</span><span class="font-bold text-sm">ERC-20 (Monad)</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Contract</span><span class="font-bold text-sm" style="color:#0ea5e9">Soon</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Launch</span><span class="font-bold text-sm">nad.fun</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Tax</span><span class="font-black text-sm" style="color:#0ea5e9">0%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Total Supply</span><span class="font-black text-sm">1,000,000,000</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Community</span><span class="font-black text-sm" style="color:#0ea5e9">93%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Dev</span><span class="font-black text-sm" style="color:#7b61ff">7%</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Liquidity</span><span class="font-black text-sm">Locked</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#64748b">Shop Currency</span><span class="font-black text-sm" style="color:#0ea5e9">USDC (Monad)</span></div>
           </div>
-          <a href="https://alt.fun/token/0x316491F2dc1e393C987B80Bc0A880A3B95b00000" target="_blank" class="mt-6 block w-full py-3.5 font-bold text-center rounded-xl text-sm" style="background:linear-gradient(135deg,#00d6a1,#00b589);color:#090c14">Buy $CHESSIO on alt.fun →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="roadmap" class="py-20 px-4 z1" style="background:rgba(0,0,0,.18)">
+  <section id="roadmap" class="py-20 px-4 z1" style="background:rgba(14,165,233,.04)">
     <div class="max-w-5xl mx-auto">
       <div class="reveal text-center mb-16">
         <div class="hl-badge mx-auto mb-4" style="width:fit-content">Roadmap</div>
         <h2 class="section-title">Our Journey</h2>
-        <p class="section-sub mt-2">Our path to becoming the #1 chess memecoin on HyperEVM</p>
+        <p class="section-sub mt-2">Our path to becoming the #1 chess memecoin on Monad</p>
       </div>
 
       <div class="roadmap-grid">
@@ -344,17 +338,17 @@
         <div class="roadmap-card rm-done reveal">
           <div class="roadmap-node">✅</div>
           <div class="rm-card-inner">
-            <p class="text-xs font-bold mb-1" style="color:#00d6a1;letter-spacing:.1em;text-transform:uppercase">Phase 1</p>
+            <p class="text-xs font-bold mb-1" style="color:#0ea5e9;letter-spacing:.1em;text-transform:uppercase">Phase 1</p>
             <h3 class="text-xl font-black mb-2">Launch</h3>
-            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(0,214,161,.12);color:#00d6a1;border:1px solid rgba(0,214,161,.3)">
-              <span style="width:6px;height:6px;border-radius:50%;background:#00d6a1;display:inline-block"></span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(14,165,233,.1);color:#0ea5e9;border:1px solid rgba(14,165,233,.3)">
+              <span style="width:6px;height:6px;border-radius:50%;background:#0ea5e9;display:inline-block"></span>
               Completed
             </span>
             <ul class="space-y-2 text-left">
-              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">Chess game with AI (3 difficulty levels)</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">12 collectible skins with rarity bonuses</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">WebRTC P2P multiplayer</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#00d6a1;flex-shrink:0;font-weight:900">✓</span><span style="color:#c8d3e8">Telegram sticker pack launched</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#0ea5e9;flex-shrink:0;font-weight:900">✓</span><span style="color:#334155">Chess game with AI (3 difficulty levels)</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#0ea5e9;flex-shrink:0;font-weight:900">✓</span><span style="color:#334155">12 collectible skins with rarity bonuses</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#0ea5e9;flex-shrink:0;font-weight:900">✓</span><span style="color:#334155">WebRTC P2P multiplayer</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#0ea5e9;flex-shrink:0;font-weight:900">✓</span><span style="color:#334155">Telegram sticker pack launched</span></li>
             </ul>
           </div>
         </div>
@@ -371,11 +365,11 @@
             </span>
             <div class="rm-progress"><div class="rm-progress-fill" data-width="35"></div></div>
             <ul class="space-y-2 text-left">
-              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Deploy $CHESSIO on HyperEVM via alt.fun</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">CEX listings &amp; partnerships</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Community tournaments</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Enhanced leaderboard system</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#c8d3e8">Mobile-optimized experience</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#334155">Deploy $CHESSIO on Monad via nad.fun</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#334155">CEX listings &amp; partnerships</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#334155">Community tournaments</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#334155">Enhanced leaderboard system</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#fbbf24;flex-shrink:0;font-weight:900">→</span><span style="color:#334155">Mobile-optimized experience</span></li>
             </ul>
           </div>
         </div>
@@ -384,17 +378,17 @@
         <div class="roadmap-card rm-upcoming reveal" style="transition-delay:.24s">
           <div class="roadmap-node">🔮</div>
           <div class="rm-card-inner">
-            <p class="text-xs font-bold mb-1" style="color:#7b61ff;letter-spacing:.1em;text-transform:uppercase">Phase 3</p>
+            <p class="text-xs font-bold mb-1" style="color:#7c3aed;letter-spacing:.1em;text-transform:uppercase">Phase 3</p>
             <h3 class="text-xl font-black mb-2">Ecosystem</h3>
-            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(123,97,255,.1);color:#7b61ff;border:1px solid rgba(123,97,255,.3)">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full mb-4" style="background:rgba(124,58,237,.08);color:#7c3aed;border:1px solid rgba(124,58,237,.25)">
               <span style="width:6px;height:6px;border-radius:50%;background:#7b61ff;display:inline-block"></span>
               Coming Soon
             </span>
             <ul class="space-y-2 text-left">
-              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">On-chain point verification</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">NFT skin integration</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Cross-chain bridge</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#7b61ff;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">DAO governance for token holders</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7c3aed;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">On-chain point verification</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7c3aed;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">NFT skin integration</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7c3aed;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">Cross-chain bridge</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#7c3aed;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">DAO governance for token holders</span></li>
             </ul>
           </div>
         </div>
@@ -410,10 +404,10 @@
               Future
             </span>
             <ul class="space-y-2 text-left">
-              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">$CHESSIO staking &amp; yield rewards</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">DAO governance voting for holders</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Cross-game integrations &amp; partnerships</span></li>
-              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#8b98b8">Global chess tournament with prize pool</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">$CHESSIO staking &amp; yield rewards</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">DAO governance voting for holders</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">Cross-game integrations &amp; partnerships</span></li>
+              <li class="flex items-start gap-2 text-sm"><span style="color:#f59e0b;flex-shrink:0;font-weight:900">◎</span><span style="color:#64748b">Global chess tournament with prize pool</span></li>
             </ul>
           </div>
         </div>
@@ -422,13 +416,13 @@
   </section>
 
   <section class="py-16 px-4 z1 relative overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg,rgba(0,214,161,.08),rgba(123,97,255,.08))"></div>
-    <div class="absolute inset-0 pointer-events-none" style="border-top:1px solid rgba(0,214,161,.12);border-bottom:1px solid rgba(0,214,161,.12)"></div>
+    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(124,58,237,.05))"></div>
+    <div class="absolute inset-0 pointer-events-none" style="border-top:1px solid rgba(14,165,233,.12);border-bottom:1px solid rgba(14,165,233,.15)"></div>
     <div class="max-w-2xl mx-auto text-center relative z-10">
       <div class="reveal">
         <div class="text-6xl mb-5">♛</div>
         <h2 class="text-4xl font-black mb-3">Join the Chess Revolution</h2>
-        <p class="mb-8 text-lg" style="color:#8b98b8">Play. Earn. Convert. The first chess memecoin on HyperEVM awaits you.</p>
+        <p class="mb-8 text-lg" style="color:#64748b">Play. Earn. Convert. The first chess memecoin on Monad awaits you.</p>
         <div class="flex gap-4 justify-center flex-wrap">
           <button onclick="goto('play')" class="btn-primary">Play &amp; Earn Now</button>
           <button onclick="goto('shop')" class="btn-ghost">Browse Skins</button>
@@ -438,23 +432,77 @@
     </div>
   </section>
 
-  <footer class="py-10 px-4 z1" style="background:#060810;border-top:1px solid rgba(0,214,161,.1)">
+
+  <!-- ══ MEME GALLERY ══ -->
+  <section id="memes" class="py-20 px-4 z1" style="background:rgba(14,165,233,.03)">
+    <div class="max-w-5xl mx-auto">
+      <div class="reveal text-center mb-12">
+        <div class="hl-badge mx-auto mb-4" style="width:fit-content">Meme Gallery</div>
+        <h2 class="section-title">Community Memes</h2>
+        <p class="section-sub mt-2 max-w-xl mx-auto">The best Chessio King memes from our community. Click to view full size!</p>
+      </div>
+      <style>
+        .meme-card{border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(14,165,233,.1);transition:all .25s;background:#fff}
+        .meme-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 36px rgba(14,165,233,.18)}
+        .meme-card:hover img{transform:scale(1.04)}
+        .meme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+        @media(max-width:900px){.meme-grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:600px){.meme-grid{grid-template-columns:repeat(2,1fr)}}
+      </style>
+      <div class="meme-grid">
+        <div class="meme-card reveal" style="transition-delay:0.00s;cursor:pointer" onclick="lbOpen(0)"><img src="https://i.imgur.com/tx5UPD3.jpg" alt="Chessio King Meme 1" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.04s;cursor:pointer" onclick="lbOpen(1)"><img src="https://i.imgur.com/P6H9XyW.jpg" alt="Chessio King Meme 2" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.08s;cursor:pointer" onclick="lbOpen(2)"><img src="https://i.imgur.com/EfSOver.jpg" alt="Chessio King Meme 3" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.12s;cursor:pointer" onclick="lbOpen(3)"><img src="https://i.imgur.com/PqCyVAd.jpg" alt="Chessio King Meme 4" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.16s;cursor:pointer" onclick="lbOpen(4)"><img src="https://i.imgur.com/Uijt8HZ.jpg" alt="Chessio King Meme 5" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.20s;cursor:pointer" onclick="lbOpen(5)"><img src="https://i.imgur.com/KzB8l5D.jpg" alt="Chessio King Meme 6" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.24s;cursor:pointer" onclick="lbOpen(6)"><img src="https://i.imgur.com/XQvcpYW.jpg" alt="Chessio King Meme 7" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.28s;cursor:pointer" onclick="lbOpen(7)"><img src="https://i.imgur.com/C0mSA3D.jpg" alt="Chessio King Meme 8" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.32s;cursor:pointer" onclick="lbOpen(8)"><img src="https://i.imgur.com/mT8q6Th.jpg" alt="Chessio King Meme 9" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.36s;cursor:pointer" onclick="lbOpen(9)"><img src="https://i.imgur.com/TWnk83Z.jpg" alt="Chessio King Meme 10" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.40s;cursor:pointer" onclick="lbOpen(10)"><img src="https://i.imgur.com/CYCS0MC.jpg" alt="Chessio King Meme 11" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.44s;cursor:pointer" onclick="lbOpen(11)"><img src="https://i.imgur.com/YgnI7Qj.jpg" alt="Chessio King Meme 12" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.48s;cursor:pointer" onclick="lbOpen(12)"><img src="https://i.imgur.com/e2MiN9X.jpg" alt="Chessio King Meme 13" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.52s;cursor:pointer" onclick="lbOpen(13)"><img src="https://i.imgur.com/Aw6Wlab.jpg" alt="Chessio King Meme 14" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.56s;cursor:pointer" onclick="lbOpen(14)"><img src="https://i.imgur.com/8tNvnQB.jpg" alt="Chessio King Meme 15" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+        <div class="meme-card reveal" style="transition-delay:0.60s;cursor:pointer" onclick="lbOpen(15)"><img src="https://i.imgur.com/w4e6YWW.jpg" alt="Chessio King Meme 16" loading="lazy" style="width:100%;height:200px;object-fit:cover;border-radius:14px;display:block;transition:transform .25s" onerror="this.parentElement.style.display='none'"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TELEGRAM STICKER BANNER ══ -->
+  <section class="py-10 px-4 z1 relative">
+    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(90deg,rgba(34,158,217,.05),rgba(123,97,255,.05))"></div>
+    <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
+      <div class="glass-bright rounded-3xl p-8" style="border-color:rgba(14,165,233,.3)">
+        <div class="text-5xl mb-4">🎭</div>
+        <h2 class="text-2xl font-black mb-2" style="color:#0f172a">Chessio King Telegram Stickers</h2>
+        <p class="mb-5 text-sm" style="color:#64748b">Express yourself with exclusive Chessio King sticker pack on Telegram. Free to add, forever yours!</p>
+        <a href="https://t.me/addstickers/ChessioKING" target="_blank" rel="noopener noreferrer" class="tg-sticker-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Add Stickers on Telegram
+        </a>
+        <p class="mt-4 text-xs" style="color:#64748b">Join our community: <a href="https://t.me/Chessioportal" target="_blank" style="color:#229ED9;text-decoration:none">t.me/Chessioportal</a></p>
+      </div>
+    </div>
+  </section>
+  <footer class="py-10 px-4 z1" style="background:#060810;border-top:1px solid rgba(14,165,233,.15)">
     <div class="max-w-5xl mx-auto">
       <div class="flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="flex items-center gap-3">
-          <img src="https://i.imgur.com/vEET08t.png" class="w-8 h-8 rounded-full object-cover" style="box-shadow:0 0 10px rgba(0,214,161,.35)" onerror="this.style.display='none'" alt=""/>
-          <span class="text-lg font-black" style="color:#00d6a1">CHESSIO KING</span>
+          <img src="https://i.imgur.com/vEET08t.png" class="w-8 h-8 rounded-full object-cover" style="box-shadow:0 0 10px rgba(14,165,233,.35)" onerror="this.style.display='none'" alt=""/>
+          <span class="text-lg font-black" style="color:#0ea5e9">CHESSIO KING</span>
         </div>
         <div class="flex gap-6 flex-wrap justify-center">
-          <a href="https://x.com/chessiooxyz" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">X @chessiooxyz</a>
-          <a href="https://t.me/Chessioportal" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">Chessioportal</a>
+          <a href="https://x.com/chessiooxyz" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">X @chessiooxyz</a>
+          <a href="https://t.me/Chessioportal" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">Chessioportal</a>
           <a href="https://t.me/addstickers/ChessioKING" target="_blank" class="text-sm font-medium" style="color:#229ED9" onmouseover="this.style.color='#5eb8e8'" onmouseout="this.style.color='#229ED9'">🎭 Sticker Pack</a>
-          <a href="https://alt.fun/token/0x316491F2dc1e393C987B80Bc0A880A3B95b00000" target="_blank" class="text-sm font-medium" style="color:#5a6882;transition:color .2s" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#5a6882'">alt.fun</a>
+          <a href="https://nad.fun" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">nad.fun</a>
         </div>
       </div>
-      <div class="mt-6 pt-6 text-center space-y-1" style="border-top:1px solid rgba(255,255,255,.05)">
-        <p class="text-xs" style="color:#4a5568">CA: <a href="https://alt.fun/token/0x316491F2dc1e393C987B80Bc0A880A3B95b00000" target="_blank" style="color:#00d6a1;font-family:'JetBrains Mono',monospace;font-size:10px;text-decoration:none" title="0x316491F2dc1e393C987B80Bc0A880A3B95b00000">0x3164…0000</a> — Network: <span class="font-bold" style="color:#00d6a1">HyperEVM Mainnet</span></p>
-        <p class="text-xs" style="color:#4a5568">Chessio King is a memecoin. Not financial advice. DYOR. © 2025 Chessio King.</p>
+      <div class="mt-6 pt-6 text-center space-y-1" style="border-top:1px solid rgba(0,0,0,.06)">
+        <p class="text-xs" style="color:#94a3b8">Contract: <span class="font-bold" style="color:#0ea5e9">Soon</span> — Network: <span class="font-bold" style="color:#0ea5e9">Monad Mainnet</span></p>
+        <p class="text-xs" style="color:#94a3b8">Chessio King is a memecoin. Not financial advice. DYOR. © 2025 Chessio King.</p>
       </div>
     </div>
   </footer>
@@ -462,48 +510,48 @@
 
 <!-- ══════════════ SHOP ══════════════ -->
 <div id="page-shop" class="page">
-  <nav class="fixed top-0 left-0 right-0 z-50 glass" style="border-bottom:1px solid rgba(0,214,161,.12)">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass" style="border-bottom:1px solid rgba(14,165,233,.15)">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <button onclick="goto('landing')" class="text-sm font-semibold" style="color:#8b98b8" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#8b98b8'">← Back</button>
-      <span class="text-lg font-black" style="color:#7b61ff">Skin Shop</span>
+      <button onclick="goto('landing')" class="text-sm font-semibold" style="color:#64748b" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#8b98b8'">← Back</button>
+      <span class="text-lg font-black" style="color:#7c3aed">Skin Shop</span>
       <button id="mm-btn2" onclick="walletClick()"><span>🦊</span><span id="mm-lbl2">Connect Wallet</span></button>
     </div>
   </nav>
-  <div class="pt-20 pb-16 px-4 min-h-screen" style="background:var(--hl-bg)">
+  <div class="pt-20 pb-16 px-4 min-h-screen" style="background:#f0f9ff">
     <div class="max-w-6xl mx-auto">
       <div class="hl-card mb-8 flex items-center justify-between flex-wrap gap-3">
         <div>
-          <p class="text-xs uppercase tracking-widest font-semibold" style="color:#7b61ff">HyperEVM Wallet</p>
-          <p id="shop-wallet-txt" class="font-bold text-sm mt-0.5" style="color:#8b98b8">Not connected — connect wallet to purchase skins with USDC</p>
+          <p class="text-xs uppercase tracking-widest font-semibold" style="color:#7b61ff">Monad Wallet</p>
+          <p id="shop-wallet-txt" class="font-bold text-sm mt-0.5" style="color:#475569">Not connected — connect wallet to purchase skins with USDC on Monad (Monad)</p>
         </div>
-        <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0)">Connect Wallet</button>
+        <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)">Connect Wallet</button>
       </div>
 
       <!-- Rarity bonus legend -->
-      <div class="hl-card mb-8" style="background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.18)">
+      <div class="hl-card mb-8" style="background:#fffbeb;border-color:rgba(245,158,11,.2)">
         <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#fbbf24">⭐ Skin Rarity Bonuses — Bonus pts per win (board + piece stack!)</p>
         <div class="flex flex-wrap gap-3">
-          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1">Free — +0 pts</span>
-          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(139,152,184,.1);color:#8b98b8">⭐ Common — +5 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(14,165,233,.1);color:#0ea5e9">Free — +0 pts</span>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(139,152,184,.1);color:#64748b">⭐ Common — +5 pts</span>
           <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(123,97,255,.1);color:#7b61ff">💜 Rare — +15 pts</span>
           <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(94,234,212,.1);color:#5eead4">💎 Epic — +30 pts</span>
           <span class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(251,191,36,.1);color:#fbbf24">🔥 Legendary — +50 pts</span>
         </div>
-        <p class="text-xs mt-3" style="color:#5a6882">Max possible bonus: <strong style="color:#fbbf24">+100 pts/win</strong> (Legendary board + Legendary piece skin both equipped)</p>
+        <p class="text-xs mt-3" style="color:#64748b">Max possible bonus: <strong style="color:#fbbf24">+100 pts/win</strong> (Legendary board + Legendary piece skin both equipped)</p>
       </div>
 
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black">Board Skins</h2>
         <span class="hl-badge text-xs">6 designs</span>
       </div>
-      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#00d6a1">1 USDC</strong> to <strong style="color:#00d6a1">5 USDC</strong></p>
+      <p class="text-sm mb-5" style="color:#64748b">1 free starter • 5 premium from <strong style="color:#0ea5e9">1 USDC</strong> to <strong style="color:#0ea5e9">5 USDC</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="board-skin-cards"></div>
 
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black">Piece Skins</h2>
         <span class="hl-badge text-xs" style="background:rgba(123,97,255,.1);border-color:rgba(123,97,255,.25);color:#7b61ff">6 styles</span>
       </div>
-      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#00d6a1">1 USDC</strong> to <strong style="color:#00d6a1">5 USDC</strong></p>
+      <p class="text-sm mb-5" style="color:#64748b">1 free starter • 5 premium from <strong style="color:#0ea5e9">1 USDC</strong> to <strong style="color:#0ea5e9">5 USDC</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4" id="piece-skin-cards"></div>
     </div>
   </div>
@@ -512,23 +560,23 @@
 <!-- Buy Modal -->
 <div id="modal-buy" class="modal-bg hidden">
   <div class="modal-box">
-    <h3 id="buy-title" class="text-xl font-black mb-1" style="color:#00d6a1">Buy Skin</h3>
-    <p id="buy-desc" class="text-sm mb-1" style="color:#8b98b8"></p>
+    <h3 id="buy-title" class="text-xl font-black mb-1" style="color:#0ea5e9">Buy Skin</h3>
+    <p id="buy-desc" class="text-sm mb-1" style="color:#64748b"></p>
     <p id="buy-bonus-info" class="text-xs font-bold mb-4" style="color:#fbbf24"></p>
-    <div class="rounded-2xl p-4 text-center mb-5" style="background:rgba(0,214,161,.06);border:1px solid rgba(0,214,161,.15)">
-      <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Price</p>
-      <p id="buy-price" class="text-3xl font-black" style="color:#00d6a1"></p>
-      <p class="text-xs mt-1" style="color:#5a6882">Paid in USDC on HyperEVM</p>
+    <div class="rounded-2xl p-4 text-center mb-5" style="background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.18)">
+      <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#64748b">Price</p>
+      <p id="buy-price" class="text-3xl font-black" style="color:#0ea5e9"></p>
+      <p class="text-xs mt-1" style="color:#64748b">Paid in USDC on Monad</p>
     </div>
     <div id="buy-error" class="hidden mb-3 p-3 rounded-xl text-sm" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444"></div>
-    <div id="buy-success" class="hidden mb-3 p-3 rounded-xl text-sm font-semibold" style="background:rgba(0,214,161,.08);border:1px solid rgba(0,214,161,.2);color:#00d6a1"></div>
+    <div id="buy-success" class="hidden mb-3 p-3 rounded-xl text-sm font-semibold" style="background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.22);color:#0ea5e9"></div>
     <div id="verify-status" class="hidden mb-3">
-      <p id="verify-msg" class="text-sm mb-2" style="color:#00d6a1"></p>
+      <p id="verify-msg" class="text-sm mb-2" style="color:#0ea5e9"></p>
       <div class="verify-bar"><div id="verify-fill" class="verify-fill"></div></div>
     </div>
     <div class="flex gap-3">
-      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 text-sm" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff"><span>💵</span><span>Buy with USDC</span></button>
-      <button id="cancel-btn" onclick="closeBuyModal()" class="px-5 py-3 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#8b98b8">Cancel</button>
+      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 text-sm" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff"><span>💵</span><span>Buy with USDC</span></button>
+      <button id="cancel-btn" onclick="closeBuyModal()" class="px-5 py-3 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#64748b">Cancel</button>
     </div>
   </div>
 </div>
@@ -536,29 +584,29 @@
 <!-- Convert Modal -->
 <div id="modal-convert" class="modal-bg hidden">
   <div class="modal-box max-w-sm">
-    <h3 class="text-xl font-black mb-4" style="color:#00d6a1">Convert Points → $CHESSIO</h3>
+    <h3 class="text-xl font-black mb-4" style="color:#0ea5e9">Convert Points → $CHESSIO</h3>
     <div class="rounded-2xl p-4 text-center mb-4" style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2)">
-      <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Your Points</p>
+      <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#64748b">Your Points</p>
       <p id="conv-pts" class="text-3xl font-black" style="color:#fbbf24">0</p>
     </div>
-    <p class="text-xs text-center mb-4" style="color:#5a6882">10,000 pts = 1 $CHESSIO</p>
+    <p class="text-xs text-center mb-4" style="color:#64748b">10,000 pts = 1 $CHESSIO</p>
     <div id="conv-no-wallet" class="hidden p-3 rounded-xl text-sm font-semibold mb-3" style="background:rgba(251,191,36,.06);color:#fbbf24">Connect wallet to convert</div>
-    <div id="conv-low" class="hidden p-3 rounded-xl text-sm mb-3" style="background:rgba(0,214,161,.06);color:#00d6a1">Need 10,000+ pts to convert</div>
-    <div id="conv-done" class="hidden p-3 rounded-xl text-sm font-semibold mb-3" style="background:rgba(0,214,161,.08);color:#00d6a1">Conversion request sent!</div>
+    <div id="conv-low" class="hidden p-3 rounded-xl text-sm mb-3" style="background:rgba(14,165,233,.08);color:#0ea5e9">Need 10,000+ pts to convert</div>
+    <div id="conv-done" class="hidden p-3 rounded-xl text-sm font-semibold mb-3" style="background:rgba(14,165,233,.08);color:#0ea5e9">Conversion request sent!</div>
     <div class="flex gap-3">
       <button id="conv-btn" onclick="doConvert()" class="hidden flex-1 py-3 font-bold rounded-xl" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#090c14"></button>
-      <button onclick="closeConvert()" class="flex-1 py-3 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#8b98b8">Close</button>
+      <button onclick="closeConvert()" class="flex-1 py-3 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#64748b">Close</button>
     </div>
   </div>
 </div>
 
 <!-- ══════════════ PLAY ══════════════ -->
 <div id="page-play" class="page">
-  <nav class="fixed top-0 left-0 right-0 z-50 glass" style="border-bottom:1px solid rgba(0,214,161,.12)">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass" style="border-bottom:1px solid rgba(14,165,233,.15)">
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
-      <button onclick="goto('landing')" class="text-sm font-semibold" style="color:#8b98b8" onmouseover="this.style.color='#00d6a1'" onmouseout="this.style.color='#8b98b8'">← Home</button>
+      <button onclick="goto('landing')" class="text-sm font-semibold" style="color:#64748b" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#8b98b8'">← Home</button>
       <div class="flex items-center gap-3 flex-wrap">
-        <span class="text-lg font-black" style="color:#00d6a1">♛ CHESSIO KING</span>
+        <span class="text-lg font-black" style="color:#0ea5e9">♛ CHESSIO KING</span>
         <span id="streak-badge" class="hidden text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(239,68,68,.1);color:#ef4444"></span>
       </div>
       <div class="flex items-center gap-3">
@@ -568,26 +616,26 @@
     </div>
   </nav>
 
-  <div class="pt-20 pb-8 px-4 min-h-screen" style="background:var(--hl-bg)">
+  <div class="pt-20 pb-8 px-4 min-h-screen" style="background:#f0f9ff">
     <!-- Play Menu -->
     <div id="play-menu" class="max-w-3xl mx-auto">
       <div class="hl-card mb-6">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Your Progress</p>
-            <p class="text-2xl font-black" style="color:#00d6a1">⭐ <span class="pts-total">0</span> pts</p>
+            <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#64748b">Your Progress</p>
+            <p class="text-2xl font-black" style="color:#0ea5e9">⭐ <span class="pts-total">0</span> pts</p>
           </div>
           <div class="text-center">
-            <p class="text-xs mb-1" style="color:#5a6882">Active skin bonus</p>
+            <p class="text-xs mb-1" style="color:#64748b">Active skin bonus</p>
             <p id="skin-bonus-display" class="text-sm font-black" style="color:#fbbf24">+0 pts/win</p>
           </div>
           <div class="text-right">
-            <p class="text-xs mb-1" style="color:#5a6882">Progress to next $CHESSIO</p>
+            <p class="text-xs mb-1" style="color:#64748b">Progress to next $CHESSIO</p>
             <p class="text-xs font-mono font-bold" style="color:#fbbf24" id="pts-rem">0 / 10,000</p>
             <div class="pts-bar-wrap mt-1 w-40"><div id="pts-bar" class="pts-bar-fill" style="width:0%"></div></div>
           </div>
           <div class="text-center">
-            <p class="text-xs mb-1" style="color:#5a6882">$CHESSIO earned</p>
+            <p class="text-xs mb-1" style="color:#64748b">$CHESSIO earned</p>
             <p class="text-xl font-black" style="color:#fbbf24">♛ <span class="pts-chess">0</span></p>
             <button id="pts-convert-btn" onclick="openConvert()" class="hidden mt-1 text-xs font-bold px-3 py-1 rounded-lg" style="background:rgba(251,191,36,.1);color:#fbbf24">Convert →</button>
           </div>
@@ -601,31 +649,31 @@
             <div class="text-4xl">🤖</div>
             <div>
               <h3 class="font-black text-lg">vs AI</h3>
-              <p class="text-xs" style="color:#8b98b8">Solo chess with AI opponent</p>
+              <p class="text-xs" style="color:#64748b">Solo chess with AI opponent</p>
             </div>
           </div>
           <div class="flex gap-2 mb-4">
             <button onclick="setDiff('easy');event.stopPropagation()" id="btn-easy" class="flex-1 py-2 rounded-xl text-sm font-bold" style="background:rgba(22,163,74,.1);color:#4ade80">Easy</button>
-            <button onclick="setDiff('normal');event.stopPropagation()" id="btn-normal" class="flex-1 py-2 rounded-xl text-sm font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1;border:1px solid rgba(0,214,161,.3)">Normal</button>
+            <button onclick="setDiff('normal');event.stopPropagation()" id="btn-normal" class="flex-1 py-2 rounded-xl text-sm font-bold" style="background:rgba(14,165,233,.12);color:#0ea5e9;border:1px solid rgba(14,165,233,.3)">Normal</button>
             <button onclick="setDiff('hard');event.stopPropagation()" id="btn-hard" class="flex-1 py-2 rounded-xl text-sm font-bold" style="background:rgba(239,68,68,.1);color:#ef4444">Hard</button>
           </div>
-          <div id="diff-pts-badge" class="text-center text-xs" style="color:#8b98b8">Normal win: <strong style="color:#fbbf24">+30 pts</strong></div>
-          <div class="mt-4 btn-primary text-center text-sm font-bold py-2.5 rounded-xl" style="background:linear-gradient(135deg,#00d6a1,#00b589);color:#090c14">Play vs AI →</div>
+          <div id="diff-pts-badge" class="text-center text-xs" style="color:#64748b">Normal win: <strong style="color:#fbbf24">+30 pts</strong></div>
+          <div class="mt-4 btn-primary text-center text-sm font-bold py-2.5 rounded-xl" style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#090c14">Play vs AI →</div>
         </div>
         <div class="hl-card cursor-pointer hover:scale-[1.02] transition-transform" onclick="startPvP()">
           <div class="flex items-center gap-4 mb-4">
             <div class="text-4xl">🌐</div>
             <div>
               <h3 class="font-black text-lg">PvP Online</h3>
-              <p class="text-xs" style="color:#8b98b8">WebRTC peer-to-peer battle</p>
+              <p class="text-xs" style="color:#64748b">WebRTC peer-to-peer battle</p>
             </div>
           </div>
           <ul class="space-y-2 mb-4">
-            <li class="flex items-center gap-2 text-xs" style="color:#8b98b8"><span style="color:#00d6a1">✓</span> Real-time P2P connection</li>
-            <li class="flex items-center gap-2 text-xs" style="color:#8b98b8"><span style="color:#00d6a1">✓</span> 15-second turn timer</li>
-            <li class="flex items-center gap-2 text-xs" style="color:#8b98b8"><span style="color:#00d6a1">✓</span> Share a 6-letter room code</li>
+            <li class="flex items-center gap-2 text-xs" style="color:#64748b"><span style="color:#0ea5e9">✓</span> Real-time P2P connection</li>
+            <li class="flex items-center gap-2 text-xs" style="color:#64748b"><span style="color:#0ea5e9">✓</span> 15-second turn timer</li>
+            <li class="flex items-center gap-2 text-xs" style="color:#64748b"><span style="color:#0ea5e9">✓</span> Share a 6-letter room code</li>
           </ul>
-          <div class="mt-4 text-center text-sm font-bold py-2.5 rounded-xl" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">Play Online →</div>
+          <div class="mt-4 text-center text-sm font-bold py-2.5 rounded-xl" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff">Play Online →</div>
         </div>
       </div>
 
@@ -637,10 +685,10 @@
         </div>
         <div id="leaderboard-list">
           <div class="lb-row"><span class="lb-rank" style="color:#fbbf24">1</span><span class="lb-addr">0x1a2b…3c4d</span><span class="lb-pts">128,400 pts</span></div>
-          <div class="lb-row"><span class="lb-rank" style="color:#8b98b8">2</span><span class="lb-addr">0x5e6f…7a8b</span><span class="lb-pts">94,200 pts</span></div>
-          <div class="lb-row"><span class="lb-rank" style="color:#8b98b8">3</span><span class="lb-addr">0x9c0d…1e2f</span><span class="lb-pts">77,500 pts</span></div>
-          <div class="lb-row"><span class="lb-rank" style="color:#8b98b8">4</span><span class="lb-addr">0x3a4b…5c6d</span><span class="lb-pts">52,000 pts</span></div>
-          <div class="lb-row"><span class="lb-rank" style="color:#8b98b8">5</span><span class="lb-addr">0x7e8f…9a0b</span><span class="lb-pts">41,300 pts</span></div>
+          <div class="lb-row"><span class="lb-rank" style="color:#64748b">2</span><span class="lb-addr">0x5e6f…7a8b</span><span class="lb-pts">94,200 pts</span></div>
+          <div class="lb-row"><span class="lb-rank" style="color:#64748b">3</span><span class="lb-addr">0x9c0d…1e2f</span><span class="lb-pts">77,500 pts</span></div>
+          <div class="lb-row"><span class="lb-rank" style="color:#64748b">4</span><span class="lb-addr">0x3a4b…5c6d</span><span class="lb-pts">52,000 pts</span></div>
+          <div class="lb-row"><span class="lb-rank" style="color:#64748b">5</span><span class="lb-addr">0x7e8f…9a0b</span><span class="lb-pts">41,300 pts</span></div>
         </div>
       </div>
     </div>
@@ -650,26 +698,26 @@
       <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
         <div class="flex-shrink-0 w-full" style="max-width:480px;margin:0 auto">
           <div class="hl-card p-3 shadow-xl"><div id="ai-board" class="chess-board"></div></div>
-          <div id="ai-thinking" class="hidden mt-3 flex items-center gap-2 text-sm" style="color:#8b98b8">
-            <div class="w-4 h-4 border-2 rounded-full spin" style="border-color:rgba(0,214,161,.3);border-top-color:#00d6a1"></div>
+          <div id="ai-thinking" class="hidden mt-3 flex items-center gap-2 text-sm" style="color:#64748b">
+            <div class="w-4 h-4 border-2 rounded-full spin" style="border-color:rgba(14,165,233,.35);border-top-color:#0ea5e9"></div>
             AI thinking…
           </div>
         </div>
         <div class="flex-1 space-y-4" style="min-width:230px">
           <div class="hl-card">
-            <p id="ai-status" class="font-bold text-lg" style="color:#00d6a1">Your turn (White)</p>
+            <p id="ai-status" class="font-bold text-lg" style="color:#0ea5e9">Your turn (White)</p>
             <div class="mt-2 flex gap-2 flex-wrap">
               <span id="ai-pts-mini" class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(251,191,36,.1);color:#fbbf24">⭐ 0</span>
               <div id="ai-diff-badge"></div>
             </div>
           </div>
           <div class="hl-card">
-            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#8b98b8">Turn Timer</p>
+            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#64748b">Turn Timer</p>
             <div id="ai-timer-display" class="turn-timer normal">
               <div class="timer-ring">
                 <svg viewBox="0 0 28 28" width="28" height="28">
                   <circle class="bg" cx="14" cy="14" r="11"/>
-                  <circle id="ai-timer-ring-fg" class="fg" cx="14" cy="14" r="11" stroke="#00d6a1" stroke-dasharray="69.12" stroke-dashoffset="0"/>
+                  <circle id="ai-timer-ring-fg" class="fg" cx="14" cy="14" r="11" stroke="#0ea5e9" stroke-dasharray="69.12" stroke-dashoffset="0"/>
                 </svg>
               </div>
               <span id="ai-timer-text">15s</span>
@@ -677,21 +725,21 @@
             </div>
           </div>
           <div class="hl-card">
-            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#8b98b8">Difficulty</p>
+            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#64748b">Difficulty</p>
             <div class="flex gap-2">
               <button onclick="changeAIDiff('easy')" id="ai-btn-easy" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(22,163,74,.1);color:#4ade80">Easy</button>
-              <button onclick="changeAIDiff('normal')" id="ai-btn-normal" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1;border:1px solid rgba(0,214,161,.3)">Normal</button>
+              <button onclick="changeAIDiff('normal')" id="ai-btn-normal" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(14,165,233,.12);color:#0ea5e9;border:1px solid rgba(14,165,233,.3)">Normal</button>
               <button onclick="changeAIDiff('hard')" id="ai-btn-hard" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(239,68,68,.1);color:#ef4444">Hard</button>
             </div>
           </div>
           <div class="hl-card">
-            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#8b98b8">Move History</p>
-            <div id="ai-history" class="move-history space-y-1"><p class="text-sm" style="color:#4a5568">No moves yet</p></div>
+            <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#64748b">Move History</p>
+            <div id="ai-history" class="move-history space-y-1"><p class="text-sm" style="color:#94a3b8">No moves yet</p></div>
           </div>
           <div class="flex gap-3">
-            <button onclick="resetAI()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(0,214,161,.1);color:#00d6a1;border:1px solid rgba(0,214,161,.2)">New Game</button>
-            <button onclick="SFX.toggle()" class="sfx-mute-btn py-2.5 px-3 font-bold rounded-xl text-base" style="background:rgba(255,255,255,.06);color:#8b98b8">🔊</button>
-            <button onclick="backToMenu()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#8b98b8">Menu</button>
+            <button onclick="resetAI()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(14,165,233,.1);color:#0ea5e9;border:1px solid rgba(14,165,233,.22)">New Game</button>
+            <button onclick="SFX.toggle()" class="sfx-mute-btn py-2.5 px-3 font-bold rounded-xl text-base" style="background:rgba(255,255,255,.06);color:#64748b">🔊</button>
+            <button onclick="backToMenu()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#64748b">Menu</button>
           </div>
         </div>
       </div>
@@ -703,16 +751,16 @@
         <div class="max-w-md mx-auto hl-card p-8 text-center">
           <div class="text-5xl mb-4">🌐</div>
           <h2 class="text-2xl font-black mb-2">PvP Online</h2>
-          <p class="text-sm mb-6" style="color:#8b98b8">WebRTC peer-to-peer — 15s timer per turn!</p>
+          <p class="text-sm mb-6" style="color:#64748b">WebRTC peer-to-peer — 15s timer per turn!</p>
           <div class="space-y-3">
-            <button onclick="pvpCreate()" class="w-full py-3 font-bold rounded-xl text-sm" style="background:rgba(0,214,161,.1);color:#00d6a1;border:1px solid rgba(0,214,161,.2)">♟ Create Room</button>
-            <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full" style="border-top:1px solid rgba(255,255,255,.08)"></div></div><div class="relative flex justify-center"><span class="px-3 text-xs" style="background:#111827;color:#4a5568">or join existing room</span></div></div>
+            <button onclick="pvpCreate()" class="w-full py-3 font-bold rounded-xl text-sm" style="background:rgba(14,165,233,.1);color:#0ea5e9;border:1px solid rgba(14,165,233,.22)">♟ Create Room</button>
+            <div class="relative"><div class="absolute inset-0 flex items-center"><div class="w-full" style="border-top:1px solid rgba(255,255,255,.08)"></div></div><div class="relative flex justify-center"><span class="px-3 text-xs" style="background:#ffffff;color:#94a3b8">or join existing room</span></div></div>
             <div class="flex gap-2">
               <input id="pvp-join-input" placeholder="Enter 6-letter code" maxlength="6" class="hl-input flex-1 text-sm font-mono uppercase" oninput="this.value=this.value.toUpperCase()"/>
-              <button onclick="pvpJoin()" class="px-4 py-3 font-bold rounded-xl text-sm" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">Join</button>
+              <button onclick="pvpJoin()" class="px-4 py-3 font-bold rounded-xl text-sm" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff">Join</button>
             </div>
             <div id="pvp-err" class="hidden p-3 rounded-xl text-sm" style="background:rgba(239,68,68,.08);color:#ef4444"></div>
-            <button onclick="backToMenu()" class="w-full py-2 text-sm" style="color:#4a5568" onmouseover="this.style.color='#8b98b8'" onmouseout="this.style.color='#4a5568'">← Back to Menu</button>
+            <button onclick="backToMenu()" class="w-full py-2 text-sm" style="color:#94a3b8" onmouseover="this.style.color='#8b98b8'" onmouseout="this.style.color='#4a5568'">← Back to Menu</button>
           </div>
         </div>
       </div>
@@ -720,16 +768,16 @@
         <div class="max-w-md mx-auto hl-card p-8 text-center">
           <div class="text-5xl mb-4">⏳</div>
           <h2 class="text-2xl font-black mb-2">Waiting for Opponent</h2>
-          <p class="text-sm mb-5" style="color:#8b98b8">Share this code with your friend:</p>
-          <div class="rounded-2xl py-6 px-8 mb-4" style="background:rgba(0,214,161,.06);border:2px solid rgba(0,214,161,.25)">
-            <p id="pvp-code-display" class="text-4xl font-black font-mono tracking-widest" style="color:#00d6a1"></p>
+          <p class="text-sm mb-5" style="color:#64748b">Share this code with your friend:</p>
+          <div class="rounded-2xl py-6 px-8 mb-4" style="background:rgba(14,165,233,.08);border:2px solid rgba(14,165,233,.25)">
+            <p id="pvp-code-display" class="text-4xl font-black font-mono tracking-widest" style="color:#0ea5e9"></p>
           </div>
-          <button onclick="copyCode()" class="px-6 py-2 font-semibold rounded-xl text-sm mb-4" style="background:rgba(0,214,161,.1);color:#00d6a1">Copy Code</button>
-          <div class="text-sm flex items-center justify-center gap-2 mt-2" style="color:#8b98b8">
-            <div class="w-3 h-3 border-2 rounded-full spin" style="border-color:rgba(0,214,161,.3);border-top-color:#00d6a1"></div>
+          <button onclick="copyCode()" class="px-6 py-2 font-semibold rounded-xl text-sm mb-4" style="background:rgba(14,165,233,.1);color:#0ea5e9">Copy Code</button>
+          <div class="text-sm flex items-center justify-center gap-2 mt-2" style="color:#64748b">
+            <div class="w-3 h-3 border-2 rounded-full spin" style="border-color:rgba(14,165,233,.35);border-top-color:#0ea5e9"></div>
             <span id="pvp-wait-status"></span>
           </div>
-          <button onclick="pvpReset()" class="mt-5 text-sm underline block mx-auto" style="color:#4a5568">Cancel</button>
+          <button onclick="pvpReset()" class="mt-5 text-sm underline block mx-auto" style="color:#94a3b8">Cancel</button>
         </div>
       </div>
       <div id="pvp-game" class="hidden">
@@ -741,21 +789,21 @@
             <div class="hl-card">
               <div class="flex items-center gap-2 mb-2">
                 <span class="dot dot-green"></span>
-                <p class="text-xs uppercase tracking-widest font-semibold" style="color:#8b98b8">Connected via WebRTC</p>
+                <p class="text-xs uppercase tracking-widest font-semibold" style="color:#64748b">Connected via WebRTC</p>
               </div>
-              <p id="pvp-status" class="font-bold text-lg" style="color:#00d6a1"></p>
+              <p id="pvp-status" class="font-bold text-lg" style="color:#0ea5e9"></p>
               <div class="mt-2 flex gap-2 flex-wrap text-xs font-semibold">
-                <span id="pvp-color-badge" class="px-2 py-1 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1"></span>
+                <span id="pvp-color-badge" class="px-2 py-1 rounded-lg" style="background:rgba(14,165,233,.1);color:#0ea5e9"></span>
                 <span id="pvp-room-badge" class="px-2 py-1 rounded-lg" style="background:rgba(123,97,255,.1);color:#7b61ff"></span>
               </div>
             </div>
             <div class="hl-card">
-              <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#8b98b8">Turn Timer</p>
+              <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#64748b">Turn Timer</p>
               <div id="pvp-timer-display" class="turn-timer normal">
                 <div class="timer-ring">
                   <svg viewBox="0 0 28 28" width="28" height="28">
                     <circle class="bg" cx="14" cy="14" r="11"/>
-                    <circle id="pvp-timer-ring-fg" class="fg" cx="14" cy="14" r="11" stroke="#00d6a1" stroke-dasharray="69.12" stroke-dashoffset="0"/>
+                    <circle id="pvp-timer-ring-fg" class="fg" cx="14" cy="14" r="11" stroke="#0ea5e9" stroke-dasharray="69.12" stroke-dashoffset="0"/>
                   </svg>
                 </div>
                 <span id="pvp-timer-text">15s</span>
@@ -763,12 +811,12 @@
               </div>
             </div>
             <div class="hl-card">
-              <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#8b98b8">Move History</p>
-              <div id="pvp-history" class="move-history space-y-1"><p class="text-sm" style="color:#4a5568">No moves yet</p></div>
+              <p class="text-xs uppercase tracking-widest font-semibold mb-2" style="color:#64748b">Move History</p>
+              <div id="pvp-history" class="move-history space-y-1"><p class="text-sm" style="color:#94a3b8">No moves yet</p></div>
             </div>
             <div class="flex gap-3">
-              <button id="pvp-leave-btn" onclick="pvpReset()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#8b98b8">Leave Game</button>
-              <button onclick="SFX.toggle()" class="sfx-mute-btn py-2.5 px-3 font-bold rounded-xl text-base" style="background:rgba(255,255,255,.06);color:#8b98b8">🔊</button>
+              <button id="pvp-leave-btn" onclick="pvpReset()" class="flex-1 py-2.5 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#64748b">Leave Game</button>
+              <button onclick="SFX.toggle()" class="sfx-mute-btn py-2.5 px-3 font-bold rounded-xl text-base" style="background:rgba(255,255,255,.06);color:#64748b">🔊</button>
             </div>
           </div>
         </div>
@@ -797,8 +845,8 @@ function killAIWorker(){if(_aiWorker){_aiWorker.terminate();_aiWorker=null;}}
 // ══ Config ══
 var TURN_LIMIT=15,CIRC=2*Math.PI*11,STREAK_BONUS=5;
 var POINTS_PER_WIN={easy:15,normal:30,hard:50};
-var HYPEREVM_CHAIN_ID='0x32b';
-var HYPEREVM_PARAMS={chainId:'0x32b',chainName:'HyperEVM Mainnet',nativeCurrency:{name:'HYPE',symbol:'HYPE',decimals:18},rpcUrls:['https://rpc.hyperliquid.xyz/evm'],blockExplorerUrls:['https://explorer.hyperliquid.xyz']};
+var MONAD_CHAIN_ID='0x279F';
+var MONAD_PARAMS={chainId:'0x32b',chainName:'Monad Mainnet',nativeCurrency:{name:'HYPE',symbol:'HYPE',decimals:18},rpcUrls:['https://rpc.hyperliquid.xyz/evm'],blockExplorerUrls:['https://explorer.hyperliquid.xyz']};
 
 // ══ Points ══
 var userPts=0,hardStreak=0,pointsAwarded=false;
@@ -905,7 +953,7 @@ function applyPiece(span,isWhite){
   span.style.textShadow=isWhite?'0 1px 3px rgba(0,0,0,.4)':'0 1px 3px rgba(0,0,0,.6)';
 }
 
-function rarityColor(r){return{free:'#00d6a1',common:'#8b98b8',rare:'#7b61ff',epic:'#5eead4',legendary:'#fbbf24'}[r]||'#8b98b8';}
+function rarityColor(r){return{free:'#0ea5e9',common:'#8b98b8',rare:'#7b61ff',epic:'#5eead4',legendary:'#fbbf24'}[r]||'#8b98b8';}
 function rarityLabel(r){return{free:'Free',common:'⭐ Common',rare:'💜 Rare',epic:'💎 Epic',legendary:'🔥 Legendary'}[r]||r;}
 
 function previewBoard(id){
@@ -937,7 +985,7 @@ function closeBuyModal(){document.getElementById('modal-buy').classList.add('hid
 
 var USDC_CONTRACT='0x6919b02C3f7d7b0aC1DbC5b17ab6F9ea0E0fB27';
 var USDC_ABI=[{"inputs":[{"name":"to","type":"address"},{"name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
-var DEV_WALLET='0x0000000000000000000000000000000000000001';
+var DEV_WALLET='0xce7132aDA1a06501cA9F5cdf4357eBA3d84A92A1';
 
 async function confirmBuy(){
   var btn=document.getElementById('buy-btn'),type=btn.dataset.type,id=btn.dataset.id;
@@ -952,7 +1000,7 @@ async function confirmBuy(){
   errEl.classList.add('hidden');sucEl.classList.add('hidden');vsEl.classList.add('hidden');
   btn.disabled=true;btn.innerHTML='<div class="w-4 h-4 border-2 rounded-full spin" style="border-color:rgba(255,255,255,.3);border-top-color:#fff"></div><span>Processing…</span>';
   try{
-    await ensureHyperEVMChain();
+    await ensureMonadChain();
     var amtHex='0x'+Math.floor(skin.price*1e6).toString(16).padStart(64,'0');
     var data='0xa9059cbb'+'000000000000000000000000'+DEV_WALLET.slice(2).toLowerCase()+amtHex;
     var txHash=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:walletAddr,to:USDC_CONTRACT,data:data,gas:'0x13880'}]});
@@ -984,14 +1032,14 @@ function renderShop(){
     var skin=BOARD_SKINS[id],isOwned=owned.b.indexOf(id)>=0,isEq=eqBoard===id;
     var card=document.createElement('div');
     card.className='hl-card skin-card'+(isEq?' equipped':isOwned?' owned':'');
-    card.innerHTML='<div class="preview-grid mb-3">'+previewBoard(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1">Equipped ✓</div>':'<button onclick="equipSkin(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.1);color:#00d6a1">Equip</button>'))+'</div>';
+    card.innerHTML='<div class="preview-grid mb-3">'+previewBoard(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(14,165,233,.12);color:#0ea5e9">Equipped ✓</div>':'<button onclick="equipSkin(\'b\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(14,165,233,.1);color:#0ea5e9">Equip</button>'))+'</div>';
     bc.appendChild(card);
   });
   Object.keys(PIECE_SKINS).forEach(function(id){
     var skin=PIECE_SKINS[id],isOwned=owned.p.indexOf(id)>=0,isEq=eqPiece===id;
     var card=document.createElement('div');
     card.className='hl-card skin-card'+(isEq?' equipped':isOwned?' owned':'');
-    card.innerHTML='<div class="flex gap-1 justify-center mb-3">'+previewPiece(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.15);color:#00d6a1">Equipped ✓</div>':'<button onclick="equipSkin(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(0,214,161,.1);color:#00d6a1">Equip</button>'))+'</div>';
+    card.innerHTML='<div class="flex gap-1 justify-center mb-3">'+previewPiece(id)+'</div><p class="font-black text-sm text-center mb-1">'+skin.name+'</p><p class="text-xs text-center mb-2" style="color:'+rarityColor(skin.rarity)+'">'+rarityLabel(skin.rarity)+'</p>'+(skin.bonus>0?'<p class="text-xs text-center mb-2" style="color:#fbbf24">+'+skin.bonus+' pts/win</p>':'')+'<div class="flex gap-1 mt-auto">'+(!isOwned?'<button onclick="openBuy(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff">'+skin.price+' USDC</button>':(isEq?'<div class="flex-1 text-center py-1.5 rounded-lg text-xs font-bold" style="background:rgba(14,165,233,.12);color:#0ea5e9">Equipped ✓</div>':'<button onclick="equipSkin(\'p\',\''+id+'\')" class="flex-1 py-1.5 rounded-lg text-xs font-bold" style="background:rgba(14,165,233,.1);color:#0ea5e9">Equip</button>'))+'</div>';
     pc.appendChild(card);
   });
 }
@@ -1010,7 +1058,7 @@ function renderShop(){
       p.x+=p.vx;p.y+=p.vy;
       if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
       ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,214,161,'+(.08+p.a*.08)+')';ctx.fill();
+      ctx.fillStyle='rgba(14,165,233,'+(.05+p.a*.05)+')';ctx.fill();
     });
     requestAnimationFrame(draw);
   }
@@ -1079,17 +1127,17 @@ function playSFX(mv,game){
 // ══ MetaMask Wallet ══
 var walletAddr=null;
 
-function ensureHyperEVMChain(){
+function ensureMonadChain(){
   return window.ethereum.request({method:'eth_chainId'}).then(function(chainId){
-    if(chainId.toLowerCase()===HYPEREVM_CHAIN_ID.toLowerCase())return;
-    return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:HYPEREVM_CHAIN_ID}]})
+    if(chainId.toLowerCase()===MONAD_CHAIN_ID.toLowerCase())return;
+    return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_CHAIN_ID}]})
     .catch(function(switchErr){
       if(switchErr.code===4902||switchErr.code===-32603){
-        return window.ethereum.request({method:'wallet_addEthereumChain',params:[HYPEREVM_PARAMS]})
+        return window.ethereum.request({method:'wallet_addEthereumChain',params:[MONAD_PARAMS]})
         .catch(function(addErr){
           var msg=String(addErr&&addErr.message||'');
           if(msg.indexOf('same RPC')>=0||msg.indexOf('already exists')>=0||msg.indexOf('already added')>=0||addErr.code===-32602){
-            return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:HYPEREVM_CHAIN_ID}]}).catch(function(){});
+            return window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_CHAIN_ID}]}).catch(function(){});
           }
           throw addErr;
         });
@@ -1115,12 +1163,12 @@ function initMetaMask(){
 }
 
 function walletClick(){
-  if(!window.ethereum){alert('MetaMask not detected! Please install MetaMask and connect to HyperEVM Mainnet.');return;}
+  if(!window.ethereum){alert('MetaMask not detected! Please install MetaMask and connect to Monad Mainnet.');return;}
   if(walletAddr){walletAddr=null;owned={b:['classic'],p:['standard']};resetPointsOnDisconnect();syncWalletUI(null);renderShop();return;}
   window.ethereum.request({method:'eth_requestAccounts'}).then(function(accounts){
     if(!accounts||!accounts.length)return;
     walletAddr=accounts[0];
-    return ensureHyperEVMChain().then(function(){
+    return ensureMonadChain().then(function(){
       loadOwnedForWallet(walletAddr);loadPointsForWallet(walletAddr);syncWalletUI(walletAddr);renderPoints();renderShop();
       if(pendingBuy){var pb=pendingBuy;pendingBuy=null;openBuy(pb.type,pb.id);}
     });
@@ -1130,7 +1178,7 @@ function walletClick(){
 function syncWalletUI(addr){
   var s=addr?addr.slice(0,6)+'…'+addr.slice(-4):null,lbl=s||'Connect Wallet';
   ['mm-lbl','mm-lbl2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=lbl;});
-  var sw=document.getElementById('shop-wallet-txt');if(sw)sw.textContent=addr?'Connected: '+s+' (HyperEVM Mainnet)':'Not connected — connect wallet to purchase skins with USDC';
+  var sw=document.getElementById('shop-wallet-txt');if(sw)sw.textContent=addr?'Connected: '+s+' (Monad Mainnet)':'Not connected — connect wallet to purchase skins with USDC on Monad (Monad)';
   var cb=document.getElementById('shop-conn-btn');if(cb)cb.textContent=addr?'Disconnect':'Connect Wallet';
 }
 
@@ -1177,7 +1225,7 @@ function _updateTimerUI(mode,secs){
   ring.style.strokeDashoffset=CIRC*(1-Math.max(secs,0)/TURN_LIMIT);
   if(secs<=3){ring.style.stroke='#ef4444';disp.className='turn-timer urgent';if(secs>0)SFX.tick();}
   else if(secs<=6){ring.style.stroke='#fbbf24';disp.className='turn-timer warning';}
-  else{ring.style.stroke='#00d6a1';disp.className='turn-timer normal';}
+  else{ring.style.stroke='#0ea5e9';disp.className='turn-timer normal';}
 }
 function resetTimerUI(mode){_updateTimerUI(mode,TURN_LIMIT);var s=document.getElementById(mode+'-timer-skipped');if(s)s.classList.add('hidden');}
 
@@ -1192,7 +1240,7 @@ function setDiff(d){
     var b=document.getElementById('btn-'+x);if(!b)return;
     if(x===d&&d==='hard'){b.style.background='rgba(239,68,68,.15)';b.style.color='#ef4444';b.style.border='1px solid rgba(239,68,68,.3)';}
     else if(x===d&&d==='easy'){b.style.background='rgba(74,222,128,.15)';b.style.color='#4ade80';b.style.border='1px solid rgba(74,222,128,.3)';}
-    else if(x===d){b.style.background='rgba(0,214,161,.15)';b.style.color='#00d6a1';b.style.border='1px solid rgba(0,214,161,.3)';}
+    else if(x===d){b.style.background='rgba(14,165,233,.15)';b.style.color='#0ea5e9';b.style.border='1px solid rgba(14,165,233,.3)';}
     else{b.style.background='rgba(255,255,255,.05)';b.style.color='#8b98b8';b.style.border='1px solid rgba(255,255,255,.08)';}
   });
   var badge=document.getElementById('diff-pts-badge'),sb=getSkinBonus();
@@ -1210,14 +1258,14 @@ function changeAIDiff(d){
     var b=document.getElementById('ai-btn-'+x);if(!b)return;
     if(x===d&&d==='hard')b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)';
     else if(x===d&&d==='easy')b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3)';
-    else if(x===d)b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(0,214,161,.15);color:#00d6a1;border:1px solid rgba(0,214,161,.3)';
-    else b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:#8b98b8';
+    else if(x===d)b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(14,165,233,.12);color:#0ea5e9;border:1px solid rgba(14,165,233,.3)';
+    else b.style.cssText='flex:1;padding:6px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:#64748b';
   });
   var badge=document.getElementById('ai-diff-badge'),sb=getSkinBonus();
   if(badge){
     if(d==='hard')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(239,68,68,.1);color:#ef4444">Hard'+(hardStreak>0?' x'+hardStreak:'')+'</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.hard+STREAK_BONUS*(hardStreak>0?hardStreak:0)+sb)+' pts</span>';
     else if(d==='easy')badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(74,222,128,.1);color:#4ade80">Easy</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.easy+sb)+' pts</span>';
-    else badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(0,214,161,.1);color:#00d6a1">Normal</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.normal+sb)+' pts</span>';
+    else badge.innerHTML='<span class="text-xs font-bold px-2 py-1 rounded-lg" style="background:rgba(14,165,233,.1);color:#0ea5e9">Normal</span><span class="text-xs ml-1" style="color:#fbbf24">Win: +'+(POINTS_PER_WIN.normal+sb)+' pts</span>';
   }
   resetAI();
 }
@@ -1248,7 +1296,7 @@ function startPlayerTimer(){
 
 function updAISt(){
   var el=document.getElementById('ai-status');if(!aig)return;
-  var t='',c='color:#00d6a1';
+  var t='',c='color:#0ea5e9';
   if(aig.in_checkmate()){var won=aig.turn()==='b';t=won?'Checkmate! You win! 🏆':'Checkmate! AI wins!';c=won?'color:#4ade80':'color:#ef4444';awardPoints(aiDf,won);clearTurnTimer();}
   else if(aig.in_draw()){t='Draw!';c='color:#fbbf24';awardPoints(aiDf,false);clearTurnTimer();}
   else if(aig.in_stalemate()){t='Stalemate!';c='color:#fbbf24';awardPoints(aiDf,false);clearTurnTimer();}
@@ -1259,8 +1307,8 @@ function updAISt(){
 
 function updAIHst(){
   var el=document.getElementById('ai-history');
-  if(!aiHst.length){el.innerHTML='<p class="text-sm" style="color:#4a5568">No moves yet</p>';return;}
-  el.innerHTML=aiHst.map(function(m,i){return '<div class="flex items-center gap-2 text-sm"><span class="text-xs w-6" style="color:#4a5568">'+(Math.floor(i/2)+1)+(i%2===0?'.':'')+'</span><span class="font-mono font-semibold" style="color:'+(i%2===0?'#f0f4ff':'#00d6a1')+'">'+m+'</span><span class="text-xs" style="color:#4a5568">'+(i%2===0?'White':'Black')+'</span></div>';}).join('');
+  if(!aiHst.length){el.innerHTML='<p class="text-sm" style="color:#94a3b8">No moves yet</p>';return;}
+  el.innerHTML=aiHst.map(function(m,i){return '<div class="flex items-center gap-2 text-sm"><span class="text-xs w-6" style="color:#94a3b8">'+(Math.floor(i/2)+1)+(i%2===0?'.':'')+'</span><span class="font-mono font-semibold" style="color:'+(i%2===0?'#f0f4ff':'#0ea5e9')+'">'+m+'</span><span class="text-xs" style="color:#94a3b8">'+(i%2===0?'White':'Black')+'</span></div>';}).join('');
   el.scrollTop=el.scrollHeight;
 }
 
@@ -1378,18 +1426,18 @@ function pvpStartTimer(){
 function pvpUpdSt(){
   if(!pvpG)return;
   var my=(pvpG.turn()==='w'&&pvpCol==='white')||(pvpG.turn()==='b'&&pvpCol==='black');
-  var t='',c='color:#00d6a1';
+  var t='',c='color:#0ea5e9';
   if(pvpG.in_checkmate()){t=my?'You lost! Checkmate.':'You win! Checkmate! 🏆';c=my?'color:#ef4444':'color:#4ade80';clearTurnTimer();}
   else if(pvpG.in_draw()){t='Draw!';c='color:#fbbf24';clearTurnTimer();}
   else if(pvpG.in_check()){t=my?'Check! Your turn':'Opponent in check!';}
   else{t=my?'Your turn!':'Opponent\'s turn…';}
   pvpSt(t,c);
 }
-function pvpSt(t,c){var el=document.getElementById('pvp-status');el.textContent=t;el.style.cssText='font-weight:700;font-size:1.1rem;'+(c||'color:#00d6a1');}
+function pvpSt(t,c){var el=document.getElementById('pvp-status');el.textContent=t;el.style.cssText='font-weight:700;font-size:1.1rem;'+(c||'color:#0ea5e9');}
 function pvpUpdHst(){
   var el=document.getElementById('pvp-history');
-  if(!pvpHst.length){el.innerHTML='<p class="text-sm" style="color:#4a5568">No moves yet</p>';return;}
-  el.innerHTML=pvpHst.map(function(m,i){return '<div class="flex items-center gap-2 text-sm"><span class="text-xs w-6" style="color:#4a5568">'+(Math.floor(i/2)+1)+(i%2===0?'.':'')+'</span><span class="font-mono font-semibold" style="color:'+(i%2===0?'#f0f4ff':'#00d6a1')+'">'+m+'</span></div>';}).join('');
+  if(!pvpHst.length){el.innerHTML='<p class="text-sm" style="color:#94a3b8">No moves yet</p>';return;}
+  el.innerHTML=pvpHst.map(function(m,i){return '<div class="flex items-center gap-2 text-sm"><span class="text-xs w-6" style="color:#94a3b8">'+(Math.floor(i/2)+1)+(i%2===0?'.':'')+'</span><span class="font-mono font-semibold" style="color:'+(i%2===0?'#f0f4ff':'#0ea5e9')+'">'+m+'</span></div>';}).join('');
   el.scrollTop=el.scrollHeight;
 }
 function renderPvPBoard(){var el=document.getElementById('pvp-board');if(!pvpG||!el)return;drawBoard(el,pvpG,pvpSel,pvpPos,onPvPSq,pvpCol==='black');}
@@ -1426,5 +1474,69 @@ setDiff('normal');
 initMetaMask();
 renderPoints();
 </script>
+
+<!-- ══ LIGHTBOX ══ -->
+<div id="lb-overlay" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button id="lb-close" onclick="lbClose()" aria-label="Close">✕</button>
+  <button id="lb-prev" onclick="lbStep(-1)" aria-label="Previous">‹</button>
+  <div id="lb-img-wrap">
+    <img id="lb-img" src="" alt="Meme">
+  </div>
+  <button id="lb-next" onclick="lbStep(1)" aria-label="Next">›</button>
+  <div id="lb-counter" id="lb-counter"></div>
+</div>
+<script>
+(function(){
+  var imgs=[
+    'https://i.imgur.com/tx5UPD3.jpg','https://i.imgur.com/P6H9XyW.jpg',
+    'https://i.imgur.com/EfSOver.jpg','https://i.imgur.com/PqCyVAd.jpg',
+    'https://i.imgur.com/Uijt8HZ.jpg','https://i.imgur.com/KzB8l5D.jpg',
+    'https://i.imgur.com/XQvcpYW.jpg','https://i.imgur.com/C0mSA3D.jpg',
+    'https://i.imgur.com/mT8q6Th.jpg','https://i.imgur.com/TWnk83Z.jpg',
+    'https://i.imgur.com/CYCS0MC.jpg','https://i.imgur.com/YgnI7Qj.jpg',
+    'https://i.imgur.com/e2MiN9X.jpg','https://i.imgur.com/Aw6Wlab.jpg',
+    'https://i.imgur.com/8tNvnQB.jpg','https://i.imgur.com/w4e6YWW.jpg'
+  ];
+  var cur=0;
+  var ov=document.getElementById('lb-overlay');
+  var im=document.getElementById('lb-img');
+  var ct=document.getElementById('lb-counter');
+
+  window.lbOpen=function(idx){
+    cur=idx;
+    im.src=imgs[cur];
+    ct.textContent=(cur+1)+' / '+imgs.length;
+    ov.classList.add('open');
+    document.body.style.overflow='hidden';
+  };
+  window.lbClose=function(){
+    ov.classList.remove('open');
+    document.body.style.overflow='';
+    setTimeout(function(){im.src='';},300);
+  };
+  window.lbStep=function(dir){
+    cur=(cur+dir+imgs.length)%imgs.length;
+    im.style.opacity='0';
+    setTimeout(function(){
+      im.src=imgs[cur];
+      im.onload=function(){im.style.opacity='1';};
+      ct.textContent=(cur+1)+' / '+imgs.length;
+    },150);
+    im.style.transition='opacity .15s';
+  };
+
+  // Close on overlay click (outside image)
+  ov.addEventListener('click',function(e){if(e.target===ov)lbClose();});
+
+  // Keyboard navigation
+  document.addEventListener('keydown',function(e){
+    if(!ov.classList.contains('open'))return;
+    if(e.key==='Escape')lbClose();
+    if(e.key==='ArrowLeft')lbStep(-1);
+    if(e.key==='ArrowRight')lbStep(1);
+  });
+})();
+</script>
+
 </body>
 </html>

@@ -209,10 +209,11 @@
       <p class="text-sm mb-8" style="color:#64748b">Play chess. Earn points. Convert to $CHESSIO.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
         <button onclick="goto('play')" class="btn-primary flex items-center justify-center gap-2">♞ Play Chess</button>
+        <a href="https://nad.fun/tokens/0x10F446A8B1Fdc9A77919e5addd30C68417D77777" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">🛒 Buy $KING</a>
         <button onclick="goto('shop')" class="btn-secondary">Shop Skins</button>
       </div>
       <div class="mt-8 flex flex-wrap justify-center gap-4">
-        <div class="stat-card"><p class="label">Contract</p><p class="value text-sm">Soon</p></div>
+        <div class="stat-card" style="cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText('0x10F446A8B1Fdc9A77919e5addd30C68417D77777').then(function(){var el=event.currentTarget.querySelector('.value');var orig=el.textContent;el.textContent='Copied!';setTimeout(function(){el.textContent=orig;},1500);})" title="Click to copy CA"><p class="label">Contract (click to copy)</p><p class="value text-sm" style="font-size:.65rem;word-break:break-all">0x10F4...7777</p></div>
         <div class="stat-card"><p class="label">Network</p><p class="value text-sm">Monad Mainnet</p></div>
         <div class="stat-card"><p class="label">Total Supply</p><p class="value text-sm">1,000,000,000</p></div>
         <div class="stat-card"><p class="label">Skins</p><p class="value text-sm">12 Collectibles</p></div>
@@ -391,11 +392,11 @@
           <a href="https://x.com/chessiooxyz" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">X @chessiooxyz</a>
           <a href="https://t.me/Chessioportal" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">Chessioportal</a>
           <a href="https://t.me/addstickers/ChessioKING" target="_blank" class="text-sm font-medium" style="color:#229ED9" onmouseover="this.style.color='#5eb8e8'" onmouseout="this.style.color='#229ED9'">🎭 Sticker Pack</a>
-          <a href="https://nad.fun" target="_blank" class="text-sm font-medium" style="color:#64748b;transition:color .2s" onmouseover="this.style.color='#0ea5e9'" onmouseout="this.style.color='#475569'">nad.fun</a>
+          <a href="https://nad.fun/tokens/0x10F446A8B1Fdc9A77919e5addd30C68417D77777" target="_blank" rel="noopener noreferrer" class="text-sm font-medium" style="color:#0ea5e9;transition:color .2s" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#0ea5e9'">🛒 Buy $KING</a>
         </div>
       </div>
       <div class="mt-6 pt-6 text-center space-y-1" style="border-top:1px solid rgba(0,0,0,.06)">
-        <p class="text-xs" style="color:#94a3b8">Contract: <span class="font-bold" style="color:#0ea5e9">Soon</span> — Network: <span class="font-bold" style="color:#0ea5e9">Monad Mainnet</span></p>
+        <p class="text-xs" style="color:#94a3b8">CA: <span class="font-mono font-bold" style="color:#0ea5e9;cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText('0x10F446A8B1Fdc9A77919e5addd30C68417D77777').then(function(){var s=event.target;var o=s.textContent;s.textContent='Copied!';setTimeout(function(){s.textContent=o;},1500);})" title="Click to copy">0x10F446A8B1Fdc9A77919e5addd30C68417D77777</span> — Network: <span class="font-bold" style="color:#0ea5e9">Monad Mainnet</span></p>
         <p class="text-xs" style="color:#94a3b8">Chessio King is a memecoin. Not financial advice. DYOR. © 2025 Chessio King.</p>
       </div>
     </div>

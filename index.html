@@ -193,7 +193,7 @@
       <div class="grid md:grid-cols-4 gap-5">
         <div class="reveal feature-card"><div class="text-4xl mb-3">♟</div><h3 class="font-bold mb-1 text-sm" style="color:#ccff00">Chess vs AI</h3><p class="text-xs" style="color:#8b98b8">3 difficulty levels — 15s timer every turn!</p></div>
         <div class="reveal feature-card" style="transition-delay:.08s"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold mb-1 text-sm" style="color:#ccff00">Earn Points</h3><p class="text-xs" style="color:#8b98b8">Win games → earn points → convert to $CHESSIO</p></div>
-        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#ccff00">12 Skins</h3><p class="text-xs" style="color:#8b98b8">6 board + 6 piece skins, buyable with ETH</p></div>
+        <div class="reveal feature-card" style="transition-delay:.16s"><div class="text-4xl mb-3">🎨</div><h3 class="font-bold mb-1 text-sm" style="color:#ccff00">12 Skins</h3><p class="text-xs" style="color:#8b98b8">6 board + 6 piece skins, buyable with WETH</p></div>
         <div class="reveal feature-card" style="transition-delay:.24s"><div class="text-4xl mb-3">🌐</div><h3 class="font-bold mb-1 text-sm" style="color:#ccff00">WebRTC PvP</h3><p class="text-xs" style="color:#8b98b8">Direct P2P play with friends — no server needed</p></div>
       </div>
     </div>
@@ -220,7 +220,8 @@
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Community</span><span class="font-black text-sm" style="color:#ccff00">90%</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Dev</span><span class="font-black text-sm" style="color:#fbbf24">10%</span></div>
             <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Liquidity</span><span class="font-black text-sm">Locked</span></div>
-            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Shop Currency</span><span class="font-black text-sm" style="color:#ccff00">ETH (Robinhood Native)</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">Shop Currency</span><span class="font-black text-sm" style="color:#ccff00">WETH (Robinhood)</span></div>
+            <div class="flex justify-between items-center py-3"><span class="text-sm" style="color:#8b98b8">WETH Contract</span><span class="font-bold text-sm" style="color:#ccff00">0x0Bd7...cAD73</span></div>
           </div>
           <a href="https://fun.noxa.fi/robinhood/token/0x9d890bb4e0993913de35f93585fdef67a39609af" target="_blank" class="mt-6 block w-full py-3.5 font-bold text-center rounded-xl text-sm" style="background:linear-gradient(135deg,#ccff00,#a3cc00);color:#090c14">Buy $CHESSIO on noxa.fi →</a>
         </div>
@@ -290,7 +291,7 @@
       <div class="hl-card mb-8 flex items-center justify-between flex-wrap gap-3">
         <div>
           <p class="text-xs uppercase tracking-widest font-semibold" style="color:#7b61ff">Robinhood Wallet</p>
-          <p id="shop-wallet-txt" class="font-bold text-sm mt-0.5" style="color:#8b98b8">Not connected — connect wallet to purchase skins with ETH</p>
+          <p id="shop-wallet-txt" class="font-bold text-sm mt-0.5" style="color:#8b98b8">Not connected — connect wallet to purchase skins with WETH</p>
         </div>
         <button onclick="walletClick()" id="shop-conn-btn" class="px-5 py-2 rounded-xl font-bold text-sm text-white" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0)">Connect Wallet</button>
       </div>
@@ -298,13 +299,13 @@
         <h2 class="text-2xl font-black">Board Skins</h2>
         <span class="hl-badge text-xs">6 designs</span>
       </div>
-      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#ccff00">0.001 ETH</strong> to <strong style="color:#ccff00">0.1 ETH</strong></p>
+      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#ccff00">0.001 WETH</strong> to <strong style="color:#ccff00">0.1 WETH</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-12" id="board-skin-cards"></div>
       <div class="flex items-center gap-3 mb-2">
         <h2 class="text-2xl font-black">Piece Skins</h2>
         <span class="hl-badge text-xs" style="background:rgba(123,97,255,.1);border-color:rgba(123,97,255,.25);color:#7b61ff">6 styles</span>
       </div>
-      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#ccff00">0.001 ETH</strong> to <strong style="color:#ccff00">0.1 ETH</strong></p>
+      <p class="text-sm mb-5" style="color:#5a6882">1 free starter • 5 premium from <strong style="color:#ccff00">0.001 WETH</strong> to <strong style="color:#ccff00">0.1 WETH</strong></p>
       <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4" id="piece-skin-cards"></div>
     </div>
   </div>
@@ -318,7 +319,7 @@
     <div class="rounded-2xl p-4 text-center mb-5" style="background:rgba(204,255,0,.06);border:1px solid rgba(204,255,0,.15)">
       <p class="text-xs uppercase tracking-widest font-semibold mb-1" style="color:#8b98b8">Price</p>
       <p id="buy-price" class="text-3xl font-black" style="color:#ccff00"></p>
-      <p class="text-xs mt-1" style="color:#5a6882">Paid in ETH on Robinhood mainnet</p>
+      <p class="text-xs mt-1" style="color:#5a6882">Paid in WETH on Robinhood mainnet</p>
     </div>
     <div id="buy-error" class="hidden mb-3 p-3 rounded-xl text-sm" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444"></div>
     <div id="buy-success" class="hidden mb-3 p-3 rounded-xl text-sm font-semibold" style="background:rgba(204,255,0,.08);border:1px solid rgba(204,255,0,.2);color:#ccff00"></div>
@@ -327,7 +328,7 @@
       <div class="verify-bar"><div id="verify-fill" class="verify-fill"></div></div>
     </div>
     <div class="flex gap-3">
-      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 text-sm" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff"><span>💰</span><span>Buy with ETH</span></button>
+      <button id="buy-btn" onclick="confirmBuy()" class="flex-1 py-3 font-bold rounded-xl flex items-center justify-center gap-2 text-sm" style="background:linear-gradient(135deg,#7b61ff,#5b3fe0);color:#fff"><span>💰</span><span>Buy with WETH</span></button>
       <button id="cancel-btn" onclick="closeBuyModal()" class="px-5 py-3 font-bold rounded-xl text-sm" style="background:rgba(255,255,255,.06);color:#8b98b8">Cancel</button>
     </div>
   </div>
@@ -598,6 +599,12 @@ function killAIWorker(){if(_aiWorkerTimer){clearTimeout(_aiWorkerTimer);_aiWorke
 
 // ══ Config ══
 var TREASURY='0xE692a452f678857e7Dd8Fbc54F766B621FF4CbF0';
+var WETH_ADDRESS='0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73';
+function encodeErc20Transfer(to,amountWei){
+  var toHex=to.replace(/^0x/,'').toLowerCase().padStart(64,'0');
+  var amtHex=amountWei.toString(16).padStart(64,'0');
+  return '0xa9059cbb'+toHex+amtHex;
+}
 var CHAIN_ID='0x8f';
 var CHAIN_PARAMS={
   chainId:CHAIN_ID,
@@ -714,7 +721,7 @@ function goto(pg,e){
 // ══ Roadmap ══
 (function(){
   var items=[
-    {phase:'Phase 1 — Q2 2026',title:'Launch & Foundation',done:true,items:['Token launch on noxa.fi','Website & chess minigame live','X & Telegram community launched','WebRTC PvP & ETH skin shop deployed on Robinhood mainnet']},
+    {phase:'Phase 1 — Q2 2026',title:'Launch & Foundation',done:true,items:['Token launch on noxa.fi','Website & chess minigame live','X & Telegram community launched','WebRTC PvP & WETH skin shop deployed on Robinhood mainnet']},
     {phase:'Phase 2 — Q3 2026',title:'Growth & Listings',done:false,items:['First DEX listing on Robinhood mainnet','Strategic partnership announcements','Community chess tournament ($CHESSIO prizes)','Mobile-friendly UI optimization']},
     {phase:'Phase 3 — Q4 2026',title:'Ecosystem Expansion',done:false,items:['On-chain points → $CHESSIO reward system','Chess skin NFT collection on Robinhood mainnet','$CHESSIO staking & yield mechanism','Ranked tournament ladder system']},
     {phase:'Phase 4 — 2027',title:'Mass Adoption',done:false,items:['Native mobile app (iOS & Android)','AI-powered coaching feature','Top-tier CEX listings','Global chess championship sponsorship']},
@@ -734,7 +741,7 @@ function goto(pg,e){
   });
 })();
 
-// ══ Skins — prices in ETH ══
+// ══ Skins — prices in WETH ══
 var RARITY={
   free:    {label:'Free',     color:'#ccff00',bg:'rgba(204,255,0,.1)',   border:'rgba(204,255,0,.3)',  star:''},
   common:  {label:'Common',   color:'#8b98b8',bg:'rgba(139,152,184,.08)',border:'rgba(139,152,184,.2)',star:'⭐'},
@@ -780,7 +787,7 @@ function skinBtn(type,sk,own,eq){
   if(eq)return '<div class="py-2 font-bold text-center rounded-xl text-xs" style="background:rgba(204,255,0,.1);color:#ccff00;border:1px solid rgba(204,255,0,.2)">Equipped</div>';
   if(own)return '<button onclick="equip'+(type==='board'?'Board':'Piece')+'(\''+sk.id+'\')" class="w-full py-2 font-bold rounded-xl text-xs" style="background:rgba(204,255,0,.1);color:#ccff00;border:1px solid rgba(204,255,0,.2)">Equip</button>';
   var grad=type==='board'?'linear-gradient(135deg,#7b61ff,#5b3fe0)':'linear-gradient(135deg,#7b61ff,#ec4899)';
-  return '<button onclick="openBuy(\''+type+'\',\''+sk.id+'\')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:'+grad+'">💰 '+sk.price+' ETH</button>';
+  return '<button onclick="openBuy(\''+type+'\',\''+sk.id+'\')" class="w-full py-2 text-white font-bold rounded-xl text-xs" style="background:'+grad+'">💰 '+sk.price+' WETH</button>';
 }
 function rarityBadge(sk){
   var r=RARITY[sk.rarity]||RARITY.common;
@@ -817,15 +824,15 @@ function openBuy(type,id){
   pendingBuy={type:type,id:id};
   document.getElementById('buy-title').textContent='Buy — '+sk.name;
   document.getElementById('buy-desc').textContent=sk.desc;
-  document.getElementById('buy-price').textContent=sk.price+' ETH';
+  document.getElementById('buy-price').textContent=sk.price+' WETH';
   ['buy-error','buy-success','verify-status'].forEach(function(i){document.getElementById(i).classList.add('hidden');});
-  var btn=document.getElementById('buy-btn');btn.disabled=false;btn.innerHTML='<span>💰</span><span>Buy with ETH ('+sk.price+' ETH)</span>';
+  var btn=document.getElementById('buy-btn');btn.disabled=false;btn.innerHTML='<span>💰</span><span>Buy with WETH ('+sk.price+' WETH)</span>';
   document.getElementById('cancel-btn').disabled=false;
   document.getElementById('modal-buy').classList.remove('hidden');
 }
 function closeBuyModal(){document.getElementById('modal-buy').classList.add('hidden');}
 
-// ══ Confirm Buy — Native ETH transfer ══
+// ══ Confirm Buy — WETH ERC-20 transfer ══
 function confirmBuy(){
   if(!pendingBuy)return;
   var type=pendingBuy.type,id=pendingBuy.id;
@@ -838,19 +845,20 @@ function confirmBuy(){
     setTimeout(function(){closeBuyModal();walletClick();},1200);return;
   }
   btn.disabled=true;cancelBtn.disabled=true;
-  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending ETH…';
+  btn.innerHTML='<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full spin mr-2 inline-block"></div>Sending WETH…';
   errEl.classList.add('hidden');sucEl.classList.add('hidden');verifyEl.classList.add('hidden');
 
-  var weiValue='0x'+(BigInt(Math.round(sk.price*1e18))).toString(16);
+  var amountWei=BigInt(Math.round(sk.price*1e18));
+  var txData=encodeErc20Transfer(TREASURY,amountWei);
 
   ensureRobinhoodChain().then(function(){
     return window.ethereum.request({
       method:'eth_sendTransaction',
-      params:[{from:walletAddr,to:TREASURY,value:weiValue,gas:'0x5208'}]
+      params:[{from:walletAddr,to:WETH_ADDRESS,value:'0x0',data:txData,gas:'0x186A0'}]
     });
   }).then(function(txHash){
     verifyEl.classList.remove('hidden');
-    document.getElementById('verify-msg').textContent='ETH sent! Tx: '+txHash.slice(0,20)+'…';
+    document.getElementById('verify-msg').textContent='WETH sent! Tx: '+txHash.slice(0,20)+'…';
     document.getElementById('verify-fill').style.width='60%';
     return waitForReceipt(txHash);
   }).then(function(receipt){
@@ -860,7 +868,7 @@ function confirmBuy(){
       saveOwned();
       document.getElementById('verify-fill').style.width='100%';
       document.getElementById('verify-msg').textContent='Transaction confirmed on Robinhood mainnet!';
-      sucEl.textContent=sk.price+' ETH confirmed! '+sk.name+' is yours.';sucEl.classList.remove('hidden');
+      sucEl.textContent=sk.price+' WETH confirmed! '+sk.name+' is yours.';sucEl.classList.remove('hidden');
       btn.innerHTML='Unlocked! ✓';
       setTimeout(function(){closeBuyModal();renderShop();},2500);
     }else{
@@ -874,7 +882,7 @@ function confirmBuy(){
     verifyEl.classList.add('hidden');
     errEl.textContent=isReject?'Transaction cancelled.':'Transaction failed: '+(msg.slice(0,100)||'Unknown error');
     errEl.classList.remove('hidden');btn.disabled=false;cancelBtn.disabled=false;
-    btn.innerHTML='<span>💰</span><span>Buy with ETH</span>';
+    btn.innerHTML='<span>💰</span><span>Buy with WETH</span>';
   });
 }
 
@@ -954,7 +962,7 @@ function syncWalletUI(addr){
   var s=addr?addr.slice(0,6)+'…'+addr.slice(-4):null,lbl=s||'Connect Wallet';
   ['mm-lbl','mm-lbl2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=lbl;});
   var sw=document.getElementById('shop-wallet-txt');
-  if(sw)sw.textContent=addr?'Connected: '+s+' (Robinhood Mainnet)':'Not connected — connect wallet to purchase skins with ETH';
+  if(sw)sw.textContent=addr?'Connected: '+s+' (Robinhood Mainnet)':'Not connected — connect wallet to purchase skins with WETH';
   var cb=document.getElementById('shop-conn-btn');if(cb)cb.textContent=addr?'Disconnect':'Connect Wallet';
 }
 
